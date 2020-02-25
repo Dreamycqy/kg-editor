@@ -50,7 +50,7 @@ class MainLayout extends React.Component {
 
   render() {
     return (
-      <Layout>
+      <Layout style={{ height: '100%' }}>
         <ConfigProvider locale={this.props.locale === 'cn' ? zh_CN : en_GB}>
           <Header
             style={{
@@ -65,7 +65,7 @@ class MainLayout extends React.Component {
           >
             <div
               style={{
-                width: 120,
+                width: 220,
                 height: 31,
                 marginLeft: 30,
                 float: 'left',
@@ -74,32 +74,8 @@ class MainLayout extends React.Component {
                 lineHeight: '60px',
               }}
             >
-              <Link to="">eduKG</Link>
+              <Link to="">KG-EDITOR</Link>
             </div>
-            <div
-              style={{
-                lineHeight: '58px', position: 'absolute', right: 80, cursor: 'pointer',
-              }}
-              onClick={() => this.handleLocaleChange()}
-            >
-              {this.props.locale === 'cn' ? 'EN' : '中文'}
-            </div>
-            <div
-              style={{
-                lineHeight: '58px', position: 'absolute', right: 30, cursor: 'pointer',
-              }}
-              onClick={() => window.open('http://edukg.cn/qa-api')}
-            >
-              APIs
-            </div>
-            <Menu
-              mode="horizontal"
-              selectedKeys={[this.state.key]}
-              style={{ lineHeight: '58px', position: 'absolute', right: 140 }}
-              onClick={e => this.handleSelect(e.key)}
-            >
-              {this.makeMenu()}
-            </Menu>
           </Header>
           <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60 }}>
             {this.props.children}
