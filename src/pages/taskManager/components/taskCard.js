@@ -26,12 +26,13 @@ class MainLayout extends React.Component {
   }
 
   jumpEditor = () => {
-    console.log('!')
-    this.props.dispatch(routerRedux.push({
-      pathname: '/editor',
-      query: {
-      },
-    }))
+    window.open('https://webprotege.stanford.edu/#projects/418a5a50-2fd2-4012-ace9-f1d4eccfc299/edit/History?selection=NamedIndividual(%3Chttp://webprotege.stanford.edu/R8uTpK4pZOPRHL2cGRejMeL%3E)')
+    // console.log('!')
+    // this.props.dispatch(routerRedux.push({
+    //   pathname: '/editor',
+    //   query: {
+    //   },
+    // }))
   }
 
   render() {
