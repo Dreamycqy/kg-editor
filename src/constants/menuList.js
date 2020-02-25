@@ -1,26 +1,14 @@
 export default {
-  home: {
-    cn: '首页',
-    en: 'Home',
-  },
-  total: {
-    cn: '搜索',
-    en: 'Search',
-  },
-  graph: {
-    cn: '知识图谱',
+  history: {
+    cn: '编辑历史',
     en: 'KnowledgeGraph',
   },
-  qa: {
-    cn: '知识问答',
+  manager: {
+    cn: '任务管理',
     en: 'KnowledgeQa',
   },
-  knowledgeCard: {
-    cn: '知识卡片',
+  member: {
+    cn: '成员管理',
     en: 'KnowledgeCard',
-  },
-  team: {
-    cn: '团队',
-    en: 'Team',
   },
 }

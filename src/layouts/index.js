@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout, ConfigProvider, Menu } from 'antd'
+import { Layout, ConfigProvider, Menu, Dropdown, Icon, Avatar } from 'antd'
 import { connect } from 'dva'
 import router from 'umi/router'
 import Link from 'umi/link'
@@ -49,6 +49,18 @@ class MainLayout extends React.Component {
   }
 
   render() {
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <a
+            onClick={() => {}}
+            href="javascript:;"
+          >
+            退出
+          </a>
+        </Menu.Item>
+      </Menu>
+    )
     return (
       <Layout style={{ height: '100%' }}>
         <ConfigProvider locale={this.props.locale === 'cn' ? zh_CN : en_GB}>
@@ -76,6 +88,21 @@ class MainLayout extends React.Component {
             >
               <Link to="">KG-EDITOR</Link>
             </div>
+            <Menu
+              mode="horizontal"
+              selectedKeys={[this.state.key]}
+              style={{ lineHeight: '58px', position: 'absolute', right: 140 }}
+              onClick={e => this.handleSelect(e.key)}
+            >
+              {this.makeMenu()}
+            </Menu>
+            <Dropdown overlay={menu}>
+              <div style={{ float: 'right', lineHeight: '56px' }}>
+                <Avatar>A</Avatar>
+                <span style={{ marginLeft: 8 }}>admin</span>
+                <Icon type="down" />
+              </div>
+            </Dropdown>
           </Header>
           <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60 }}>
             {this.props.children}
