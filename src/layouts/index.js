@@ -104,7 +104,7 @@ class MainLayout extends React.Component {
               </div>
             </Dropdown>
           </Header>
-          <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60 }}>
+          <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60, padding: 10 }}>
             {this.props.children}
           </Content>
           <Footer

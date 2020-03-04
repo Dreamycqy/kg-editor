@@ -6,7 +6,7 @@ import { Icon } from 'antd'
 import UserIcon from '@/components/items/usericon'
 
 @connect()
-class MainLayout extends React.Component {
+class taskCard extends React.Component {
   checkTime = (time) => {
     const remain = moment().to(moment(time), true)
     let color = '#000000a6'
@@ -26,13 +26,11 @@ class MainLayout extends React.Component {
   }
 
   jumpEditor = () => {
-    window.open('https://webprotege.stanford.edu/#projects/418a5a50-2fd2-4012-ace9-f1d4eccfc299/edit/Classes?selection=NamedIndividual(%3Chttp://webprotege.stanford.edu/R8uTpK4pZOPRHL2cGRejMeL%3E)')
-    // console.log('!')
-    // this.props.dispatch(routerRedux.push({
-    //   pathname: '/editor',
-    //   query: {
-    //   },
-    // }))
+    this.props.dispatch(routerRedux.push({
+      pathname: '/editor',
+      query: {
+      },
+    }))
   }
 
   render() {
@@ -56,7 +54,7 @@ class MainLayout extends React.Component {
               <Icon type="user" style={{ fontSize: '14px', color: 'blue' }} />
               成员
             </span>
-            {e.member.map(u => <UserIcon username={u} />)}
+            {e.member.map(u => <UserIcon size="small" username={u} />)}
           </div>
           <div style={{ wordBreak: 'break-all' }}>描述：{e.desc}</div>
           <div style={{ margin: '8px 0' }}>最近历史</div>
@@ -65,4 +63,4 @@ class MainLayout extends React.Component {
     )
   }
 }
-export default MainLayout
+export default taskCard

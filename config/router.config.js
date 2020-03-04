@@ -5,11 +5,31 @@ export default [
     routes: [
       {
         path: '/',
-        component: './taskManager',
+        component: './taskBoard',
       },
       {
         path: 'editor',
         component: './editor',
+      },
+      {
+        path: 'members',
+        component: './members',
+      },
+      {
+        path: 'manager',
+        component: './taskManager',
+      },
+      {
+        path: 'history',
+        component: './history',
+      },
+      {
+        path: 'publicProps',
+        component: './publicResource/properties',
+      },
+      {
+        path: 'publicIndis',
+        component: './publicResource/individuals',
       },
     ],
   },

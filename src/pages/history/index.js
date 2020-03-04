@@ -1,21 +1,19 @@
 import React from 'react'
-import { Tabs } from 'antd'
+import History from '@/components/history'
 
-class EditPage extends React.Component {
+class HistoryList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      type: 'doc',
     }
   }
 
   render() {
-    const { type } = this.state
     return (
       <div>
-        {type}
+        <History />
       </div>
     )
   }
 }
-export default EditPage
+export default HistoryList
