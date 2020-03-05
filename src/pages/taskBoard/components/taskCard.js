@@ -25,10 +25,11 @@ class taskCard extends React.Component {
     }
   }
 
-  jumpEditor = () => {
+  jumpEditor = (e) => {
     this.props.dispatch(routerRedux.push({
       pathname: '/editor',
       query: {
+        taskName: e.name,
       },
     }))
   }
@@ -50,7 +51,7 @@ class taskCard extends React.Component {
               {time.dom}
             </div>
           </div>
-          <Button style={{ float: 'right', marginTop: 6 }} onClick={() => this.jumpEditor()}>进入任务</Button>
+          <Button style={{ float: 'right', marginTop: 6 }} onClick={() => this.jumpEditor(e)}>进入任务</Button>
         </div>
         <div style={{ padding: 8 }}>
           <div style={{ marginBottom: 4 }}>
