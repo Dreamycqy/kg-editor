@@ -209,6 +209,7 @@ class NormalTree extends React.Component {
           defaultExpandedKeys={this.state.expandedKeys}
           onDrop={this.onDrop}
           onSelect={this.onSelect}
+          defaultExpandAll
         >
           {this.renderTreeNodes(treeData)}
         </Tree>

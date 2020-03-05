@@ -1,5 +1,8 @@
 import React from 'react'
 import { Table, Input, Divider } from 'antd'
+import User from '@/components/items/userName'
+import taskConfig from '@/utils/mock/taskConfig'
+import ShowProcess from '@/components/items/processTask'
 import Config from './config'
 
 const { Search } = Input
@@ -20,32 +23,26 @@ class Members extends React.Component {
 
   getData = async () => {
     this.setState({ loading: true })
-    const data = [{
-      name: '任务1',
-      desc: '这是任务1',
-      group: ['陈秋阳', '张三', '李四'],
-    }, {
-      name: '任务2',
-      desc: '这是任务2',
-      group: ['陈秋阳', '张三', '李四'],
-    }, {
-      name: '任务3',
-      desc: '这是任务3',
-      group: ['陈秋阳', '王五', '赵六'],
-    }, {
-      name: '任务4',
-      desc: '这是任务4',
-      group: ['陈秋阳', '王五', '赵六'],
-    }, {
-      name: '任务5',
-      desc: '这是任务5，多加一句说明',
-      group: ['陈秋阳', '张三', '赵六'],
-    }]
+    const array = []
+    for (const i in taskConfig) { // eslint-disable-line
+      array.push(taskConfig[i])
+    }
     await this.setState({
-      originSource: data,
-      dataSource: data,
+      originSource: array,
+      dataSource: array,
     })
     this.setState({ loading: false })
+  }
+
+  handleStatus = (str) => {
+    switch (str) {
+      case 'success':
+        return <span style={{ color: 'green' }}>已完成</span>
+      case 'going':
+        return <span style={{ color: 'grey' }}>进行中</span>
+      default:
+        return null
+    }
   }
 
   search = (value) => {
@@ -53,9 +50,14 @@ class Members extends React.Component {
     const reg = new RegExp(value, 'gi')
     const dataSource = []
     originSource.map((record) => {
+      let userGroup = ''
+      record.group.forEach((e) => {
+        userGroup += e.name
+        userGroup += e.email
+      })
       const match1 = record.name.match(reg)
       const match2 = record.desc.match(reg)
-      const match3 = record.group.join(',').match(reg)
+      const match3 = userGroup.match(reg)
       if (!match1 && !match2 && !match3) {
         return null
       }
@@ -72,14 +74,29 @@ class Members extends React.Component {
       title: '任务名称',
       dataIndex: 'name',
     }, {
+      title: '截止时间',
+      dataIndex: 'endTime',
+    }, {
       title: '任务描述',
       dataIndex: 'desc',
     }, {
-      title: '成员',
+      title: '任务状态',
+      dataIndex: 'desc',
       render: (text, record) => {
         return (
+          this.handleStatus(record.status)
+        )
+      },
+    }, {
+      title: '成员',
+      render: (text, record) => {
+        const result = []
+        record.group.forEach((e) => {
+          result.push(<User user={e} />)
+        })
+        return (
           <span>
-            {record.group.join(', ')}
+            {result}
           </span>
         )
       },
@@ -88,9 +105,9 @@ class Members extends React.Component {
       render: (text, record) => {
         return (
           <span>
-            <a href="javascript:;">查看进度</a>
+            <ShowProcess data={[record]} />
             <Divider type="vertical" />
-            <Config type="edit" name={record.name} />
+            <Config disabled={record.status === 'success'} type="edit" params={taskConfig[record.name]} />
           </span>
         )
       },
@@ -99,9 +116,9 @@ class Members extends React.Component {
       <div>
         <div style={{ marginBottom: 10, height: 32 }}>
           <Search
-            placeholder="请输入想搜索的任务名，任务描述或成员姓名"
+            placeholder="请输入想搜索的任务名，任务描述，成员姓名或邮箱"
             onSearch={value => this.search(value)}
-            style={{ width: 360, float: 'left' }}
+            style={{ width: 400, float: 'left' }}
           />
           <div style={{ float: 'right', marginRight: 20 }}>
             <Config type="new" />

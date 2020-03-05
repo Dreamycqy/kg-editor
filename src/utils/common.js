@@ -26,6 +26,14 @@ export const makeOption = (array) => {
   return children
 }
 
+export const makeOptionSimple = (array) => {
+  const children = []
+  for (const i of array) {
+    children.push(<Option key={i.email} value={i.email}>{i.name} ({i.email})</Option>)
+  }
+  return children
+}
+
 export const isInArray = (arr, value) => {
   for (let i = 0; i < arr.length; i++) {
     if (value === arr[i]) {

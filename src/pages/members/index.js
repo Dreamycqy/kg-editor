@@ -1,6 +1,9 @@
 import React from 'react'
 import { Table, Input } from 'antd'
-import ShowProcess from './process'
+import _ from 'lodash'
+import ShowProcess from '@/components/items/process'
+import userList from '@/utils/mock/userList'
+import taskConfig from '@/utils/mock/taskConfig'
 
 const { Search } = Input
 
@@ -66,6 +69,16 @@ class Members extends React.Component {
     })
   }
 
+  handleProcess = (email) => {
+    const result = []
+    _.filter(userList, { email })[0].tasks.forEach((e) => {
+      if (taskConfig[e].status !== 'success') {
+        result.push(taskConfig[e])
+      }
+    })
+    return result
+  }
+
   render() {
     const { dataSource, loading } = this.state
     const columns = [{
@@ -80,7 +93,7 @@ class Members extends React.Component {
     }, {
       title: '工作进度',
       render: (text, record) => {
-        return <ShowProcess email={record.email} />
+        return <ShowProcess data={this.handleProcess(record.email)} />
       },
     }]
     return (
