@@ -6,6 +6,7 @@ import taskData from '@/utils/mock/task2'
 import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
+import FlexTable from '@/components/table/flexTable'
 
 const dataList = []
 let newList = []
@@ -86,22 +87,30 @@ class PublicResource extends React.Component {
     } = this.state
     return (
       <div style={{ display: 'flex', height: '100%' }}>
-        <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
+        <div style={{ height: '100%', minWidth: 300, borderRight: '1px solid #e8e8e8' }}>
           <Tree iconType="smile" iconColor="#1296db" data={taskData.class} selectNode={this.selectNode} />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
             Class: {selectNode}
           </div>
-          <div style={{ border: '1px solid #e8e8e8', height: 400, marginBottom: 20 }}>
-            <Chart graph={this.rebuildChartData(selectNode)} />
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ marginBottom: 10 }}>
+              <FlexTable title="Annotations" limited data={[selectNode]} />
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <FlexTable title="Parents" data={[]} />
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <FlexTable title="Relationships" data={[]} />
+            </div>
           </div>
           <div>
             <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>讨论</div>
             <Empty style={{ marginTop: 10 }} />
           </div>
         </div>
-        <div style={{ height: '100%', width: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
+        <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
             <Chart graph={this.rebuildChartData(selectNode)} />

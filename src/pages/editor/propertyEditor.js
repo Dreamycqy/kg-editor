@@ -6,6 +6,7 @@ import taskData from '@/utils/mock/task2'
 import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
+import FlexTable from '@/components/table/flexTable'
 
 const { TabPane } = Tabs
 
@@ -18,7 +19,7 @@ class PublicResource extends React.Component {
     super(props)
     this.state = {
       selectNode: '',
-      tabkey: 'obj',
+      activeKey: 'data',
     }
   }
 
@@ -60,7 +61,7 @@ class PublicResource extends React.Component {
   }
 
   getNewList = (title) => {
-    const list = this.state.tabkey === 'obj' ? dataListo : dataListd
+    const list = this.state.activeKey === 'obj' ? dataListo : dataListd
     if (title !== undefined) {
       list.forEach((e) => {
         if (e.title === title) {
@@ -104,33 +105,52 @@ class PublicResource extends React.Component {
 
   render() {
     const {
-      selectNode, tabkey,
+      selectNode, activeKey,
     } = this.state
+    let result
+    switch (activeKey) {
+      case 'obj':
+        result = <Tree iconType="import" iconColor="#1296db" data={taskData.objProperty} selectNode={this.selectNode} />
+        break
+      case 'data':
+        result = <Tree iconType="import" iconColor="#1afa29" data={taskData.dataProperty} selectNode={this.selectNode} />
+        break
+      default:
+        result = null
+        break
+    }
     return (
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
-          <Tabs activeKey={tabkey} onChange={key => this.setState({ tabkey: key })} style={{ height: '100%' }}>
-            <TabPane tab="Object Properties" key="obj">
-              <Tree iconType="import" iconColor="#1296db" data={taskData.objProperty} selectNode={this.selectNode} />
-            </TabPane>
-            <TabPane tab="Data Properties" key="data">
-              <Tree iconType="import" iconColor="#1afa29" data={taskData.dataProperty} selectNode={this.selectNode} />
-            </TabPane>
+          <Tabs activeKey={activeKey} onChange={key => this.setState({ activeKey: key })}>
+            <TabPane style={{ height: 0 }} tab="Object Properties" key="obj" />
+            <TabPane style={{ height: 0 }} tab="Data Properties" key="data" />
           </Tabs>
+          <div style={{ height: '100%' }}>
+            {result}
+          </div>
         </div>
-        <div style={{ flexGrow: 1, padding: '0 20px', minWidth: 600 }}>
+        <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
             Class: {selectNode}
           </div>
-          <div style={{ border: '1px solid #e8e8e8', height: 400, marginBottom: 20 }}>
-            <Chart graph={this.rebuildChartData(selectNode)} />
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ marginBottom: 10 }}>
+              <FlexTable title="Annotations" limited data={[selectNode]} />
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <FlexTable title="Domain" data={[]} />
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <FlexTable title="Range" data={[]} />
+            </div>
           </div>
           <div>
             <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>讨论</div>
             <Empty style={{ marginTop: 10 }} />
           </div>
         </div>
-        <div style={{ height: '100%', width: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
+        <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
             <Chart graph={this.rebuildChartData(selectNode)} />

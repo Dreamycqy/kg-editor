@@ -32,7 +32,8 @@
     "react-contexify": "^4.1.1",
     "react-dom": "^16.8.6",
     "react-highlight-words": "^0.16.0",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "xlsx": "^0.15.5"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",

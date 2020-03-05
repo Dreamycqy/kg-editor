@@ -2,11 +2,12 @@ import React from 'react'
 import { Tree, Modal, Input, Icon, message } from 'antd'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import uuid from 'uuid'
+import _ from 'lodash'
 import 'react-contexify/dist/ReactContexify.min.css'
 
 const { TreeNode } = Tree
 const { Search } = Input
-const dataList = []
+let dataList = []
 
 class NormalTree extends React.Component {
   constructor(props) {
@@ -26,6 +27,18 @@ class NormalTree extends React.Component {
     }
     this.generateList(this.state.treeData)
     this.setState({ expandedKeys: dataList.map((item) => { return item.key }) })
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (!_.isEqual(nextProps.data, this.props.data)) {
+      this.setState({ treeData: nextProps.data })
+      if (nextProps.data[0]) {
+        this.props.selectNode(nextProps.data[0].title)
+      }
+      dataList = []
+      this.generateList(nextProps.data)
+      this.setState({ expandedKeys: dataList.map((item) => { return item.key }) })
+    }
   }
 
   onSelect = (keys, event) => {
@@ -145,10 +158,13 @@ class NormalTree extends React.Component {
   nodeMove = () => {}
 
   showCreateModal = (e) => {
-    let key = e.getAttribute('dataKey')
-    if (e.tagName === 'DIV') {
-      console.log(e)
-      key = e.childNodes[0].getAttribute('dataKey')
+    let key = e
+    if (typeof e !== 'string') {
+      if (e.tagName === 'DIV') {
+        key = e.childNodes[0].getAttribute('dataKey')
+      } else {
+        key = e.getAttribute('dataKey')
+      }
     }
     if (!key || key === '') {
       message.error('请选择节点')
@@ -158,10 +174,17 @@ class NormalTree extends React.Component {
   }
 
   showDeleteModal = (e) => {
-    let key = e.getAttribute('dataKey')
-    if (e.tagName === 'DIV') {
-      console.log(e)
-      key = e.childNodes[0].getAttribute('dataKey')
+    let key = e
+    if (typeof e !== 'string') {
+      if (e.tagName === 'DIV') {
+        key = e.childNodes[0].getAttribute('dataKey')
+      } else {
+        key = e.getAttribute('dataKey')
+      }
+    }
+    if (!key || key === '') {
+      message.error('请选择节点')
+      return
     }
     const that = this
     Modal.confirm({
@@ -228,7 +251,7 @@ class NormalTree extends React.Component {
   })
 
   myAwesomeMenu = () => (
-    <Menu id="menuid">
+    <Menu id="menu_id">
       <Item onClick={item => this.showCreateModal(item.event.toElement)}> {/* eslint-disable-line */}
         Create
       </Item>
@@ -256,19 +279,24 @@ class NormalTree extends React.Component {
         ) : (
           <span>{item.title}</span>
         )
-      const title = (<MenuProvider style={{ display: 'inline-block' }} id="menuid" text={item.title} datakey={item.key}>{titleText}</MenuProvider>)
+      const title = (
+        <MenuProvider id="menu_id" text={item.title} datakey={item.key}>
+          <Icon
+            style={{ color: this.props.iconColor, marginRight: 6 }} type={this.props.iconType}
+          />
+          {titleText}
+        </MenuProvider>
+      )
       if (item.children) {
         result.push(
           <TreeNode
             title={title} key={item.key}
-            icon={<Icon style={{ color: this.props.iconColor }} type={this.props.iconType} />}
           >
             {this.renderTreeNodes(item.children)}
           </TreeNode>,
         )
       } else {
         result.push(<TreeNode
-          icon={<Icon style={{ color: this.props.iconColor }} type={this.props.iconType} />}
           title={title} key={item.key}
         />)
       }
@@ -281,7 +309,7 @@ class NormalTree extends React.Component {
       treeData, createName, visible, selectKey, autoExpandParent, expandedKeys,
     } = this.state
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         <div>
           <Search style={{ marginBottom: 8, width: 200 }} placeholder="Search" onChange={this.onChange} />
           <span>
@@ -303,7 +331,6 @@ class NormalTree extends React.Component {
           draggable
           blockNode
           autoExpandParent
-          showIcon
           onDragEnter={this.onDragEnter}
           defaultExpandedKeys={this.state.expandedKeys}
           onDrop={this.onDrop}
@@ -316,7 +343,7 @@ class NormalTree extends React.Component {
         >
           {this.renderTreeNodes(treeData)}
         </Tree>
-        {this.myAwesomeMenu()}
+        {this.myAwesomeMenu(dataList)}
         <Modal
           title="新增属性"
           visible={visible}

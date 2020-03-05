@@ -8,20 +8,20 @@ import UserIcon from '@/components/items/usericon'
 @connect()
 class taskCard extends React.Component {
   checkTime = (time) => {
-    const remain = moment().to(moment(time), true)
+    const remain = moment(time).diff(moment()) / 86400000
     let color = '#000000a6'
-    let colorTitle = '#65c294'
+    let colorTitle = '#00ff814d'
     const colorBg = '#fbfbfb'
-    if (remain.split(' ')[0] <= 3) {
+    if (remain <= 3) {
       color = 'red'
-      colorTitle = '#f8aba6'
-    } else if (remain.split(' ')[0] <= 7) {
+      colorTitle = '#ff52004d'
+    } else if (remain <= 7) {
       colorTitle = '#FAFAD2'
     }
     return {
       colorTitle,
       colorBg,
-      dom: <span style={{ color }}>剩余时间：{remain}</span>,
+      dom: <span style={{ color }}>剩余时间：{remain.toFixed(0)} 天</span>,
     }
   }
 
