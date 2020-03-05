@@ -108,10 +108,10 @@ class MainLayout extends React.Component {
             {this.props.children}
           </Content>
           <Footer
-            style={{ textAlign: 'center' }}
+            style={{ textAlign: 'center', height: 80 }}
           >
-            <p>Copyright© 2018 KEG，Tsinghua University</p>
-            <p>地址：清华大学东主楼</p>
+            <div>Copyright© 2018 KEG，Tsinghua University</div>
+            <div>地址：清华大学东主楼</div>
           </Footer>
         </ConfigProvider>
       </Layout>

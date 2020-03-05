@@ -4,6 +4,7 @@ import _ from 'lodash'
 import ShowProcess from '@/components/items/process'
 import userList from '@/utils/mock/userList'
 import taskConfig from '@/utils/mock/taskConfig'
+import { getUrlParams } from '@/utils/common'
 
 const { Search } = Input
 
@@ -23,32 +24,14 @@ class Members extends React.Component {
 
   getData = async () => {
     this.setState({ loading: true })
-    const data = [{
-      name: '陈秋阳',
-      email: 'autumnchenqy@aliyun.com',
-      group: '组1',
-    }, {
-      name: '张三',
-      email: 'user3@aliyun.com',
-      group: '组1',
-    }, {
-      name: '李四',
-      email: 'user4@aliyun.com',
-      group: '组2',
-    }, {
-      name: '王五',
-      email: 'user5@aliyun.com',
-      group: '组2',
-    }, {
-      name: '赵六',
-      email: 'user6@aliyun.com',
-      group: '组3',
-    }]
     await this.setState({
-      originSource: data,
-      dataSource: data,
+      originSource: userList,
+      dataSource: userList,
     })
     this.setState({ loading: false })
+    if (getUrlParams().email) {
+      this.search(getUrlParams().email)
+    }
   }
 
   search = (value) => {
@@ -58,7 +41,7 @@ class Members extends React.Component {
     originSource.map((record) => {
       const match1 = record.name.match(reg)
       const match2 = record.email.match(reg)
-      const match3 = record.group.match(reg)
+      const match3 = record.members.match(reg)
       if (!match1 && !match2 && !match3) {
         return null
       }
@@ -89,7 +72,7 @@ class Members extends React.Component {
       dataIndex: 'email',
     }, {
       title: '分组',
-      dataIndex: 'group',
+      dataIndex: 'members',
     }, {
       title: '工作进度',
       render: (text, record) => {
@@ -99,6 +82,7 @@ class Members extends React.Component {
     return (
       <div>
         <Search
+          defaultValue={getUrlParams().email}
           placeholder="请输入想搜索的成员姓名，邮箱或负责项目"
           onSearch={value => this.search(value)}
           style={{ marginBottom: 10, width: 360 }}

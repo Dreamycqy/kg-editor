@@ -1,127 +1,62 @@
 import React from 'react'
-import TaskCard from './components/taskCard'
+import { Progress, Empty } from 'antd'
+import moment from 'moment'
+import HistoryList from '@/components/history'
+import CountDown from '@/components/items/countDown'
 
-class MainLayout extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      taskList: [{
-        title: '任务：标注工作1',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-02-27',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang'],
-      }, {
-        title: '任务：标注工作2',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-02-28',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang', 'wangwu'],
-      }, {
-        title: '任务：标注工作3',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-01',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang', 'zhaoliu'],
-      }, {
-        title: '任务：标注工作4',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-03',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang', 'lisi'],
-      }, {
-        title: '任务：标注工作5',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-05',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang'],
-      }, {
-        title: '任务：标注工作6',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-10',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang', 'zhangsan'],
-      }, {
-        title: '任务：标注工作7',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'wangwu'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'chenqiuyang'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'zhangsan'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'zhangsan'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'zhangsan'],
-      }, {
-        title: '任务：标注工作8',
-        id: 1,
-        createTime: '2020-02-25',
-        endTime: '2020-03-20',
-        desc: '对这个项目的一些说明，aaabbbcccddd1234567890完毕。',
-        member: ['admin', 'lisi'],
-      }],
-    }
-  }
-
-  renderCard = (list) => {
-    const result = []
-    list.forEach((e) => {
-      result.push(<TaskCard info={e}></TaskCard>) // eslint-disable-line
-    })
-    return result
-  }
-
+class LeftPart extends React.Component {
   render() {
-    const { taskList } = this.state
+    const { data } = this.props
     return (
-      <div style={{ overflow: 'hidden', height: '100%', overflowY: 'scroll' }}>
-        {this.renderCard(taskList)}
+      <div>
+        <div style={{ borderBottom: '1px solid #e8e8e8', padding: 10, backgroundColor: '#afdfe44d', marginBottom: 10 }}>
+          <div>
+            <span style={{ fontSize: 20 }}>{data.name}</span>
+            <span style={{ marginLeft: 20 }}>截止于：{data.endTime}</span>
+          </div>
+          <span style={{ marginRight: 20 }}>剩余时间</span>
+          <CountDown style={{ fontSize: 20 }} target={moment(data.endTime).valueOf()} />
+          <div style={{ wordBreak: 'break-all' }}>描述：{data.desc}</div>
+        </div>
+        <div style={{ backgroundColor: '#feeeed', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
+          <div style={{ fontSize: 20, paddingBottom: 10 }}>任务进度</div>
+          <div style={{ padding: '0 0 20px 10px' }}>
+            <div style={{ width: 80, display: 'inline-block' }}>Classes</div>
+            <Progress
+              style={{ width: 200 }}
+              percent={Number(data.process.classes.toFixed(2))}
+            />
+          </div>
+          <div style={{ padding: '0 0 20px 10px' }}>
+            <div style={{ width: 80, display: 'inline-block' }}>Properties</div>
+            <Progress
+              style={{ width: 200 }}
+              percent={Number(data.process.properties.toFixed(2))}
+            />
+          </div>
+          <div style={{ padding: '0 0 20px 10px' }}>
+            <div style={{ width: 80, display: 'inline-block' }}>Individuals</div>
+            <Progress
+              style={{ width: 200 }}
+              percent={Number(data.process.individuals.toFixed(2))}
+            />
+          </div>
+        </div>
+        <div style={{ backgroundColor: '#f6f5ec', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
+          <div style={{ fontSize: 20, paddingBottom: 10 }}>最近编辑</div>
+          <div>
+            {data.history[0]
+              ? <HistoryList data={[data.history[0]]} type="lastone" />
+              : <Empty />
+            }
+          </div>
+        </div>
+        <div style={{ backgroundColor: '#94d6da4d', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
+          <div style={{ fontSize: 20, paddingBottom: 10 }}>相关评论</div>
+          <Empty />
+        </div>
       </div>
     )
   }
 }
-export default MainLayout
+export default LeftPart

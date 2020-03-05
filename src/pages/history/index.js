@@ -1,5 +1,7 @@
 import React from 'react'
+import { Pagination } from 'antd'
 import History from '@/components/history'
+import data from '@/utils/mock/totalHistory'
 
 class HistoryList extends React.Component {
   constructor(props) {
@@ -11,7 +13,13 @@ class HistoryList extends React.Component {
   render() {
     return (
       <div>
-        <History />
+        <History data={data} />
+        <div style={{ overflow: 'hidden', marginRight: 30 }}>
+          <Pagination
+            style={{ float: 'right' }}
+            defaultCurrent={1} total={2}
+          />
+        </div>
       </div>
     )
   }

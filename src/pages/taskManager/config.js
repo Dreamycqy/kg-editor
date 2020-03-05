@@ -28,10 +28,10 @@ class Config extends React.Component {
   getData = () => {
     this.setState({ loading: true })
     const {
-      name, originNode, desc, endTime, group,
+      name, originNode, desc, endTime, members,
     } = this.props.params
     const memList = []
-    group.forEach((e) => { memList.push(e.email) })
+    members.forEach((e) => { memList.push(e.email) })
     this.setState({
       name,
       originNode,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Input, Divider } from 'antd'
+import { Table, Input, Divider, Icon } from 'antd'
 import User from '@/components/items/userName'
 import taskConfig from '@/utils/mock/taskConfig'
 import ShowProcess from '@/components/items/processTask'
@@ -37,9 +37,9 @@ class Members extends React.Component {
   handleStatus = (str) => {
     switch (str) {
       case 'success':
-        return <span style={{ color: 'green' }}>已完成</span>
+        return <span style={{ color: 'green' }}><Icon type="check-circle" />&nbsp;已完成</span>
       case 'going':
-        return <span style={{ color: 'grey' }}>进行中</span>
+        return <span style={{ color: '#1296db' }}><Icon type="clock-circle" />&nbsp;进行中</span>
       default:
         return null
     }
@@ -51,7 +51,7 @@ class Members extends React.Component {
     const dataSource = []
     originSource.map((record) => {
       let userGroup = ''
-      record.group.forEach((e) => {
+      record.members.forEach((e) => {
         userGroup += e.name
         userGroup += e.email
       })
@@ -91,7 +91,7 @@ class Members extends React.Component {
       title: '成员',
       render: (text, record) => {
         const result = []
-        record.group.forEach((e) => {
+        record.members.forEach((e) => {
           result.push(<User user={e} />)
         })
         return (
