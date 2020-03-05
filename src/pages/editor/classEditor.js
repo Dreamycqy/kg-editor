@@ -7,8 +7,11 @@ import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
+import FlexTableDb from '@/components/table/flexTableDb'
 
 const dataList = []
+const dataListo = []
+const dataListd = []
 let newList = []
 
 class PublicResource extends React.Component {
@@ -21,6 +24,40 @@ class PublicResource extends React.Component {
 
   componentWillMount = () => {
     this.generateList(taskData.class)
+    this.generateListo(taskData.objProperty)
+    this.generateListd(taskData.dataProperty)
+  }
+
+  generateListo = (data, parent) => {
+    for (let i = 0; i < data.length; i++) {
+      const node = data[i]
+      const { key, title } = node
+      dataListo.push({
+        key,
+        title,
+        source: title,
+        target: parent,
+      })
+      if (node.children) {
+        this.generateListo(node.children, title)
+      }
+    }
+  }
+
+  generateListd = (data, parent) => {
+    for (let i = 0; i < data.length; i++) {
+      const node = data[i]
+      const { key, title } = node
+      dataListd.push({
+        key,
+        title,
+        source: title,
+        target: parent,
+      })
+      if (node.children) {
+        this.generateListd(node.children, title)
+      }
+    }
   }
 
   generateList = (data, parent) => {
@@ -99,10 +136,18 @@ class PublicResource extends React.Component {
               <FlexTable title="Annotations" limited data={[selectNode]} />
             </div>
             <div style={{ marginBottom: 10 }}>
-              <FlexTable title="Parents" data={[]} />
+              <FlexTable
+                title="Parents" data={[]}
+                placeholder="请输入类名"
+                options={dataList.map((e) => { return e.title })}
+              />
             </div>
             <div style={{ marginBottom: 10 }}>
-              <FlexTable title="Relationships" data={[]} />
+              <FlexTableDb
+                title="Relationships" value="Value"
+                placeholder="请输入属性" data={[]}
+                options={[...dataListd, ...dataListo].map((e) => { return e.title })}
+              />
             </div>
           </div>
           <div>

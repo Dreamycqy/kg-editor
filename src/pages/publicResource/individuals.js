@@ -4,6 +4,7 @@ import Tree from '@/components/tree/simpleTree'
 import treeData from '@/utils/mock/publicIndis'
 import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
+import Chart from '@/components/charts/newGrapeChart'
 
 class PublicResource extends React.Component {
   constructor(props) {
@@ -15,6 +16,16 @@ class PublicResource extends React.Component {
 
   selectNode = (selectNode) => {
     this.setState({ selectNode })
+  }
+
+  rebuildChartData = (selectNode) => {
+    return {
+      data: [{
+        name: selectNode,
+        draggable: true,
+      }],
+      links: [],
+    }
   }
 
   render() {
@@ -30,7 +41,9 @@ class PublicResource extends React.Component {
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
             Property: {selectNode}
           </div>
-          <div style={{ border: '1px solid #e8e8e8', height: 600 }}>chart</div>
+          <div style={{ border: '1px solid #e8e8e8', height: 600 }}>
+            <Chart graph={this.rebuildChartData(selectNode)} />
+          </div>
         </div>
         <div style={{ height: '100%', width: 300, borderLeft: '1px solid #e8e8e8' }}>
           <div style={{ minHeight: 350, borderBottom: '1px solid #e8e8e8' }}>

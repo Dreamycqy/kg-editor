@@ -105,3 +105,11 @@ export function fyTotal(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function getSonClass(body, rSymbol) {
+  return request.get({
+    url: '/edukg/api/getSonClass',
+    data: body,
+    rSymbol,
+  })
+}

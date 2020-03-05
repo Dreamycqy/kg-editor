@@ -50,6 +50,7 @@ export default class FlexTable extends React.Component {
     option.forEach((e) => {
       const item = {
         key: e,
+        value: '',
         itemKey: uuid(),
       }
       dataSource.push(item)
@@ -57,6 +58,7 @@ export default class FlexTable extends React.Component {
     if (!this.props.limited) {
       dataSource.push({
         key: '',
+        value: '',
         itemKey: uuid(),
       })
     }
@@ -74,7 +76,7 @@ export default class FlexTable extends React.Component {
     const { dataSource } = this.state
     const newData = {
       key: '',
-      value: this.props.type === 'sla' ? [] : '',
+      value: '',
       itemKey: uuid(),
     }
     this.setState({
@@ -116,11 +118,11 @@ export default class FlexTable extends React.Component {
     const columns = [{
       title: this.props.title,
       key: 'key',
+      width: 150,
       render: (text, record) => (
         <AutoComplete
           dataSource={this.props.options}
           defaultValue={record.key}
-          style={{ width: '100%' }}
           onSelect={value => this.handleTableChange(value, record.itemKey, 'key')}
           filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} // eslint-disable-line
         >
@@ -131,6 +133,17 @@ export default class FlexTable extends React.Component {
             onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
           />
         </AutoComplete>
+      ),
+    }, {
+      title: this.props.value,
+      key: 'key',
+      render: (text, record) => (
+        <TextArea
+          value={record.value} placeholder="请输入内容"
+          autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+          onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'value')}
+          onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
+        />
       ),
     }, {
       title: '操作',

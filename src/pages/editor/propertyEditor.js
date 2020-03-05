@@ -9,7 +9,7 @@ import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 
 const { TabPane } = Tabs
-
+const dataList = []
 const dataListo = []
 const dataListd = []
 let newList = []
@@ -24,6 +24,7 @@ class PublicResource extends React.Component {
   }
 
   componentWillMount = () => {
+    this.generateList(taskData.class)
     this.generateListo(taskData.objProperty)
     this.generateListd(taskData.dataProperty)
   }
@@ -56,6 +57,22 @@ class PublicResource extends React.Component {
       })
       if (node.children) {
         this.generateListd(node.children, title)
+      }
+    }
+  }
+
+  generateList = (data, parent) => {
+    for (let i = 0; i < data.length; i++) {
+      const node = data[i]
+      const { key, title } = node
+      dataList.push({
+        key,
+        title,
+        source: title,
+        target: parent,
+      })
+      if (node.children) {
+        this.generateList(node.children, title)
       }
     }
   }
@@ -139,10 +156,18 @@ class PublicResource extends React.Component {
               <FlexTable title="Annotations" limited data={[selectNode]} />
             </div>
             <div style={{ marginBottom: 10 }}>
-              <FlexTable title="Domain" data={[]} />
+              <FlexTable
+                title="Domain" data={[]}
+                placeholder="请输入类名"
+                option={dataList.map((e) => { return e.title })}
+              />
             </div>
             <div style={{ marginBottom: 10 }}>
-              <FlexTable title="Range" data={[]} />
+              <FlexTable
+                title="Range" data={[]}
+                placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
+                option={activeKey === 'obj' ? dataList.map((e) => { return e.title }) : []}
+              />
             </div>
           </div>
           <div>
