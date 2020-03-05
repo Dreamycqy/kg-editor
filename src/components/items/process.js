@@ -1,6 +1,9 @@
 import React from 'react'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import { Modal, Spin, Progress } from 'antd'
 
+@connect()
 class Process extends React.Component {
   constructor(props) {
     super(props)
@@ -14,6 +17,15 @@ class Process extends React.Component {
     await this.setState({ visible: true })
   }
 
+  jump = (name) => {
+    this.props.dispatch(routerRedux.push({
+      pathname: '/editor',
+      query: {
+        taskName: name,
+      },
+    }))
+  }
+
   renderList = (data) => {
     const result = []
     data.forEach((e, index) => {
@@ -24,7 +36,7 @@ class Process extends React.Component {
             <div>
               <span>截止时间：{e.endTime}</span>
               <span style={{ marginLeft: 20 }}>
-                <a href="javascript" onClick={() => this.jump()}>点击查看详情</a>
+                <a href="javascript:;" onClick={() => this.jump(e.name)}>点击查看详情</a>
               </span>
             </div>
           </div>

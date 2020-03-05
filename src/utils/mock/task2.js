@@ -105,6 +105,14 @@ export default {
         }, {
           title: '非细胞生物',
           key: 'shsiihjfbije',
+          children: [{
+            title: '病毒',
+            key: 'vieushhhs',
+            children: [{
+              title: '冠状病毒',
+              key: 'cronavirusus',
+            }],
+          }],
         }],
       },
       {

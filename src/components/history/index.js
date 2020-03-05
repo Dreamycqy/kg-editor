@@ -15,7 +15,9 @@ class History extends React.Component {
     data.forEach((e) => {
       const item = (
         <div style={{ marginBottom: 20 }}>
-          <div style={{ marginBottom: 10, fontSize: 16, color: '#888' }}>◉ Changes on {e.date}</div>
+          <div style={{ marginBottom: 10, fontSize: 16, color: '#888' }}>
+            {this.props.type !== 'lastone' ? '◉ ' : ''}Changes on {e.date}
+          </div>
           {this.renderAction(e.children)}
         </div>
       )
@@ -29,7 +31,7 @@ class History extends React.Component {
     data.forEach((e, index) => {
       if (this.props.type !== 'lastone' || index < 1) {
         const item = (
-          <div className={styles.actionCard}>
+          <div className={this.props.type !== 'lastone' ? styles.actionCard : styles.actionCardNoBorder}>
             <div style={{ marginBottom: 10 }}>{e.event}&nbsp;{e.dataType}
               {e.event === 'Move'
                 ? <span>{` ${e.node} from ${e.origin} to ${e.target}`}</span> : null
