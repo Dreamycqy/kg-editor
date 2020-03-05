@@ -23,7 +23,7 @@ class Process extends React.Component {
     const result = []
     data.forEach((e) => {
       result.push(
-        <div style={{ marginBottom: 40 }}>
+        <div style={{ margin: '20px 0' }}>
           <div>
             <div style={{ fontSize: 24 }}>{e.name}</div>
             <div>

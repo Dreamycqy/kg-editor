@@ -16,12 +16,17 @@ class Process extends React.Component {
 
   renderList = (data) => {
     const result = []
-    data.forEach((e) => {
+    data.forEach((e, index) => {
       result.push(
-        <div style={{ marginBottom: 40 }}>
+        <div style={{ padding: '20px 0', borderBottom: index === data.length - 1 ? '' : '1px solid #e8e8e8' }}>
           <div>
             <div style={{ fontSize: 24 }}>{e.name}</div>
-            <div>截止时间：{e.endTime}</div>
+            <div>
+              <span>截止时间：{e.endTime}</span>
+              <span style={{ marginLeft: 20 }}>
+                <a href="javascript" onClick={() => this.jump()}>点击查看详情</a>
+              </span>
+            </div>
           </div>
           <Progress
             percent={Number(((e.process.classes + e.process.properties + e.process.individuals) / 3).toFixed(2))} // eslint-disable-line
@@ -58,11 +63,11 @@ class Process extends React.Component {
           title="工作进度"
           visible={visible}
           onCancel={() => this.setState({ visible: false })}
-          width="820px"
+          width="700px"
           footer={null}
         >
           <Spin spinning={loading}>
-            <div style={{ paddingLeft: 150 }}>
+            <div style={{ padding: '0 80px' }}>
               {this.renderList(this.props.data)}
             </div>
           </Spin>

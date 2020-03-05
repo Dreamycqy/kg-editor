@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tree } from 'antd'
+import { Tree, Modal, Input } from 'antd'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import uuid from 'uuid'
 import 'react-contexify/dist/ReactContexify.min.css'
@@ -48,6 +48,8 @@ class NormalTree extends React.Component {
           },
         ],
       }],
+      createName: '',
+      selectKey: '',
     }
   }
 
@@ -56,8 +58,8 @@ class NormalTree extends React.Component {
   }
 
   onSelect = (keys, event) => {
-    console.log(keys, event)
     this.props.selectNode(event.node.props.title.props.text)
+    this.setState({ selectKey: event.node.props.eventKey })
   }
 
   onDrop = (info) => {
@@ -121,11 +123,19 @@ class NormalTree extends React.Component {
     console.log(info)
   }
 
-  nodeCreate = (e) => {
-    const { treeData } = this.state
-    this.addNode(e, treeData)
+  nodeMove = () => {}
+
+  showCreateModal = (e) => {
+    console.log(e)
+    this.setState({ selectKey: e, visible: true, createName: '' })
+  }
+
+  nodeCreate = () => {
+    const { treeData, selectKey } = this.state
+    this.addNode(selectKey, treeData)
     this.setState({
       treeData,
+      visible: false,
     })
   }
 
@@ -135,7 +145,7 @@ class NormalTree extends React.Component {
         item
           .children
           .push({
-            title: 'default',
+            title: this.state.createName,
             key: key + uuid(),
           })
       } else {
@@ -143,7 +153,7 @@ class NormalTree extends React.Component {
         item
           .children
           .push({
-            title: 'default',
+            title: this.state.createName,
             key: key + uuid(),
           })
       }
@@ -172,8 +182,12 @@ class NormalTree extends React.Component {
 
   myAwesomeMenu = () => (
     <Menu id="menuid">
-      <Item onClick={item => this.nodeCreate(item.props.ref.attributes.datakey.value)}>Create</Item>
-      <Item onClick={item => this.nodeDelete(item.props.ref.attributes.datakey.value)}>Delete</Item>
+      <Item onClick={item => this.showCreateModal(item.props.ref.attributes ? item.props.ref.attributes.datakey.value : this.state.selectKey)}> {/* eslint-disable-line */}
+        Create
+      </Item>
+      <Item onClick={item => this.nodeDelete(item.props.ref.attributes ? item.props.ref.attributes.datakey.value : this.state.selectKey)}> {/* eslint-disable-line */}
+        Delete
+      </Item>
       <Item onClick={item => this.nodeMove(item.props.ref.attributes)}>Move</Item>
     </Menu>
   )
@@ -198,7 +212,9 @@ class NormalTree extends React.Component {
   }
 
   render() {
-    const { treeData } = this.state
+    const {
+      treeData, createName, visible,
+    } = this.state
     return (
       <div>
         <Tree
@@ -209,11 +225,22 @@ class NormalTree extends React.Component {
           defaultExpandedKeys={this.state.expandedKeys}
           onDrop={this.onDrop}
           onSelect={this.onSelect}
-          defaultExpandAll
+          // defaultExpandAll
         >
           {this.renderTreeNodes(treeData)}
         </Tree>
         {this.myAwesomeMenu()}
+        <Modal
+          title="工作进度"
+          visible={visible}
+          onOk={() => this.nodeCreate()}
+          onCancel={() => this.setState({ visible: false })}
+        >
+          <Input
+            value={createName}
+            onChange={e => this.setState({ createName: e.target.value })}
+          />
+        </Modal>
       </div>
     )
   }
