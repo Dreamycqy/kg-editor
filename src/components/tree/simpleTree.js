@@ -1,6 +1,7 @@
 import React from 'react'
-import { Tree, Modal, Input, Icon, message, Upload, Table } from 'antd'
+import { Tree, Modal, Input, Icon, message, Upload, Table, Cascader } from 'antd'
 import * as XLSX from 'xlsx'
+import options from '@/utils/mock/publicIndisOption'
 
 const { Search } = Input
 const { TreeNode } = Tree
@@ -17,6 +18,7 @@ class SimpleTree extends React.Component {
       selectKey: [],
       dataSource: [],
       fileList: [],
+      filterValue: [],
     }
   }
 
@@ -69,6 +71,17 @@ class SimpleTree extends React.Component {
     list.forEach((a) => {
       this.onImportExcel(a.originFileObj)
     })
+  }
+
+  handleFilter = (value) => {
+    this.setState({ filterValue: value })
+    if (value[value.length - 1] === '医用防护标准') {
+      this.setState({ showTreeData: this.state.treeData.slice(0, 5) })
+    } else if (value[value.length - 1] === '症状') {
+      this.setState({ showTreeData: this.state.treeData.slice(5, 10) })
+    } else {
+      this.setState({ showTreeData: [] })
+    }
   }
 
   showCreateModal = () => {
@@ -142,7 +155,7 @@ class SimpleTree extends React.Component {
 
   render() {
     const {
-      showTreeData, visible, createName, selectKey, visibleExcel, dataSource, fileList,
+      showTreeData, visible, createName, selectKey, visibleExcel, dataSource, fileList, filterValue,
     } = this.state
     const columns = []
     if (dataSource.length > 0) {
@@ -183,6 +196,16 @@ class SimpleTree extends React.Component {
     }
     return (
       <div>
+        <div>
+          <Cascader
+            options={options}
+            changeOnSelect
+            value={filterValue}
+            style={{ width: 280, marginBottom: 10 }}
+            placeholder="            按Classes筛选"
+            onChange={value => this.handleFilter(value)}
+          />
+        </div>
         <div>
           <Search style={{ marginBottom: 8, width: 200 }} placeholder="Search" onChange={this.onChange} />
           <span>

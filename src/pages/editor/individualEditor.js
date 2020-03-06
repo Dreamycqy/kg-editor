@@ -97,12 +97,13 @@ class PublicResource extends React.Component {
       name: selectNode,
       draggable: true,
     }]
+    const target = selectNode.split('')[2] < 6 ? '医用防护标准' : '症状'
     const links = [{
       source: selectNode,
-      target: '医用防护标准',
+      target,
     }]
     newList = []
-    this.getNewList('医用防护标准')
+    this.getNewList(target)
     console.log(newList)
     newList.forEach((e) => {
       const item = {
@@ -141,7 +142,7 @@ class PublicResource extends React.Component {
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
-                title="Types" data={['医用防护标准']}
+                title="Types" data={selectNode.split('')[2] < 6 ? ['医用防护标准'] : ['症状']}
                 placeholder="请输入类名"
                 options={dataList.map((e) => { return e.title })}
               />
