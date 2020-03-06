@@ -12,9 +12,9 @@ const {
 } = Layout
 
 function mapStateToProps(state) {
-  const { locale } = state.global
+  const { locale, userInfo } = state.global
   return {
-    locale,
+    locale, userInfo,
   }
 }
 @connect(mapStateToProps)
@@ -42,25 +42,33 @@ class MainLayout extends React.Component {
 
   makeMenu = () => {
     const result = []
+    const { email } = this.props.userInfo
     for (const i in menuList) { // eslint-disable-line
-      result.push(<Menu.Item key={i}>{menuList[i][this.props.locale]}</Menu.Item>)
+      if ((i !== 'manager' && i !== 'members') || email === 'admin@aliyun.com') {
+        result.push(<Menu.Item key={i}>{menuList[i][this.props.locale]}</Menu.Item>)
+      }
     }
     return result
   }
 
   render() {
+    const { email } = this.props.userInfo
     const menu = (
       <Menu>
         <Menu.Item>
           <a
             onClick={() => {}}
-            href="javascript:;"
+            href="/login"
           >
             退出
           </a>
         </Menu.Item>
       </Menu>
     )
+    const { pathname } = window.location
+    if ((pathname === '/members' || pathname === '/manager') && email !== 'admin@aliyun.com') {
+      router.push('/')
+    }
     return (
       <Layout style={{ height: '100%' }}>
         <ConfigProvider locale={this.props.locale === 'cn' ? zh_CN : en_GB}>
@@ -91,21 +99,24 @@ class MainLayout extends React.Component {
             <Menu
               mode="horizontal"
               selectedKeys={[this.state.key]}
-              style={{ lineHeight: '58px', position: 'absolute', right: 140 }}
+              style={{ lineHeight: '58px', position: 'absolute', right: 200 }}
               onClick={e => this.handleSelect(e.key)}
             >
               {this.makeMenu()}
             </Menu>
             <Dropdown overlay={menu}>
               <div style={{ float: 'right', lineHeight: '56px' }}>
-                <Avatar>A</Avatar>
-                <span style={{ marginLeft: 8 }}>admin</span>
+                <Avatar>{email ? email.substr(0, 1).toUpperCase() : ''}</Avatar>
+                <span style={{ marginLeft: 8 }}>{email ? email.split('@')[0] : ''}</span>
                 <Icon type="down" />
               </div>
             </Dropdown>
           </Header>
           <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60, padding: 10 }}>
-            {this.props.children}
+            {
+              (pathname !== '/members' && pathname !== '/manager') || email === 'admin@aliyun.com'
+                ? this.props.children : null
+            }
           </Content>
           <Footer
             style={{ textAlign: 'center', height: 80 }}

@@ -2,6 +2,9 @@ export default {
   namespace: 'global',
   state: {
     locale: 'cn',
+    userInfo: {
+      email: 'admin@aliyun.com',
+    },
   },
   reducers: {
     save(state, { payload: { userInfo = {} } }) {
@@ -12,6 +15,11 @@ export default {
         ...state,
         ...payload,
       }
+    },
+  },
+  subscriptions: {
+    setup({ dispatch }) {
+      dispatch({ type: 'getUserInfo', payload: {} })
     },
   },
 }

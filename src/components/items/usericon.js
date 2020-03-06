@@ -19,7 +19,12 @@ class UserIcon extends React.Component {
       <Tooltip title={`${this.props.username.name}(${this.props.username.email})`}>
         <span style={{ margin: 4 }}>
           <Avatar size={this.props.size} style={{ cursor: 'pointer', backgroundColor: '#73e6e1' }}>
-            <a href="javascript:;" onClick={() => this.jump(this.props.username.email)}>{this.props.username.name.substr(0, 1)}</a>
+            <a
+              href="javascript:;" onClick={() => this.jump(this.props.username.email)}
+              style={{ color: 'white' }}
+            >
+              {this.props.username.name.substr(0, 1)}
+            </a>
           </Avatar>
         </span>
       </Tooltip>
