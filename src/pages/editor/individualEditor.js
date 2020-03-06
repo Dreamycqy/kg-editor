@@ -130,7 +130,7 @@ class PublicResource extends React.Component {
     return (
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
-          <Tree iconType="tag" iconColor="#1296db" data={treeData} selectNode={this.selectNode} />
+          <Tree showFilter iconType="tag" iconColor="#1296db" data={treeData} selectNode={this.selectNode} />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>

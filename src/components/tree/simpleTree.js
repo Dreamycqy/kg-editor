@@ -196,7 +196,7 @@ class SimpleTree extends React.Component {
     }
     return (
       <div>
-        <div>
+        <div style={{ display: this.props.showFilter ? 'block' : 'none' }}>
           <Cascader
             options={options}
             changeOnSelect

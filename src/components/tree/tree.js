@@ -258,7 +258,7 @@ class NormalTree extends React.Component {
       <Item onClick={item => this.showDeleteModal(item.event.toElement)}> {/* eslint-disable-line */}
         Delete
       </Item>
-      <Item onClick={item => this.nodeMove(item.props.ref.attributes)}>Move</Item>
+      {/* <Item onClick={item => this.nodeMove(item.props.ref.attributes)}>Move</Item> */}
     </Menu>
   )
 
