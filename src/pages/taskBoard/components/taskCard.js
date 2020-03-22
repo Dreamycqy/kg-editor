@@ -27,7 +27,7 @@ class taskCard extends React.Component {
 
   jumpEditor = (e) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/editor',
+      pathname: '/kgEditor/editor',
       query: {
         taskName: e.name,
       },

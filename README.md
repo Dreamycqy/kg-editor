@@ -1,5 +1,5 @@
-# react-edukg
-Frontend of Edukg (K12 Education Knowledge Graph) system build with React.
+# react-kgeditor
+Frontend of kgeditor (K12 Education Knowledge Graph) system build with React.
 
 1.环境
 
@@ -13,7 +13,7 @@ Frontend of Edukg (K12 Education Knowledge Graph) system build with React.
 
 2.构建
 
-git clone https://github.com/Dreamycqy/react-edukg.git
+git clone https://github.com/Dreamycqy/react-kgeditor.git
 
 进入目录
 

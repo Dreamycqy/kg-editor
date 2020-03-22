@@ -1,11 +1,15 @@
 import React from 'react'
 import { Layout, ConfigProvider, Menu, Dropdown, Icon, Avatar } from 'antd'
+import _ from 'lodash'
 import { connect } from 'dva'
 import router from 'umi/router'
 import Link from 'umi/link'
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import menuList from '@/constants/menuList'
+import { getCookie } from '@/utils/common'
+import { getUserList } from '@/services/edukg'
+import { logout, fetchUserInfo } from '@/services/global'
 
 const {
   Header, Footer, Content,
@@ -26,9 +30,41 @@ class MainLayout extends React.Component {
     }
   }
 
+  componentWillMount = async () => {
+    const { cookie } = window.localStorage
+    if (cookie) {
+      const infoObj = getCookie(JSON.parse(cookie))
+      const { email } = infoObj
+      const data = await fetchUserInfo({ email })
+      if (data.data === 200) {
+        this.handleUserList(email)
+      } else {
+        window.localStorage.clear()
+      }
+    }
+  }
+
+  handleUserList = async (email) => {
+    const data = await getUserList({ email })
+    if (data.data) {
+      const { userName, role } = _.find(data.data, { email })
+      await this.props.dispatch({
+        type: 'global/updateState',
+        payload: {
+          userList: data.data,
+          userInfo: {
+            email,
+            userName,
+            role,
+          },
+        },
+      })
+    }
+  }
+
   handleSelect = (key) => {
     this.setState({ key })
-    router.push(`/${key === 'home' ? '' : key}`)
+    router.push(`/kgEditor/${key}`)
   }
 
   handleLocaleChange = () => {
@@ -42,33 +78,41 @@ class MainLayout extends React.Component {
 
   makeMenu = () => {
     const result = []
-    const { email } = this.props.userInfo
     for (const i in menuList) { // eslint-disable-line
-      if ((i !== 'manager' && i !== 'members') || email === 'admin@aliyun.com') {
-        result.push(<Menu.Item key={i}>{menuList[i][this.props.locale]}</Menu.Item>)
-      }
+      result.push(<Menu.Item key={i}>{menuList[i][this.props.locale]}</Menu.Item>)
+      // if ((i !== 'manager' && i !== 'members') || email === 'admin@aliyun.com') {
+      //   result.push(<Menu.Item key={i}>{menuList[i][this.props.locale]}</Menu.Item>)
+      // }
     }
     return result
   }
 
+  logout = async () => {
+    await logout({ email: this.props.userInfo.email })
+    window.localStorage.clear()
+    window.location.href = '/kgEditor/login'
+  }
+
   render() {
-    const { email } = this.props.userInfo
+    if (!window.localStorage.cookie) {
+      window.location.href = '/kgEditor/login'
+    }
+    const { email, userName } = this.props.userInfo
     const menu = (
       <Menu>
         <Menu.Item>
           <a
-            onClick={() => {}}
-            href="/login"
+            onClick={() => this.logout()}
           >
             退出
           </a>
         </Menu.Item>
       </Menu>
     )
-    const { pathname } = window.location
-    if ((pathname === '/members' || pathname === '/manager') && email !== 'admin@aliyun.com') {
-      router.push('/')
-    }
+    // const { pathname } = window.location
+    // if ((pathname === '/members' || pathname === '/manager') && email !== 'admin@aliyun.com') {
+    //   router.push('/')
+    // }
     return (
       <Layout style={{ height: '100%' }}>
         <ConfigProvider locale={this.props.locale === 'cn' ? zh_CN : en_GB}>
@@ -107,16 +151,17 @@ class MainLayout extends React.Component {
             <Dropdown overlay={menu}>
               <div style={{ float: 'right', lineHeight: '56px' }}>
                 <Avatar>{email ? email.substr(0, 1).toUpperCase() : ''}</Avatar>
-                <span style={{ marginLeft: 8 }}>{email ? email.split('@')[0] : ''}</span>
+                <span style={{ marginLeft: 8 }}>{userName || ''}</span>
                 <Icon type="down" />
               </div>
             </Dropdown>
           </Header>
           <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60, padding: 10 }}>
-            {
+            {/* {
               (pathname !== '/members' && pathname !== '/manager') || email === 'admin@aliyun.com'
                 ? this.props.children : null
-            }
+            } */}
+            { this.props.children }
           </Content>
           <Footer
             style={{ textAlign: 'center', height: 80 }}

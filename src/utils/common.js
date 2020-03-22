@@ -18,6 +18,14 @@ export const changeUrlQuery = (newQuery) => {
   window.history.pushState(null, null, `?${queryStr}`)
 }
 
+export const makeOptionNormal = (array) => {
+  const children = []
+  for (const i of array) {
+    children.push(<Option key={i} value={i}>{i} ({i})</Option>)
+  }
+  return children
+}
+
 export const makeOption = (array) => {
   const children = []
   for (const i of array) {
@@ -32,6 +40,18 @@ export const makeOptionSimple = (array) => {
     children.push(<Option key={i.email} value={i.email}>{i.name} ({i.email})</Option>)
   }
   return children
+}
+
+export const getCookie = (array) => {
+  const result = {}
+  for (const i of array) {
+    const arr = i.split('=')
+    if (arr[0]) {
+      // eslint-disable-next-line prefer-destructuring
+      result[arr[0]] = arr[1].split('; ')[0]
+    }
+  }
+  return result
 }
 
 export const isInArray = (arr, value) => {

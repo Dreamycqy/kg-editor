@@ -11,9 +11,13 @@ export default {
     cn: '编辑历史',
     en: 'History',
   },
-  manager: {
-    cn: '任务管理',
-    en: 'TaskManager',
+  // taskManager: {
+  //   cn: '任务管理',
+  //   en: 'TaskManager',
+  // },
+  projectManager: {
+    cn: '项目管理',
+    en: 'ProjectManager',
   },
   members: {
     cn: '成员管理',

@@ -3,7 +3,7 @@ import { Card, Spin, Table } from 'antd'
 import { connect } from 'dva'
 import uuid from 'uuid'
 import Chart from '@/components/charts/graph'
-import { queryByUri, querygraph, getPermission, getInstGraph } from '@/services/edukg'
+import { queryByUri, querygraph, getPermission, getInstGraph } from '@/services/kgeditor'
 import { getUrlParams } from '@/utils/common'
 import { graphData } from '@/utils/graphData'
 

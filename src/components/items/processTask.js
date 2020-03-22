@@ -19,7 +19,7 @@ class Process extends React.Component {
 
   jump = (name) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/editor',
+      pathname: '/kgEditor/editor',
       query: {
         taskName: name,
       },

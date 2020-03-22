@@ -7,7 +7,7 @@ import { routerRedux } from 'dva/router'
 class UserIcon extends React.Component {
   jump = (email) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/members',
+      pathname: '/kgEditor/members',
       query: {
         email,
       },

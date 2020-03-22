@@ -1,34 +1,46 @@
 export default [
   {
-    path: '/login',
+    path: '/',
+    redirect: '/kgEditor/board',
+  },
+  {
+    path: '/kgEditor',
+    redirect: '/kgEditor/board',
+  },
+  {
+    path: '/kgEditor/login',
     component: './login',
   },
   {
-    path: '/',
+    path: '/kgEditor',
     component: '../layouts',
     routes: [
       {
-        path: '/',
+        path: './board',
         component: './taskBoard',
       },
       {
-        path: 'editor',
+        path: './editor',
         component: './editor',
       },
       {
-        path: 'members',
+        path: './members',
         component: './members',
       },
       {
-        path: 'manager',
+        path: './projectManager',
+        component: './projectManager',
+      },
+      {
+        path: './taskManager',
         component: './taskManager',
       },
       {
-        path: 'history',
+        path: './history',
         component: './history',
       },
       {
-        path: 'publicProps',
+        path: './publicProps',
         component: './publicResource/properties',
       },
       {

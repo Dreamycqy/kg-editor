@@ -1,10 +1,16 @@
+// import queryString from 'query-string'
+// import * as globalService from '../services/global'
+
 export default {
   namespace: 'global',
   state: {
     locale: 'cn',
     userInfo: {
-      email: 'admin@aliyun.com',
+      email: '',
+      userName: '',
+      role: '',
     },
+    userList: [],
   },
   reducers: {
     save(state, { payload: { userInfo = {} } }) {
@@ -16,6 +22,32 @@ export default {
         ...payload,
       }
     },
+  },
+  effects: {
+    // *getUserInfo({ payload }, { call, put }) { // eslint-disable-line
+    //   if (window.location.pathname.indexOf('login') < 0) {
+    //     const data = yield call(globalService.fetchUserInfo,
+    //       queryString.stringify({ email: this.state.email }))
+    //     if (data) {
+    //       yield put({
+    //         type: 'save',
+    //         payload: {
+    //           userInfo: data,
+    //         },
+    //       })
+    //     } else {
+    //       window.location.href = '/login'
+    //     }
+    //   }
+    // },
+    // *logout({ payload }, { call }) { // eslint-disable-line
+    //   yield call(globalService.logout, {})
+    //   window.location.href = '/login'
+    // },
+    // *login({ payload }, { call }) { // eslint-disable-line
+    //   yield call(globalService.login, {})
+    //   window.location.href = '/'
+    // },
   },
   subscriptions: {
     setup({ dispatch }) {
