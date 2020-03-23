@@ -7,36 +7,6 @@ import { message } from 'antd'
 const CancelToken = axios.CancelToken// eslint-disable-line
 
 export default {
-  postUser(opts) {
-    console.log(opts)
-    const params = opts.data || opts.body || {}
-    const showError = opts.showError === undefined ? true : opts.showError
-    const rSymbol = opts.rSymbol || params.rSymbol
-    delete params.successTip
-    delete params.rSymbol
-    const optsUrl = opts.url
-    const { token, cancel } = CancelToken.source()
-    if (rSymbol) {
-      window.GLOBAL.requestSymbols[rSymbol] = cancel
-    }
-    return axios.post(optsUrl, params, {
-      timeout: 1000 * 120,
-      cancelToken: token,
-    }).then((res) => {
-      return res.data
-    }, (err) => {
-      opts.failed ? opts.failed(err) : console.log(err) // eslint-disable-line
-      return false
-    }).catch((e) => {
-      if (axios.isCancel(e)) {
-        console.log('Request canceled', e.message) // eslint-disable-line
-      } else {
-        showError && message.error('请求数据错误') // eslint-disable-line
-        console.log(`Error happened:${e}`) // eslint-disable-line
-      }
-      return false
-    })
-  },
   post(opts) {
     const params = opts.data || opts.body || {}
     const showError = opts.showError === undefined ? true : opts.showError

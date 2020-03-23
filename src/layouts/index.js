@@ -7,7 +7,6 @@ import Link from 'umi/link'
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import en_GB from 'antd/lib/locale-provider/en_GB'
 import menuList from '@/constants/menuList'
-import { getCookie } from '@/utils/common'
 import { getUserList } from '@/services/edukg'
 import { logout, fetchUserInfo } from '@/services/global'
 
@@ -31,16 +30,11 @@ class MainLayout extends React.Component {
   }
 
   componentWillMount = async () => {
-    const { cookie } = window.localStorage
-    if (cookie) {
-      const infoObj = getCookie(JSON.parse(cookie))
-      const { email } = infoObj
-      const data = await fetchUserInfo({ email })
-      if (data.data === 200) {
-        this.handleUserList(email)
-      } else {
-        window.localStorage.clear()
-      }
+    const data = await fetchUserInfo({ email: window.localStorage.email })
+    if (data === 200) {
+      this.handleUserList(window.localStorage.email)
+    } else {
+      this.logout()
     }
   }
 
@@ -51,7 +45,7 @@ class MainLayout extends React.Component {
       await this.props.dispatch({
         type: 'global/updateState',
         payload: {
-          userList: data.data,
+          userList: data,
           userInfo: {
             email,
             userName,
@@ -88,15 +82,12 @@ class MainLayout extends React.Component {
   }
 
   logout = async () => {
-    await logout({ email: this.props.userInfo.email })
     window.localStorage.clear()
+    await logout({ email: this.props.userInfo.email })
     window.location.href = '/kgEditor/login'
   }
 
   render() {
-    if (!window.localStorage.cookie) {
-      window.location.href = '/kgEditor/login'
-    }
     const { email, userName } = this.props.userInfo
     const menu = (
       <Menu>

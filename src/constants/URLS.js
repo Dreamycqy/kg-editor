@@ -5,4 +5,7 @@ export default {
   USER_LOGOUT: '/kgeditor/api/user/logout',
 
   USERLIST_GET: '/kgeditor/api/getUserList',
+  LIST_PROJECT: '/kgeditor/api/getProjectList',
+  NEW_PROJECT: '/kgeditor/api/createProject',
+  EDIT_PROJECT: '/kgeditor/api/editProjectInfo',
 }

@@ -1,12 +1,16 @@
 import React from 'react'
-import { Table, Input, Divider, Icon } from 'antd'
+import { Table, Input, Divider } from 'antd'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import User from '@/components/items/userName'
-import taskConfig from '@/utils/mock/taskConfig'
+// import taskConfig from '@/utils/mock/taskConfig'
 // import ShowProcess from '@/components/items/processTask'
+import { getProjectList } from '@/services/edukg'
 import Config from './config'
 
 const { Search } = Input
 
+@connect()
 class Members extends React.Component {
   constructor(props) {
     super(props)
@@ -22,17 +26,12 @@ class Members extends React.Component {
   }
 
   getData = async () => {
-  }
-
-  handleStatus = (str) => {
-    switch (str) {
-      case 'success':
-        return <span style={{ color: 'green' }}><Icon type="check-circle" />&nbsp;已完成</span>
-      case 'going':
-        return <span style={{ color: '#1296db' }}><Icon type="clock-circle" />&nbsp;进行中</span>
-      default:
-        return null
+    this.setState({ loading: true })
+    const data = await getProjectList({})
+    if (data.data) {
+      this.setState({ dataSource: data.data })
     }
+    this.setState({ loading: false })
   }
 
   search = (value) => {
@@ -42,11 +41,11 @@ class Members extends React.Component {
     originSource.map((record) => {
       let userGroup = ''
       record.members.forEach((e) => {
-        userGroup += e.name
+        userGroup += e.userName
         userGroup += e.email
       })
-      const match1 = record.name.match(reg)
-      const match2 = record.desc.match(reg)
+      const match1 = record.desc.match(reg)
+      const match2 = record.projectName.match(reg)
       const match3 = userGroup.match(reg)
       if (!match1 && !match2 && !match3) {
         return null
@@ -58,31 +57,29 @@ class Members extends React.Component {
     })
   }
 
+  goTask = (projectName) => {
+    this.props.dispatch(routerRedux.push({
+      pathname: '/kgEditor/taskManager',
+      query: {
+        projectName,
+      },
+    }))
+  }
+
   render() {
     const { dataSource, loading } = this.state
     const columns = [{
       title: '项目名称',
-      dataIndex: 'name',
-    }, {
-      title: '截止时间',
-      dataIndex: 'endTime',
+      dataIndex: 'projectName',
     }, {
       title: '项目描述',
       dataIndex: 'desc',
-    }, {
-      title: '项目状态',
-      dataIndex: 'desc',
-      render: (text, record) => {
-        return (
-          this.handleStatus(record.status)
-        )
-      },
     }, {
       title: '成员',
       render: (text, record) => {
         const result = []
         record.members.forEach((e) => {
-          result.push(<User user={e} />)
+          result.push(<User key={e.email} user={e} />)
         })
         return (
           <span>
@@ -95,9 +92,14 @@ class Members extends React.Component {
       render: (text, record) => {
         return (
           <span>
-            {/* <ShowProcess data={[record]} />
-            <Divider type="vertical" /> */}
-            <Config disabled={record.status === 'success'} type="edit" params={taskConfig[record.name]} />
+            <a href="#" onClick={e => e.preventDefault()}>查看</a>
+            <Divider type="vertical" />
+            <a href="#" onClick={() => this.goTask(record.projectName)}>任务</a>
+            <Divider type="vertical" />
+            <Config
+              type="edit" params={record}
+              fresh={this.getData}
+            />
           </span>
         )
       },
@@ -111,13 +113,14 @@ class Members extends React.Component {
             style={{ width: 400, float: 'left' }}
           />
           <div style={{ float: 'right', marginRight: 20 }}>
-            <Config type="new" />
+            <Config type="new" dataSource={dataSource} fresh={this.getData} />
           </div>
         </div>
         <Table
           dataSource={dataSource}
           columns={columns}
           loading={loading}
+          rowKey={record => record.projectid}
         />
       </div>
     )

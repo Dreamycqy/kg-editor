@@ -37,7 +37,7 @@ export const makeOption = (array) => {
 export const makeOptionSimple = (array) => {
   const children = []
   for (const i of array) {
-    children.push(<Option key={i.email} value={i.email}>{i.name} ({i.email})</Option>)
+    children.push(<Option key={i.email} value={i.email}>{i.userName} ({i.email})</Option>)
   }
   return children
 }

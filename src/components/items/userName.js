@@ -6,7 +6,7 @@ class UserIcon extends React.Component {
     return (
       <Tooltip title={this.props.user.email}>
         <span style={{ margin: 4 }}>
-          {this.props.user.name}
+          {this.props.user.userName}
         </span>
       </Tooltip>
     )

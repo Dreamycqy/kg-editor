@@ -1,8 +1,9 @@
 import React from 'react'
-import { Modal, Spin, Button, Form, Input, DatePicker, Select, message } from 'antd'
-import moment from 'moment'
+import _ from 'lodash'
+import { Modal, Spin, Button, Form, Input, Select, message } from 'antd'
+import { connect } from 'dva'
 import { makeOptionSimple } from '@/utils/common'
-import userList from '@/utils/mock/userList'
+import { createProject, editProjectInfo } from '@/services/edukg'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -10,17 +11,22 @@ const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 16 },
 }
-
+function mapStateToProps(state) {
+  const { locale, userInfo, userList } = state.global
+  return {
+    locale, userInfo, userList,
+  }
+}
+@connect(mapStateToProps)
 class Config extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       visible: false,
       loading: false,
-      name: '',
-      originNode: '',
+      projectName: '',
+      startNode: '',
       desc: '',
-      endTime: moment().subtract(-3, 'days'),
       members: [],
     }
   }
@@ -28,15 +34,14 @@ class Config extends React.Component {
   getData = () => {
     this.setState({ loading: true })
     const {
-      name, originNode, desc, endTime, members,
+      projectName, startNode, desc, members,
     } = this.props.params
     const memList = []
     members.forEach((e) => { memList.push(e.email) })
     this.setState({
-      name,
-      originNode,
+      projectName,
+      startNode,
       desc,
-      endTime: moment(endTime),
       members: memList,
     })
     this.setState({ loading: false })
@@ -55,7 +60,7 @@ class Config extends React.Component {
       help: null,
     }
     if (this.props.type === 'new') {
-      if (['项目1', '项目2', '项目3', '项目4', '项目5'].indexOf(str) >= 0) {
+      if (_.find(this.props.dataSource, { projectName: str })) {
         result = {
           status: 'error',
           help: '项目名不能与现有项目重复',
@@ -65,20 +70,51 @@ class Config extends React.Component {
     return result
   }
 
-  handleSave = () => {
-    this.setState({ visible: false })
-    message.success(this.props.type === 'edit' ? '编辑项目成功' : '新建项目成功')
+  handleSave = async () => {
+    const { projectName, desc, startNode, members } = this.state
+    const memList = []
+    members.forEach((i) => {
+      this.props.userList.forEach((e) => {
+        if (e.email === i && !_.find(memList, { email: i })) {
+          memList.push({
+            email: e.email,
+            userName: e.userName,
+          })
+        }
+      })
+    })
+    const data = this.props.type === 'edit'
+      ? await editProjectInfo({
+        projectid: this.props.params.projectid,
+        projectName,
+        desc,
+        startNode,
+        members: JSON.stringify(memList),
+      })
+      : await createProject({
+        projectName,
+        desc,
+        startNode,
+        members: JSON.stringify(memList),
+      })
+    if (data === 200) {
+      message.success(this.props.type === 'edit' ? '编辑项目成功' : '新建项目成功')
+      this.setState({ visible: false })
+      this.props.update()
+    } else {
+      message.error('保存发生错误')
+    }
   }
 
   render() {
     const {
-      visible, loading, name, originNode, desc, endTime, members,
+      visible, loading, projectName, startNode, desc, members,
     } = this.state
     return (
       <div style={{ display: 'inline-block' }}>
         {
           this.props.type === 'edit'
-            ? <a href="javascript:;" disabled={this.props.disabled} onClick={() => this.openModal()}>修改需求</a>
+            ? <a href="#" disabled={this.props.disabled} onClick={e => this.openModal(e)}>修改</a>
             : (
               <Button
                 type="primary" disabled={this.props.disabled}
@@ -91,12 +127,10 @@ class Config extends React.Component {
         <Modal
           title="项目配置"
           visible={visible}
-          onOk={() => this.handleSave()}
           onCancel={() => this.setState({ visible: false })}
           footer={[
-            <Button type="" onClick={() => this.setState({ visible: false })}>取消</Button>,
-            <Button type="danger" onClick={() => {}}>删除</Button>,
-            <Button type="primary" onClick={() => this.handleSave()}>保存</Button>,
+            <Button key="cancel" type="" onClick={() => this.setState({ visible: false })}>取消</Button>,
+            <Button key="save" type="primary" onClick={() => this.handleSave()}>保存</Button>,
           ]}
           width="820px"
         >
@@ -106,23 +140,23 @@ class Config extends React.Component {
                 <FormItem
                   {...formItemLayout}
                   label="项目名称"
-                  validateStatus={this.checkName(name).status}
-                  help={this.checkName(name).help}
+                  validateStatus={this.checkName(projectName).status}
+                  help={this.checkName(projectName).help}
                 >
                   <Input
-                    value={name}
+                    value={projectName}
                     disabled={this.props.type === 'edit'}
-                    onChange={e => this.setState({ name: e.target.value })}
+                    onChange={e => this.setState({ projectName: e.target.value })}
                   />
                 </FormItem>
                 <FormItem
-                  label="Class起始节点"
+                  label="概念树起始节点"
                   {...formItemLayout}
                 >
                   <Input
-                    value={originNode}
+                    value={startNode}
                     disabled={this.props.type === 'edit'}
-                    onChange={e => this.setState({ originNode: e.target.value })}
+                    onChange={e => this.setState({ startNode: e.target.value })}
                   />
                 </FormItem>
                 <FormItem
@@ -135,10 +169,10 @@ class Config extends React.Component {
                     value={members}
                     onChange={value => this.setState({ members: value })}
                   >
-                    {makeOptionSimple(userList)}
+                    {makeOptionSimple(this.props.userList)}
                   </Select>
                 </FormItem>
-                <FormItem
+                {/* <FormItem
                   label="截止时间"
                   {...formItemLayout}
                 >
@@ -147,7 +181,7 @@ class Config extends React.Component {
                     value={endTime}
                     onChange={value => this.setState({ endTime: value })}
                   />
-                </FormItem>
+                </FormItem> */}
                 <FormItem
                   label="项目描述"
                   {...formItemLayout}

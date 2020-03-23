@@ -4,7 +4,6 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Button, Form, Icon, Input, message } from 'antd'
 import { login, register } from '@/services/global'
-import { getCookie } from '@/utils/common'
 import { getUserList } from '@/services/edukg'
 import styles from './index.less'
 
@@ -41,30 +40,28 @@ class NormalLoginForm extends React.Component {
           password: values.password,
         })
         if (this.state.type === 'login') {
-          this.handleUserInfo(data)
+          this.handleUserInfo(data, values.email)
         } else {
           const newData = await login({
             email: values.email,
             password: values.password,
           })
-          this.handleUserInfo(newData)
+          this.handleUserInfo(newData, values.email)
         }
       }
     })
   }
 
-  handleUserInfo = async (data) => {
-    if (data.data === 200) {
-      window.localStorage.setItem('cookie', JSON.stringify(data.cookie))
-      const cookie = getCookie(data.cookie)
-      const { email } = cookie
-      this.handleUserList(email)
+  handleUserInfo = async (data, email) => {
+    if (data === 200) {
+      await this.handleUserList(email)
+      window.localStorage.setItem('email', email)
       this.props.dispatch(routerRedux.push({
         pathname: '/kgEditor/board',
         query: {
         },
       }))
-    } else if (data.data === 500) {
+    } else if (data === 500) {
       message.error('该邮箱已注册！')
     } else {
       message.error('登录失败，请检查邮箱和密码！')
@@ -78,7 +75,7 @@ class NormalLoginForm extends React.Component {
       await this.props.dispatch({
         type: 'global/updateState',
         payload: {
-          userList: data.data,
+          userList: data,
           userInfo: {
             email,
             userName,
