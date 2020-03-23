@@ -32,3 +32,27 @@ export function editProjectInfo(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function createTaskInfo(body, rSymbol) {
+  return request.post({
+    url: URLS.NEW_TASK,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function editTaskInfo(body, rSymbol) {
+  return request.post({
+    url: URLS.EDIT_TASK,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function getTaskList(body, rSymbol) {
+  return request.post({
+    url: URLS.LIST_TASK,
+    data: body,
+    rSymbol,
+  })
+}

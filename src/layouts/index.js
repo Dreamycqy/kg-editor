@@ -45,7 +45,7 @@ class MainLayout extends React.Component {
       await this.props.dispatch({
         type: 'global/updateState',
         payload: {
-          userList: data,
+          userList: data.data,
           userInfo: {
             email,
             userName,

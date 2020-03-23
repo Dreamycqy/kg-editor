@@ -98,7 +98,7 @@ class Members extends React.Component {
             <Divider type="vertical" />
             <Config
               type="edit" params={record}
-              fresh={this.getData}
+              update={this.getData}
             />
           </span>
         )
@@ -113,7 +113,7 @@ class Members extends React.Component {
             style={{ width: 400, float: 'left' }}
           />
           <div style={{ float: 'right', marginRight: 20 }}>
-            <Config type="new" dataSource={dataSource} fresh={this.getData} />
+            <Config type="new" dataSource={dataSource} update={this.getData} />
           </div>
         </div>
         <Table

@@ -39,14 +39,20 @@ class NormalLoginForm extends React.Component {
           userName: values.userName,
           password: values.password,
         })
-        if (this.state.type === 'login') {
-          this.handleUserInfo(data, values.email)
+        if (data === 200) {
+          if (this.state.type === 'login') {
+            this.handleUserInfo(data, values.email)
+          } else {
+            const newData = await login({
+              email: values.email,
+              password: values.password,
+            })
+            this.handleUserInfo(newData, values.email)
+          }
+        } else if (data === 405) {
+          message.error('该邮箱已注册！')
         } else {
-          const newData = await login({
-            email: values.email,
-            password: values.password,
-          })
-          this.handleUserInfo(newData, values.email)
+          message.error('操作失败，请检查邮箱和密码！')
         }
       }
     })
@@ -61,10 +67,6 @@ class NormalLoginForm extends React.Component {
         query: {
         },
       }))
-    } else if (data === 500) {
-      message.error('该邮箱已注册！')
-    } else {
-      message.error('登录失败，请检查邮箱和密码！')
     }
   }
 
@@ -134,7 +136,7 @@ class NormalLoginForm extends React.Component {
               </Button>
               <a
                 style={{
-                  textAlign: 'center', fontSize: 13,
+                  textAlign: 'center', fontSize: 13, display: 'block',
                 }}
                 onClick={() => this.setState({ type: this.state.type === 'register' ? 'login' : 'register' })}
               >

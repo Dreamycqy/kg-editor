@@ -1,8 +1,10 @@
 import React from 'react'
 import { Table, Input, Divider, Icon } from 'antd'
+import moment from 'moment'
 import User from '@/components/items/userName'
-import taskConfig from '@/utils/mock/taskConfig'
 import ShowProcess from '@/components/items/processTask'
+import { getTaskList } from '@/services/edukg'
+import { getUrlParams } from '@/utils/common'
 import Config from './config'
 
 const { Search } = Input
@@ -14,6 +16,7 @@ class Members extends React.Component {
       originSource: [],
       dataSource: [],
       loading: false,
+      projectName: getUrlParams().projectName || '',
     }
   }
 
@@ -23,23 +26,26 @@ class Members extends React.Component {
 
   getData = async () => {
     this.setState({ loading: true })
-    const array = []
-    for (const i in taskConfig) { // eslint-disable-line
-      array.push(taskConfig[i])
-    }
-    await this.setState({
-      originSource: array,
-      dataSource: array,
+    const data = await getTaskList({
+      projectName: this.state.projectName,
     })
+    if (data) {
+      await this.setState({
+        originSource: data.data,
+        dataSource: data.data,
+      })
+    }
     this.setState({ loading: false })
   }
 
   handleStatus = (str) => {
     switch (str) {
-      case 'success':
-        return <span style={{ color: 'green' }}><Icon type="check-circle" />&nbsp;已完成</span>
-      case 'going':
-        return <span style={{ color: '#1296db' }}><Icon type="clock-circle" />&nbsp;进行中</span>
+      case 'high':
+        return <span style={{ color: 'red' }}><Icon type="check-circle" />&nbsp;高</span>
+      case 'middle':
+        return <span style={{ color: '#1296db' }}><Icon type="clock-circle" />&nbsp;中</span>
+      case 'low':
+        return <span style={{ color: 'green' }}><Icon type="clock-circle" />&nbsp;低</span>
       default:
         return null
     }
@@ -52,10 +58,10 @@ class Members extends React.Component {
     originSource.map((record) => {
       let userGroup = ''
       record.members.forEach((e) => {
-        userGroup += e.name
+        userGroup += e.taskName
         userGroup += e.email
       })
-      const match1 = record.name.match(reg)
+      const match1 = record.taskName.match(reg)
       const match2 = record.desc.match(reg)
       const match3 = userGroup.match(reg)
       if (!match1 && !match2 && !match3) {
@@ -72,19 +78,24 @@ class Members extends React.Component {
     const { dataSource, loading } = this.state
     const columns = [{
       title: '任务名称',
-      dataIndex: 'name',
+      dataIndex: 'taskName',
     }, {
       title: '截止时间',
       dataIndex: 'endTime',
+      render: (text, record) => {
+        return (
+          <span>{moment(record).format('YYYY-MM-DD')}</span>
+        )
+      },
     }, {
       title: '任务描述',
       dataIndex: 'desc',
     }, {
-      title: '任务状态',
-      dataIndex: 'desc',
+      title: '紧迫等级',
+      dataIndex: 'urgency',
       render: (text, record) => {
         return (
-          this.handleStatus(record.status)
+          this.handleStatus(record.urgency)
         )
       },
     }, {
@@ -105,9 +116,16 @@ class Members extends React.Component {
       render: (text, record) => {
         return (
           <span>
-            <ShowProcess data={[record]} />
+            {/* <ShowProcess data={[]} /> */}
+            <a href="#" onClick={e => e.preventDefault()}>进入任务</a>
             <Divider type="vertical" />
-            <Config disabled={record.status === 'success'} type="edit" params={taskConfig[record.name]} />
+            <a href="#" onClick={e => e.preventDefault()}>查看进度</a>
+            <Divider type="vertical" />
+            <Config
+              type="edit" params={record}
+              update={this.getData}
+              projectName={this.state.projectName}
+            />
           </span>
         )
       },
@@ -121,13 +139,14 @@ class Members extends React.Component {
             style={{ width: 400, float: 'left' }}
           />
           <div style={{ float: 'right', marginRight: 20 }}>
-            <Config type="new" />
+            <Config type="new" update={this.getData} projectName={this.state.projectName} />
           </div>
         </div>
         <Table
           dataSource={dataSource}
           columns={columns}
           loading={loading}
+          rowKey={record => record.taskid}
         />
       </div>
     )

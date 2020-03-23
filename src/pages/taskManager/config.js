@@ -1,8 +1,10 @@
 import React from 'react'
 import { Modal, Spin, Button, Form, Input, DatePicker, Select, message } from 'antd'
 import moment from 'moment'
-import { makeOptionSimple } from '@/utils/common'
-import userList from '@/utils/mock/userList'
+import _ from 'lodash'
+import { connect } from 'dva'
+import { makeOptionSimple, makeOption } from '@/utils/common'
+import { createTaskInfo, editTaskInfo } from '@/services/edukg'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -11,33 +13,44 @@ const formItemLayout = {
   wrapperCol: { span: 16 },
 }
 
+function mapStateToProps(state) {
+  const { locale, userInfo, userList } = state.global
+  return {
+    locale, userInfo, userList,
+  }
+}
+@connect(mapStateToProps)
 class Config extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       visible: false,
       loading: false,
-      name: '',
-      originNode: '',
+      taskName: '',
+      startNode: '',
       desc: '',
       endTime: moment().subtract(-3, 'days'),
       members: [],
+      urgency: 'high',
+      type: [],
     }
   }
 
   getData = () => {
     this.setState({ loading: true })
     const {
-      name, originNode, desc, endTime, members,
+      taskName, startNode, desc, endTime, members, urgency, type,
     } = this.props.params
     const memList = []
     members.forEach((e) => { memList.push(e.email) })
     this.setState({
-      name,
-      originNode,
+      taskName,
+      startNode,
       desc,
       endTime: moment(endTime),
       members: memList,
+      urgency,
+      type,
     })
     this.setState({ loading: false })
   }
@@ -55,7 +68,7 @@ class Config extends React.Component {
       help: null,
     }
     if (this.props.type === 'new') {
-      if (['任务1', '任务2', '任务3', '任务4', '任务5'].indexOf(str) >= 0) {
+      if (_.find(this.props.dataSource, { projectName: str })) {
         result = {
           status: 'error',
           help: '任务名不能与现有任务重复',
@@ -65,14 +78,57 @@ class Config extends React.Component {
     return result
   }
 
-  handleSave = () => {
-    this.setState({ visible: false })
-    message.success(this.props.type === 'edit' ? '编辑任务成功' : '新建任务成功')
+  handleSave = async () => {
+    const {
+      taskName, desc, startNode, members, urgency, endTime, type,
+    } = this.state
+    const memList = []
+    members.forEach((i) => {
+      this.props.userList.forEach((e) => {
+        if (e.email === i && !_.find(memList, { email: i })) {
+          memList.push({
+            email: e.email,
+            userName: e.userName,
+          })
+        }
+      })
+    })
+    const data = this.props.type === 'edit'
+      ? await editTaskInfo({
+        projectName: this.props.projectName,
+        taskName,
+        desc,
+        startNode,
+        members: JSON.stringify(memList),
+        urgency,
+        endTime,
+        type: JSON.stringify(type),
+        expectation: JSON.stringify([]),
+      })
+      : await createTaskInfo({
+        projectName: this.props.projectName,
+        taskName,
+        desc,
+        startNode,
+        members: JSON.stringify(memList),
+        urgency,
+        endTime,
+        type: JSON.stringify(type),
+        expectation: JSON.stringify([]),
+      })
+    if (data === 200) {
+      message.success(this.props.type === 'edit' ? '编辑任务成功' : '新建任务成功')
+      this.setState({ visible: false })
+      this.props.update()
+    } else {
+      message.error('保存发生错误')
+    }
   }
 
   render() {
     const {
-      visible, loading, name, originNode, desc, endTime, members,
+      visible, loading, taskName, startNode, desc, endTime, members,
+      type, urgency,
     } = this.state
     return (
       <div style={{ display: 'inline-block' }}>
@@ -106,23 +162,23 @@ class Config extends React.Component {
                 <FormItem
                   {...formItemLayout}
                   label="任务名称"
-                  validateStatus={this.checkName(name).status}
-                  help={this.checkName(name).help}
+                  validateStatus={this.checkName(taskName).status}
+                  help={this.checkName(taskName).help}
                 >
                   <Input
-                    value={name}
+                    value={taskName}
                     disabled={this.props.type === 'edit'}
-                    onChange={e => this.setState({ name: e.target.value })}
+                    onChange={e => this.setState({ taskName: e.target.value })}
                   />
                 </FormItem>
                 <FormItem
-                  label="Class起始节点"
+                  label="概念树起始节点"
                   {...formItemLayout}
                 >
                   <Input
-                    value={originNode}
+                    value={startNode}
                     disabled={this.props.type === 'edit'}
-                    onChange={e => this.setState({ originNode: e.target.value })}
+                    onChange={e => this.setState({ startNode: e.target.value })}
                   />
                 </FormItem>
                 <FormItem
@@ -135,7 +191,7 @@ class Config extends React.Component {
                     value={members}
                     onChange={value => this.setState({ members: value })}
                   >
-                    {makeOptionSimple(userList)}
+                    {makeOptionSimple(this.props.userList)}
                   </Select>
                 </FormItem>
                 <FormItem
@@ -147,6 +203,43 @@ class Config extends React.Component {
                     value={endTime}
                     onChange={value => this.setState({ endTime: value })}
                   />
+                </FormItem>
+                <FormItem
+                  label="紧迫等级"
+                  {...formItemLayout}
+                >
+                  <Select
+                    placeholder="请选择任务紧迫等级"
+                    value={urgency}
+                    onChange={value => this.setState({ urgency: value })}
+                  >
+                    {makeOption([{
+                      name: '高', value: 'high',
+                    }, {
+                      name: '中', value: 'middle',
+                    }, {
+                      name: '低', value: 'low',
+                    }])}
+                  </Select>
+                </FormItem>
+                <FormItem
+                  label="任务涵盖"
+                  {...formItemLayout}
+                >
+                  <Select
+                    mode="multiple"
+                    placeholder="请选择任务涵盖领域"
+                    value={type}
+                    onChange={value => this.setState({ type: value })}
+                  >
+                    {makeOption([{
+                      name: '概念编辑', value: 'class',
+                    }, {
+                      name: '属性编辑', value: 'property',
+                    }, {
+                      name: '实体编辑', value: 'individual',
+                    }])}
+                  </Select>
                 </FormItem>
                 <FormItem
                   label="任务描述"

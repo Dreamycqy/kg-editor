@@ -44,17 +44,6 @@ router.all('/', function (req, res) {
         if (opt.url.indexOf('logout') > -1) {
           cookie = []
         }
-        if (opt.url.indexOf('logout') > -1) {
-          console.log(response.headers['set-cookie'])
-        }
-        // response.headers['set-cookie'].forEach((e) => {
-        //   const arr = e.split('; ')
-        //   const name = arr[0].split('=')[0]
-        //   const value = arr[0].split('=')[1]
-        //   if (name === 'userName' || name === 'email' || name === 'role') {
-        //     res.cookie(name, value, { expires: 3600000 })
-        //   }
-        // })
         if (response && response.statusCode) {
           res.status(response.statusCode)
         }

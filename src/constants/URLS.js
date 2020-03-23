@@ -8,4 +8,8 @@ export default {
   LIST_PROJECT: '/kgeditor/api/getProjectList',
   NEW_PROJECT: '/kgeditor/api/createProject',
   EDIT_PROJECT: '/kgeditor/api/editProjectInfo',
+
+  NEW_TASK: '/kgeditor/api/createTaskInfo',
+  EDIT_TASK: '/kgeditor/api/editTaskInfo',
+  LIST_TASK: '/kgeditor/api/getTaskList',
 }
