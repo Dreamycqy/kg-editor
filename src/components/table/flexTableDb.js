@@ -1,7 +1,8 @@
 import React from 'react'
-import { Table, Input, Popconfirm, Icon, message, AutoComplete } from 'antd'
+import { Table, Input, Popconfirm, Icon, message, Select } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
+import { makeOptionNormal } from '@/utils/common'
 
 const { TextArea } = Input
 
@@ -106,6 +107,7 @@ export default class FlexTable extends React.Component {
     } else if (dataSource.length > 1) {
       message.success(`删除了${this.props.title}`)
       this.handleDeleteRow(itemKey)
+      this.handleAddRow()
     }
     this.getMyData()
   }
@@ -117,18 +119,17 @@ export default class FlexTable extends React.Component {
       key: 'key',
       width: 150,
       render: (text, record) => (
-        <AutoComplete
-          dataSource={this.props.options}
-          defaultValue={record.key}
-          onSelect={value => this.handleTableChange(value, record.itemKey, 'key')}
-          filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} // eslint-disable-line
+        <Select
+          value={record.key}
+          style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+          onChange={(value) => {
+            this.handleTableChange(value, record.itemKey, 'key')
+            this.handleBlur(value, record.itemKey)
+          }}
+          showSearch
         >
-          <TextArea
-            placeholder={this.props.placeholder}
-            defaultValue={record.key}
-            autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
-          />
-        </AutoComplete>
+          {makeOptionNormal(this.props.options)}
+        </Select>
       ),
     }, {
       title: this.props.value,

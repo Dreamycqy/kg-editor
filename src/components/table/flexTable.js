@@ -1,9 +1,8 @@
 import React from 'react'
-import { Table, Input, Popconfirm, Icon, message, AutoComplete } from 'antd'
+import { Table, Input, Popconfirm, Icon, message, Select } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
-
-const { TextArea } = Input
+import { makeOptionNormal } from '@/utils/common'
 
 export default class FlexTable extends React.Component {
   constructor(props) {
@@ -32,7 +31,6 @@ export default class FlexTable extends React.Component {
 
   getMyData = () => {
     const { dataSource } = this.state
-    console.log(dataSource)
     const result = []
     dataSource.forEach((e) => {
       if (e.key.length > 0) {
@@ -126,20 +124,17 @@ export default class FlexTable extends React.Component {
             />
           )
           : (
-            <AutoComplete
-              dataSource={this.props.options}
-              defalutValue={record.key}
-              style={{ width: '100%' }}
-              onSelect={value => this.handleTableChange(value, record.itemKey, 'key')}
-              filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} // eslint-disable-line
+            <Select
+              value={record.key}
+              style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+              onChange={(value) => {
+                this.handleTableChange(value, record.itemKey, 'key')
+                this.handleBlur(value, record.itemKey)
+              }}
+              showSearch
             >
-              <TextArea
-                placeholder={this.props.placeholder}
-                defalutValue={record.key}
-                autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
-                onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
-              />
-            </AutoComplete>
+              {makeOptionNormal(this.props.options)}
+            </Select>
           )
       ),
     }, {
@@ -155,7 +150,7 @@ export default class FlexTable extends React.Component {
                 getPopupContainer={this.getPopupContainer}
                 onConfirm={() => this.handleDeleteRow(record.itemKey)}
               >
-                <a style={{ color: '#888', fontSize: 20 }} href="javascript:;" disabled={this.props.disabled || record.need === true}>
+                <a style={{ color: '#888', fontSize: 20 }} href="javascript:;" disabled={this.props.disabled}>
                   <Icon type="close-circle" theme="filled" />
                 </a>
               </Popconfirm>

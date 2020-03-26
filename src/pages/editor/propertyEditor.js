@@ -151,6 +151,9 @@ class PublicResource extends React.Component {
       }
     })
     list.forEach((item) => {
+      delete item.children
+    })
+    list.forEach((item) => {
       if (item.target.length === 0) {
         startKey.push(item.key)
       }

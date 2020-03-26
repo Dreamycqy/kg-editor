@@ -96,6 +96,9 @@ class PublicResource extends React.Component {
       }
     })
     list.forEach((item) => {
+      delete item.children
+    })
+    list.forEach((item) => {
       if (item.target.length === 0) {
         startKey.push(item.key)
       }
@@ -178,7 +181,6 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Parents" data={currentParent}
                 placeholder="请输入类名"
-                disabled
                 options={classData.map((e) => { return e.title })}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}

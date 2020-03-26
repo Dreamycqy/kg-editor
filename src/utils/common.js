@@ -21,7 +21,7 @@ export const changeUrlQuery = (newQuery) => {
 export const makeOptionNormal = (array) => {
   const children = []
   for (const i of array) {
-    children.push(<Option key={i} value={i}>{i} ({i})</Option>)
+    children.push(<Option key={i} value={i}>{i}</Option>)
   }
   return children
 }
