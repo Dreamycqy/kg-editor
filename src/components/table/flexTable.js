@@ -32,17 +32,14 @@ export default class FlexTable extends React.Component {
 
   getMyData = () => {
     const { dataSource } = this.state
-    const result = this.props.type === 'sla' ? [] : {}
-    if (this.props.type === 'sla') {
-      dataSource.forEach((e) => {
-        result.push({ user: e.key, type: e.value })
-      })
-    } else {
-      dataSource.forEach((e) => {
-        result[e.key] = e.value
-      })
-    }
-    return result
+    console.log(dataSource)
+    const result = []
+    dataSource.forEach((e) => {
+      if (e.key.length > 0) {
+        result.push(e.key)
+      }
+    })
+    this.props.editNode(result, this.props.selectKey, this.props.title)
   }
 
   pushConfig = (option) => {
@@ -82,18 +79,19 @@ export default class FlexTable extends React.Component {
     })
   }
 
-  handleDeleteRow = (itemKey) => {
+  handleDeleteRow = async (itemKey) => {
     const dataSource = [...this.state.dataSource]
-    this.setState({ dataSource: dataSource.filter(item => item.itemKey !== itemKey) })
+    await this.setState({ dataSource: dataSource.filter(item => item.itemKey !== itemKey) })
+    this.getMyData()
   }
 
-  handleTableChange = (value, itemKey, text) => {
+  handleTableChange = async (value, itemKey, text) => {
     const { dataSource } = this.state
     const target = dataSource.find(item => item.itemKey === itemKey)
     if (target) {
       target[text] = value
     }
-    this.setState({ dataSource })
+    await this.setState({ dataSource })
   }
 
   handleBlur = (value, itemKey) => {
@@ -109,6 +107,7 @@ export default class FlexTable extends React.Component {
       message.success(`删除了${this.props.title}`)
       this.handleDeleteRow(itemKey)
     }
+    this.getMyData()
   }
 
   render() {
@@ -117,20 +116,31 @@ export default class FlexTable extends React.Component {
       title: this.props.title,
       key: 'key',
       render: (text, record) => (
-        <AutoComplete
-          dataSource={this.props.options}
-          defaultValue={record.key}
-          style={{ width: '100%' }}
-          onSelect={value => this.handleTableChange(value, record.itemKey, 'key')}
-          filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} // eslint-disable-line
-        >
-          <TextArea
-            placeholder={this.props.placeholder}
-            defaultValue={record.key}
-            autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
-            onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
-          />
-        </AutoComplete>
+        this.props.title === 'Annotations'
+          ? (
+            <Input
+              value={record.key}
+              onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'key')}
+              onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
+              style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+            />
+          )
+          : (
+            <AutoComplete
+              dataSource={this.props.options}
+              defalutValue={record.key}
+              style={{ width: '100%' }}
+              onSelect={value => this.handleTableChange(value, record.itemKey, 'key')}
+              filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1} // eslint-disable-line
+            >
+              <TextArea
+                placeholder={this.props.placeholder}
+                defalutValue={record.key}
+                autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+                onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
+              />
+            </AutoComplete>
+          )
       ),
     }, {
       title: '操作',

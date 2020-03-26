@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout, ConfigProvider, Menu, Dropdown, Icon, Avatar } from 'antd'
+import { Layout, ConfigProvider, Menu, Dropdown, Icon, Avatar, Badge } from 'antd'
 import _ from 'lodash'
 import { connect } from 'dva'
 import router from 'umi/router'
@@ -139,11 +139,18 @@ class MainLayout extends React.Component {
             >
               {this.makeMenu()}
             </Menu>
+            <div style={{ float: 'right' }}>
+              <Badge count={2}>
+                <a href="#" onClick={() => {}}>
+                  <Icon style={{ fontSize: 20 }} type="mail" />
+                </a>
+              </Badge>
+            </div>
             <Dropdown overlay={menu}>
               <div style={{ float: 'right', lineHeight: '56px' }}>
                 <Avatar>{email ? email.substr(0, 1).toUpperCase() : ''}</Avatar>
                 <span style={{ marginLeft: 8 }}>{userName || ''}</span>
-                <Icon type="down" />
+                <Icon type="down" style={{ marginRight: 10 }} />
               </div>
             </Dropdown>
           </Header>

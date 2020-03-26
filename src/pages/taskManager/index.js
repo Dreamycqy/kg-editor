@@ -1,8 +1,8 @@
 import React from 'react'
 import { Table, Input, Divider, Icon } from 'antd'
-import moment from 'moment'
+// import moment from 'moment'
 import User from '@/components/items/userName'
-import ShowProcess from '@/components/items/processTask'
+// import ShowProcess from '@/components/items/processTask'
 import { getTaskList } from '@/services/edukg'
 import { getUrlParams } from '@/utils/common'
 import Config from './config'
@@ -41,9 +41,9 @@ class Members extends React.Component {
   handleStatus = (str) => {
     switch (str) {
       case 'high':
-        return <span style={{ color: 'red' }}><Icon type="check-circle" />&nbsp;高</span>
+        return <span style={{ color: 'red' }}><Icon type="exclamation-circle" />&nbsp;高</span>
       case 'middle':
-        return <span style={{ color: '#1296db' }}><Icon type="clock-circle" />&nbsp;中</span>
+        return <span style={{ color: '#1296db' }}><Icon type="minus-circle" />&nbsp;中</span>
       case 'low':
         return <span style={{ color: 'green' }}><Icon type="clock-circle" />&nbsp;低</span>
       default:
@@ -80,13 +80,21 @@ class Members extends React.Component {
       title: '任务名称',
       dataIndex: 'taskName',
     }, {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      // render: (text, record) => {
+      //   return (
+      //     <span>{moment(record).format('YYYY-MM-DD')}</span>
+      //   )
+      // },
+    }, {
       title: '截止时间',
       dataIndex: 'endTime',
-      render: (text, record) => {
-        return (
-          <span>{moment(record).format('YYYY-MM-DD')}</span>
-        )
-      },
+      // render: (text, record) => {
+      //   return (
+      //     <span>{moment(record).format('YYYY-MM-DD')}</span>
+      //   )
+      // },
     }, {
       title: '任务描述',
       dataIndex: 'desc',

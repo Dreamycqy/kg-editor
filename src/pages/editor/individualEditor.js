@@ -163,8 +163,8 @@ class PublicResource extends React.Component {
             </div>
           </div>
           <div>
-            <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>讨论</div>
-            <Empty style={{ marginTop: 10 }} />
+            <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>指标</div>
+            {/* <Empty style={{ marginTop: 10 }} /> */}
           </div>
         </div>
         <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>

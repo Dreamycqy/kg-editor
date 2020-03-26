@@ -1,14 +1,18 @@
 import React from 'react'
-import { Progress, Empty } from 'antd'
+import { Progress, Empty, Col, Row } from 'antd'
 import moment from 'moment'
 import HistoryList from '@/components/history'
 import CountDown from '@/components/items/countDown'
+import Chart1 from './chart1'
+import Chart2 from './chart2'
+import Chart3 from './chart3'
+import Chart4 from './chart4'
 
 class LeftPart extends React.Component {
   render() {
     const { data } = this.props
     return (
-      <div>
+      <div style={{ height: '100%', overflowY: 'scroll' }}>
         <div style={{ borderBottom: '1px solid #e8e8e8', padding: 10, backgroundColor: '#fbfbfb', marginBottom: 10 }}>
           <div>
             <span style={{ fontSize: 20 }}>{data.name}</span>
@@ -23,24 +27,43 @@ class LeftPart extends React.Component {
           <div style={{ padding: '0 0 20px 10px' }}>
             <div style={{ width: 80, display: 'inline-block' }}>Classes</div>
             <Progress
-              style={{ width: 200 }}
+              style={{ width: 600 }}
               percent={Number(data.process.classes.toFixed(2))}
             />
           </div>
           <div style={{ padding: '0 0 20px 10px' }}>
             <div style={{ width: 80, display: 'inline-block' }}>Properties</div>
             <Progress
-              style={{ width: 200 }}
+              style={{ width: 600 }}
               percent={Number(data.process.properties.toFixed(2))}
             />
           </div>
           <div style={{ padding: '0 0 20px 10px' }}>
             <div style={{ width: 80, display: 'inline-block' }}>Individuals</div>
             <Progress
-              style={{ width: 200 }}
+              style={{ width: 600 }}
               percent={Number(data.process.individuals.toFixed(2))}
             />
           </div>
+        </div>
+        <div style={{ backgroundColor: '#fbfbfb', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
+          <div style={{ fontSize: 20, paddingBottom: 10 }}>任务指标</div>
+          <Row>
+            <Col style={{ height: 300 }} span={12}>
+              <Chart1 />
+            </Col>
+            <Col style={{ height: 300 }} span={12}>
+              <Chart2 />
+            </Col>
+          </Row>
+          <Row>
+            <Col style={{ height: 300 }} span={12}>
+              <Chart3 />
+            </Col>
+            <Col style={{ height: 300 }} span={12}>
+              <Chart4 />
+            </Col>
+          </Row>
         </div>
         <div style={{ backgroundColor: '#fbfbfb', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
           <div style={{ fontSize: 20, paddingBottom: 10 }}>最近编辑</div>

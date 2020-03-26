@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { Modal, Spin, Button, Form, Input, Select, message } from 'antd'
 import { connect } from 'dva'
 import { makeOptionSimple } from '@/utils/common'
-import { createProject, editProjectInfo } from '@/services/edukg'
+import { createProject, editProjectInfo, editClasses } from '@/services/edukg'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -100,6 +100,21 @@ class Config extends React.Component {
     if (data === 200) {
       message.success(this.props.type === 'edit' ? '编辑项目成功' : '新建项目成功')
       this.setState({ visible: false })
+      if (this.props.type !== 'edit') {
+        editClasses({
+          projectName,
+          node: JSON.stringify([
+            {
+              title: startNode,
+              key: startNode,
+              source: startNode,
+              target: [],
+              nodeTask: [],
+              relationships: [],
+            },
+          ]),
+        })
+      }
       this.props.update()
     } else {
       message.error('保存发生错误')

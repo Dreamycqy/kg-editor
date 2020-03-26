@@ -12,4 +12,11 @@ export default {
   NEW_TASK: '/kgeditor/api/createTaskInfo',
   EDIT_TASK: '/kgeditor/api/editTaskInfo',
   LIST_TASK: '/kgeditor/api/getTaskList',
+
+  LIST_CLASS: '/kgeditor/api/getProjectClassesTree',
+  LIST_PROPS: '/kgeditor/api/getProjectPropertiesTree',
+  LIST_INDIS: '/kgeditor/api/getProjectIndividualsTree',
+  EDIT_CLASS: '/kgeditor/api/editClasses',
+  EDIT_PROPS: '/kgeditor/api/editProperties',
+  EDIT_INDIS: '/kgeditor/api/editIndividuals',
 }

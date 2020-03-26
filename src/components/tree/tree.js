@@ -23,7 +23,7 @@ class NormalTree extends React.Component {
 
   componentWillMount = () => {
     if (this.state.treeData[0]) {
-      this.props.selectNode(this.state.treeData[0].title)
+      this.props.selectNode(this.state.treeData[0].key)
     }
     this.generateList(this.state.treeData)
     this.setState({ expandedKeys: dataList.map((item) => { return item.key }) })
@@ -33,7 +33,7 @@ class NormalTree extends React.Component {
     if (!_.isEqual(nextProps.data, this.props.data)) {
       this.setState({ treeData: nextProps.data })
       if (nextProps.data[0]) {
-        this.props.selectNode(nextProps.data[0].title)
+        this.props.selectNode(nextProps.data[0].key)
       }
       dataList = []
       this.generateList(nextProps.data)
@@ -42,7 +42,7 @@ class NormalTree extends React.Component {
   }
 
   onSelect = (keys, event) => {
-    this.props.selectNode(event.node.props.title.props.text)
+    this.props.selectNode(event.node.props.title.props.datakey)
     this.setState({ selectKey: event.node.props.eventKey })
   }
 
@@ -201,36 +201,30 @@ class NormalTree extends React.Component {
 
   nodeCreate = () => {
     const { treeData, selectKey } = this.state
-    this.addNode(selectKey, treeData)
+    const newKey = uuid()
+    this.addNode(selectKey, treeData, newKey)
     this.setState({
       treeData,
       visible: false,
     })
+    this.props.editNode(treeData)
   }
 
-  addNode = (key, data) => data.map((item) => { // eslint-disable-line
-    const newKey = key + uuid()
+  addNode = (key, data, newKey) => data.map((item) => { // eslint-disable-line
     if (item.key === key) {
-      if (item.children) {
-        item
-          .children
-          .push({
-            title: this.state.createName,
-            key: newKey,
-          })
-      } else {
+      if (!item.children) {
         item.children = []
-        item
-          .children
-          .push({
-            title: this.state.createName,
-            key: newKey,
-          })
+      }
+      if (!_.find(item.children, { title: this.state.createName })) {
+        item.children.push({
+          title: this.state.createName,
+          key: newKey,
+        })
       }
       return
     }
     if (item.children) {
-      this.addNode(key, item.children)
+      this.addNode(key, item.children, newKey)
     }
   })
 
@@ -240,6 +234,7 @@ class NormalTree extends React.Component {
     this.setState({
       treeData,
     })
+    this.props.editNode(treeData)
   }
 
   deleteNode = (key, data) => data.map((item, index) => { // eslint-disable-line

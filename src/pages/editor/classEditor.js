@@ -2,16 +2,15 @@ import React from 'react'
 import { Empty } from 'antd'
 import _ from 'lodash'
 import Tree from '@/components/tree/tree'
-import taskData from '@/utils/mock/task2'
 import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 import FlexTableDb from '@/components/table/flexTableDb'
+import classD from '@/utils/mock/new/class'
+import property from '@/utils/mock/new/props'
 
-const dataList = []
-const dataListo = []
-const dataListd = []
+let dataList = []
 let newList = []
 
 class PublicResource extends React.Component {
@@ -19,69 +18,38 @@ class PublicResource extends React.Component {
     super(props)
     this.state = {
       selectNode: '',
-    }
-  }
-
-  componentWillMount = () => {
-    this.generateList(taskData.class)
-    this.generateListo(taskData.objProperty)
-    this.generateListd(taskData.dataProperty)
-  }
-
-  generateListo = (data, parent) => {
-    for (let i = 0; i < data.length; i++) {
-      const node = data[i]
-      const { key, title } = node
-      dataListo.push({
-        key,
-        title,
-        source: title,
-        target: parent,
-      })
-      if (node.children) {
-        this.generateListo(node.children, title)
-      }
-    }
-  }
-
-  generateListd = (data, parent) => {
-    for (let i = 0; i < data.length; i++) {
-      const node = data[i]
-      const { key, title } = node
-      dataListd.push({
-        key,
-        title,
-        source: title,
-        target: parent,
-      })
-      if (node.children) {
-        this.generateListd(node.children, title)
-      }
+      classData: classD,
     }
   }
 
   generateList = (data, parent) => {
     for (let i = 0; i < data.length; i++) {
       const node = data[i]
-      const { key, title } = node
-      dataList.push({
-        key,
-        title,
-        source: title,
-        target: parent,
-      })
+      const { key, title, source, target, relationships, nodeTask } = node
+      if (!_.find(dataList, { key })) {
+        dataList.push({
+          key,
+          title,
+          source: source || key,
+          target: target || [parent],
+          relationships: relationships || [],
+          nodeTask: nodeTask || [],
+        })
+      }
       if (node.children) {
-        this.generateList(node.children, title)
+        this.generateList(node.children, key)
       }
     }
   }
 
-  getNewList = (title) => {
-    if (title !== undefined) {
-      dataList.forEach((e) => {
-        if (e.title === title) {
+  getNewList = (key) => {
+    if (key !== undefined) {
+      this.state.classData.forEach((e) => {
+        if (e.key === key) {
           newList.push(e)
-          this.getNewList(e.target)
+          e.target.forEach((i) => {
+            this.getNewList(i)
+          })
         }
       })
     }
@@ -96,20 +64,21 @@ class PublicResource extends React.Component {
     const links = []
     newList = []
     this.getNewList(selectNode)
-    console.log(newList)
     newList.forEach((e) => {
       const item = {
         name: e.title,
         draggable: true,
         category: 0,
       }
-      if (e.title === selectNode) {
+      if (e.key === selectNode) {
         delete item.category
       }
       data.push(item)
-      links.push({
-        source: e.source,
-        target: e.target,
+      e.target.forEach((i) => {
+        links.push({
+          source: e.title,
+          target: _.find(newList, { key: i }).title,
+        })
       })
     })
     return {
@@ -118,41 +87,116 @@ class PublicResource extends React.Component {
     }
   }
 
+  listToTree = (list) => {
+    const result = {}
+    const startKey = []
+    list.forEach((item) => {
+      if (!result[item.key]) {
+        result[item.key] = item
+      }
+    })
+    list.forEach((item) => {
+      if (item.target.length === 0) {
+        startKey.push(item.key)
+      }
+      item.target.forEach((key) => {
+        if (!result[key].children) {
+          result[key].children = []
+        }
+        if (!_.find(result[key].children, { key: item.key })) {
+          result[key].children.push(item)
+        }
+      })
+    })
+    const map = []
+    startKey.forEach((e) => {
+      map.push(result[e])
+    })
+    return map
+  }
+
+  editNode = (newTree) => {
+    dataList = []
+    this.generateList(newTree, '')
+    this.setState({ classData: dataList })
+  }
+
+  editNodeInfo = (value, key, type) => {
+    const { classData } = this.state
+    const target = classData.find(item => item.key === key)
+    if (type === 'Annotations') {
+      target.title = value[0]
+    } else if (type === 'Parents') {
+      const array = []
+      value.forEach((e) => {
+        array.push(_.find(classData, { title: e }).key)
+      })
+      target.target = array
+    } else {
+      target.relationships = value
+    }
+    this.setState({ classData })
+  }
+
   render() {
     const {
-      selectNode,
+      selectNode, classData,
     } = this.state
+    const currentNode = _.find(classData, { key: selectNode })
+    const currentParent = []
+    if (currentNode) {
+      currentNode.target.forEach((e) => {
+        const parent = _.find(classData, { key: e })
+        if (parent) {
+          currentParent.push(parent.title)
+        }
+      })
+    }
     return (
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ height: '100%', minWidth: 300, borderRight: '1px solid #e8e8e8' }}>
-          <Tree iconType="smile" iconColor="#1296db" data={taskData.class} selectNode={this.selectNode} />
+          <Tree
+            iconType="smile" iconColor="#1296db"
+            data={this.listToTree(classData)} selectNode={this.selectNode}
+            editNode={this.editNode}
+          />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
-            Class: {selectNode}
+            Class: {currentNode ? currentNode.title : ''}
           </div>
           <div style={{ marginBottom: 10 }}>
             <div style={{ marginBottom: 10 }}>
-              <FlexTable title="Annotations" limited data={[selectNode]} />
+              <FlexTable
+                title="Annotations" limited
+                data={[currentNode ? currentNode.title : '']}
+                editNode={this.editNodeInfo}
+                selectKey={currentNode ? currentNode.key : ''}
+              />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
-                title="Parents" data={[]}
+                title="Parents" data={currentParent}
                 placeholder="请输入类名"
-                options={dataList.map((e) => { return e.title })}
+                disabled
+                options={classData.map((e) => { return e.title })}
+                editNode={this.editNodeInfo}
+                selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTableDb
                 title="Relationships" value="Value"
-                placeholder="请输入属性" data={[]}
-                options={[...dataListd, ...dataListo].map((e) => { return e.title })}
+                placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
+                options={[...property.data, ...property.obj].map((e) => { return e.title })}
+                editNode={this.editNodeInfo}
+                selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
           </div>
           <div>
-            <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>讨论</div>
-            <Empty style={{ marginTop: 10 }} />
+            <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>指标</div>
+            {/* <Empty style={{ marginTop: 10 }} /> */}
           </div>
         </div>
         <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>

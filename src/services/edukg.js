@@ -56,3 +56,51 @@ export function getTaskList(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function getProjectClassesTree(body, rSymbol) {
+  return request.post({
+    url: URLS.LIST_CLASS,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function getProjectPropertiesTree(body, rSymbol) {
+  return request.post({
+    url: URLS.LIST_PROPS,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function getProjectIndividualsTree(body, rSymbol) {
+  return request.post({
+    url: URLS.LIST_INDIS,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function editClasses(body, rSymbol) {
+  return request.post({
+    url: URLS.EDIT_CLASS,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function editProperties(body, rSymbol) {
+  return request.post({
+    url: URLS.EDIT_PROPS,
+    data: body,
+    rSymbol,
+  })
+}
+
+export function editIndividuals(body, rSymbol) {
+  return request.post({
+    url: URLS.EDIT_INDIS,
+    data: body,
+    rSymbol,
+  })
+}

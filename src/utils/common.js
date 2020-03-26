@@ -29,7 +29,19 @@ export const makeOptionNormal = (array) => {
 export const makeOption = (array) => {
   const children = []
   for (const i of array) {
-    children.push(<Option key={i.value} value={i.value}>{i.name}</Option>)
+    children.push(
+      <Option disabled={i.disabled || false} key={i.value} value={i.value}>
+        {i.name}
+      </Option>,
+    )
+  }
+  return children
+}
+
+export const makeOptionTree = (array) => {
+  const children = []
+  for (const i of array) {
+    children.push(<Option key={i.key} value={i.key}>{i.title}</Option>)
   }
   return children
 }
@@ -37,7 +49,11 @@ export const makeOption = (array) => {
 export const makeOptionSimple = (array) => {
   const children = []
   for (const i of array) {
-    children.push(<Option key={i.email} value={i.email}>{i.userName} ({i.email})</Option>)
+    children.push(
+      <Option key={i.email} value={i.email}>
+        {i.userName} ({i.email})
+      </Option>,
+    )
   }
   return children
 }

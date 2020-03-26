@@ -3,8 +3,9 @@ import { Modal, Spin, Button, Form, Input, DatePicker, Select, message } from 'a
 import moment from 'moment'
 import _ from 'lodash'
 import { connect } from 'dva'
-import { makeOptionSimple, makeOption } from '@/utils/common'
-import { createTaskInfo, editTaskInfo } from '@/services/edukg'
+import FlexTable from '@/components/table/flexTableStat'
+import { makeOptionSimple, makeOption, makeOptionTree } from '@/utils/common'
+import { createTaskInfo, editTaskInfo, getProjectClassesTree, editClasses } from '@/services/edukg'
 
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -33,13 +34,15 @@ class Config extends React.Component {
       members: [],
       urgency: 'high',
       type: [],
+      classTree: [],
+      expectation: [],
     }
   }
 
-  getData = () => {
+  getData = async () => {
     this.setState({ loading: true })
     const {
-      taskName, startNode, desc, endTime, members, urgency, type,
+      taskName, startNode, desc, endTime, members, urgency, type, expectation,
     } = this.props.params
     const memList = []
     members.forEach((e) => { memList.push(e.email) })
@@ -51,6 +54,7 @@ class Config extends React.Component {
       members: memList,
       urgency,
       type,
+      expectation,
     })
     this.setState({ loading: false })
   }
@@ -59,6 +63,12 @@ class Config extends React.Component {
     await this.setState({ visible: true })
     if (this.props.params) {
       this.getData()
+    }
+    const newData = await getProjectClassesTree({
+      projectName: this.props.projectName,
+    })
+    if (newData) {
+      this.setState({ classTree: newData.data })
     }
   }
 
@@ -80,7 +90,7 @@ class Config extends React.Component {
 
   handleSave = async () => {
     const {
-      taskName, desc, startNode, members, urgency, endTime, type,
+      taskName, desc, startNode, members, urgency, endTime, type, classTree,
     } = this.state
     const memList = []
     members.forEach((i) => {
@@ -101,9 +111,10 @@ class Config extends React.Component {
         startNode,
         members: JSON.stringify(memList),
         urgency,
-        endTime,
+        createTime: this.props.params.createTime,
+        endTime: endTime.format('YYYY-MM-DD HH:mm:ss'),
         type: JSON.stringify(type),
-        expectation: JSON.stringify([]),
+        expectation: JSON.stringify(this.tableConfig.getMyData()),
       })
       : await createTaskInfo({
         projectName: this.props.projectName,
@@ -112,13 +123,21 @@ class Config extends React.Component {
         startNode,
         members: JSON.stringify(memList),
         urgency,
-        endTime,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+        endTime: endTime.format('YYYY-MM-DD HH:mm:ss'),
         type: JSON.stringify(type),
-        expectation: JSON.stringify([]),
+        expectation: JSON.stringify(this.tableConfig.getMyData()),
       })
     if (data === 200) {
       message.success(this.props.type === 'edit' ? '编辑任务成功' : '新建任务成功')
       this.setState({ visible: false })
+      if (this.props.type !== 'edit') {
+        _.find(classTree, { key: startNode }).nodeTask.push(taskName)
+        editClasses({
+          projectName: this.props.projectName,
+          node: JSON.stringify(classTree),
+        })
+      }
       this.props.update()
     } else {
       message.error('保存发生错误')
@@ -128,7 +147,7 @@ class Config extends React.Component {
   render() {
     const {
       visible, loading, taskName, startNode, desc, endTime, members,
-      type, urgency,
+      type, urgency, classTree, expectation,
     } = this.state
     return (
       <div style={{ display: 'inline-block' }}>
@@ -175,11 +194,13 @@ class Config extends React.Component {
                   label="概念树起始节点"
                   {...formItemLayout}
                 >
-                  <Input
+                  <Select
+                    placeholder="请选择起始节点"
                     value={startNode}
-                    disabled={this.props.type === 'edit'}
-                    onChange={e => this.setState({ startNode: e.target.value })}
-                  />
+                    onChange={value => this.setState({ startNode: value })}
+                  >
+                    {makeOptionTree(classTree)}
+                  </Select>
                 </FormItem>
                 <FormItem
                   label="负责人员"
@@ -240,6 +261,12 @@ class Config extends React.Component {
                       name: '实体编辑', value: 'individual',
                     }])}
                   </Select>
+                </FormItem>
+                <FormItem
+                  label="预期指标"
+                  {...formItemLayout}
+                >
+                  <FlexTable data={expectation} ref={e => this.tableConfig = e} />
                 </FormItem>
                 <FormItem
                   label="任务描述"

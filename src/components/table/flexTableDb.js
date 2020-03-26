@@ -32,25 +32,21 @@ export default class FlexTable extends React.Component {
 
   getMyData = () => {
     const { dataSource } = this.state
-    const result = this.props.type === 'sla' ? [] : {}
-    if (this.props.type === 'sla') {
-      dataSource.forEach((e) => {
-        result.push({ user: e.key, type: e.value })
-      })
-    } else {
-      dataSource.forEach((e) => {
-        result[e.key] = e.value
-      })
-    }
-    return result
+    const result = []
+    dataSource.forEach((e) => {
+      if (e.key.length > 0) {
+        result.push({ key: e.key, value: e.value })
+      }
+    })
+    this.props.editNode(result, this.props.selectKey, this.props.title)
   }
 
   pushConfig = (option) => {
     const dataSource = []
     option.forEach((e) => {
       const item = {
-        key: e,
-        value: '',
+        key: e.key,
+        value: e.value,
         itemKey: uuid(),
       }
       dataSource.push(item)
@@ -111,6 +107,7 @@ export default class FlexTable extends React.Component {
       message.success(`删除了${this.props.title}`)
       this.handleDeleteRow(itemKey)
     }
+    this.getMyData()
   }
 
   render() {
@@ -130,7 +127,6 @@ export default class FlexTable extends React.Component {
             placeholder={this.props.placeholder}
             defaultValue={record.key}
             autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
-            onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
           />
         </AutoComplete>
       ),

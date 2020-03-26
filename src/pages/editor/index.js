@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tabs, Empty } from 'antd'
+import { getUrlParams } from '@/utils/common'
 import ClassEditor from './classEditor'
 import IndividualEditor from './individualEditor'
 import PropertyEditor from './propertyEditor'
@@ -12,21 +13,23 @@ class MainEditor extends React.Component {
     super(props)
     this.state = {
       activeKey: 'classes',
+      projectName: getUrlParams().projectName || '',
+      taskName: getUrlParams().taskName || '',
     }
   }
 
   render() {
-    const { activeKey } = this.state
+    const { activeKey, taskName, projectName } = this.state
     let result
     switch (activeKey) {
       case 'classes':
-        result = <ClassEditor />
+        result = <ClassEditor projectName={projectName} taskName={taskName} />
         break
       case 'properties':
-        result = <PropertyEditor />
+        result = <PropertyEditor projectName={projectName} taskName={taskName} />
         break
       case 'individuals':
-        result = <IndividualEditor />
+        result = <IndividualEditor projectName={projectName} taskName={taskName} />
         break
       case 'comment':
         result = <Empty style={{ marginTop: 100 }} />

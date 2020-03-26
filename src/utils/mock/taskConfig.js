@@ -7,7 +7,7 @@ export default {
       { name: '张三', email: 'user3@aliyun.com' },
       { name: '李四', email: 'user4@aliyun.com' },
     ],
-    endTime: '2020-03-04 10:00:00',
+    endTime: '2020-03-25 10:00:00',
     createTime: '2020-02-25 10:00:00',
     status: 'success',
     process: {
@@ -21,7 +21,7 @@ export default {
       event: 'Created data property ',
       children: [
         {
-          time: '2020-03-05 09:00:00',
+          time: '2020-03-28 09:00:00',
           dataType: 'Property',
           event: 'Move',
           user: {
@@ -35,7 +35,7 @@ export default {
           place: '公共属性',
         },
         {
-          time: '2020-03-05 08:00:00',
+          time: '2020-04-05 08:00:00',
           user: {
             name: '陈秋阳',
             email: 'autumnchenqy@aliyun.com',
@@ -52,7 +52,7 @@ export default {
       event: 'Created data property ',
       children: [
         {
-          time: '2020-03-04 09:00:00',
+          time: '2020-04-04 09:00:00',
           dataType: 'Property',
           event: 'Move',
           user: {
@@ -66,7 +66,7 @@ export default {
           place: '任务1',
         },
         {
-          time: '2020-03-04 07:00:00',
+          time: '2020-04-04 07:00:00',
           user: {
             name: '陈秋阳',
             email: 'autumnchenqy@aliyun.com',
@@ -88,7 +88,7 @@ export default {
       { name: '张三', email: 'user3@aliyun.com' },
       { name: '李四', email: 'user4@aliyun.com' },
     ],
-    endTime: '2020-03-07 10:00:00',
+    endTime: '2020-03-25 10:00:00',
     createTime: '2020-02-25 10:00:00',
     status: 'going',
     originNode: 'Medical',
@@ -102,7 +102,7 @@ export default {
       event: 'Created data property ',
       children: [
         {
-          time: '2020-03-05 09:00:00',
+          time: '2020-04-05 09:00:00',
           dataType: 'Property',
           event: 'Move',
           user: {
@@ -116,7 +116,7 @@ export default {
           place: '公共属性',
         },
         {
-          time: '2020-03-05 08:00:00',
+          time: '2020-04-05 08:00:00',
           user: {
             name: '陈秋阳',
             email: 'autumnchenqy@aliyun.com',
@@ -133,7 +133,7 @@ export default {
       event: 'Created data property ',
       children: [
         {
-          time: '2020-03-04 09:00:00',
+          time: '2020-04-04 09:00:00',
           dataType: 'Property',
           event: 'Move',
           user: {
@@ -147,7 +147,7 @@ export default {
           place: '任务1',
         },
         {
-          time: '2020-03-04 07:00:00',
+          time: '2020-04-04 07:00:00',
           user: {
             name: '陈秋阳',
             email: 'autumnchenqy@aliyun.com',
@@ -168,7 +168,7 @@ export default {
       { name: '王五', email: 'user5@aliyun.com' },
       { name: '赵六', email: 'user6@aliyun.com' },
     ],
-    endTime: '2020-03-09 10:00:00',
+    endTime: '2020-03-29 10:00:00',
     createTime: '2020-02-25 10:00:00',
     status: 'going',
     originNode: 'Math',
@@ -186,7 +186,7 @@ export default {
       { name: '王五', email: 'user5@aliyun.com' },
       { name: '赵六', email: 'user6@aliyun.com' },
     ],
-    endTime: '2020-03-12 10:00:00',
+    endTime: '2020-04-12 10:00:00',
     createTime: '2020-02-25 10:00:00',
     status: 'going',
     originNode: 'Sport',
@@ -204,7 +204,7 @@ export default {
       { name: '张三', email: 'user3@aliyun.com' },
       { name: '赵六', email: 'user6@aliyun.com' },
     ],
-    endTime: '2020-03-18 10:00:00',
+    endTime: '2020-04-18 10:00:00',
     createTime: '2020-02-25 10:00:00',
     status: 'going',
     originNode: 'Physical',

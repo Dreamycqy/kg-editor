@@ -30,12 +30,11 @@ class MainLayout extends React.Component {
     const { taskList, selectedTask } = this.state
     return (
       <div style={{ overflow: 'hidden', height: '100%' }}>
-        <div style={{ float: 'left', width: 320, borderRight: '1px solid #e8e8e8', height: '100%', overflowY: 'scroll' }}>
-          <LeftNav data={selectedTask} />
-        </div>
-        <div style={{ height: '100%' }}>
-          <div style={{ marginTop: 10, fontSize: 24, paddingLeft: 330 }}>所有任务</div>
+        <div style={{ float: 'left', width: 360, borderRight: '1px solid #e8e8e8', height: '100%', overflowY: 'scroll' }}>
           <RightContent selectTask={this.selectTask} taskList={taskList} />
+        </div>
+        <div style={{ height: '100%', paddingLeft: 360 }}>
+          <LeftNav data={selectedTask} />
         </div>
       </div>
     )
