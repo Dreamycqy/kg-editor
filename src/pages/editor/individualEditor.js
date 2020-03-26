@@ -70,18 +70,17 @@ class PublicResource extends React.Component {
         })
       }
     })
-    console.log(selectNode, data, links)
     return {
       data: _.uniqBy(data, 'key'),
       links,
     }
   }
 
-  rebuildChartData = (selectNode) => {
+  rebuildChartData = (treeData, selectNode) => {
     let data = []
     let links = []
     const addition = []
-    const target = _.find(individual, { key: selectNode })
+    const target = _.find(treeData, { key: selectNode })
     if (target) {
       target.types.forEach((e) => {
         const temp = this.handleClassChartBuild(e)
@@ -92,7 +91,6 @@ class PublicResource extends React.Component {
         })
       })
     }
-    console.log(data, links)
     return {
       data: [..._.uniqBy(data, 'name'), {
         name: target.title,
@@ -101,11 +99,44 @@ class PublicResource extends React.Component {
     }
   }
 
+  editNodeInfo = (value, key, type) => {
+    const { treeData } = this.state
+    const target = treeData.find(item => item.key === key)
+    if (type === 'Annotations') {
+      target.title = value[0]
+    } else if (type === 'Types') {
+      const array = []
+      value.forEach((e) => {
+        array.push(_.find(classD, { title: e }).key)
+      })
+      target.types = array
+    } else if (type === 'Relationships') {
+      const array = []
+      value.forEach((e) => {
+        array.push(_.find(classD, { title: e }).key)
+      })
+      target.relationships = value
+    } else {
+      const array = []
+      value.forEach((e) => {
+        array.push(_.find(classD, { title: e }).key)
+      })
+      target.sameAs = value
+    }
+    this.setState({ treeData })
+  }
+
   render() {
     const {
       selectNode, treeData,
     } = this.state
     const currentNode = _.find(treeData, { key: selectNode })
+    const typesArray = []
+    if (currentNode) {
+      currentNode.types.forEach((e) => {
+        typesArray.push(_.find(classD, { key: e }).title)
+      })
+    }
     return (
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
@@ -120,14 +151,18 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Annotations" limited
                 data={[currentNode ? currentNode.title : '']}
+                editNode={this.editNodeInfo}
+                selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
                 title="Types"
-                data={currentNode ? currentNode.types : []}
+                data={currentNode ? typesArray : []}
                 placeholder="请输入类名"
+                selectKey={currentNode ? currentNode.key : ''}
                 options={classD.map((e) => { return e.title })}
+                editNode={this.editNodeInfo}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
@@ -135,6 +170,8 @@ class PublicResource extends React.Component {
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={[...property.data, ...property.obj].map((e) => { return e.title })}
+                editNode={this.editNodeInfo}
+                selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
@@ -153,7 +190,7 @@ class PublicResource extends React.Component {
         <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
-            <Chart graph={this.rebuildChartData(selectNode)} />
+            <Chart graph={this.rebuildChartData(treeData, selectNode)} />
           </div>
           <div style={{ minHeight: 350 }}>
             <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>最近更改</div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Input, Popconfirm, Icon, message, Select } from 'antd'
+import { Table, Input, Popconfirm, Icon, Select } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
 import { makeOptionNormal } from '@/utils/common'
@@ -96,19 +96,21 @@ export default class FlexTable extends React.Component {
     this.setState({ dataSource })
   }
 
-  handleBlur = (value, itemKey) => {
+  handleBlur = async (value, itemKey) => {
     const { dataSource } = this.state
     if (value.length > 0) {
       if (dataSource[dataSource.length - 1].key !== '' && !this.props.limited) {
-        message.success(`添加了${this.props.title}`)
+        // message.success(`添加了${this.props.title}`)
         this.handleAddRow()
       } else {
-        message.success(`编辑了${this.props.title}`)
+        // message.success(`编辑了${this.props.title}`)
       }
     } else if (dataSource.length > 1) {
-      message.success(`删除了${this.props.title}`)
-      this.handleDeleteRow(itemKey)
-      this.handleAddRow()
+      // message.success(`删除了${this.props.title}`)
+      await this.handleDeleteRow(itemKey)
+      if (dataSource[dataSource.length - 2].key !== '') {
+        this.handleAddRow()
+      }
     }
     this.getMyData()
   }
@@ -125,7 +127,6 @@ export default class FlexTable extends React.Component {
           style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
           onChange={(value) => {
             this.handleTableChange(value, record.itemKey, 'key')
-            this.handleBlur(value, record.itemKey)
           }}
           showSearch
         >
