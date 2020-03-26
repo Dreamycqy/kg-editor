@@ -7,8 +7,6 @@ import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 import FlexTableDb from '@/components/table/flexTableDb'
-import classD from '@/utils/mock/new/class'
-import property from '@/utils/mock/new/props'
 
 let dataList = []
 let newList = []
@@ -18,7 +16,6 @@ class PublicResource extends React.Component {
     super(props)
     this.state = {
       selectNode: '',
-      classData: classD,
     }
   }
 
@@ -44,7 +41,7 @@ class PublicResource extends React.Component {
 
   getNewList = (key) => {
     if (key !== undefined) {
-      this.state.classData.forEach((e) => {
+      this.props.classData.forEach((e) => {
         if (e.key === key) {
           newList.push(e)
           e.target.forEach((i) => {
@@ -121,11 +118,11 @@ class PublicResource extends React.Component {
   editNode = (newTree) => {
     dataList = []
     this.generateList(newTree, '')
-    this.setState({ classData: dataList })
+    this.props.changeData(dataList, 'class')
   }
 
   editNodeInfo = (value, key, type) => {
-    const { classData } = this.state
+    const { classData } = this.props
     const target = classData.find(item => item.key === key)
     if (type === 'Annotations') {
       target.title = value[0]
@@ -138,13 +135,12 @@ class PublicResource extends React.Component {
     } else {
       target.relationships = value
     }
-    this.setState({ classData })
+    this.props.changeData(classData, 'class')
   }
 
   render() {
-    const {
-      selectNode, classData,
-    } = this.state
+    const { selectNode } = this.state
+    const { classData, propertyData, propertyObj } = this.props
     const currentNode = _.find(classData, { key: selectNode })
     const currentParent = []
     if (currentNode) {
@@ -190,7 +186,7 @@ class PublicResource extends React.Component {
               <FlexTableDb
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
-                options={[...property.data, ...property.obj].map((e) => { return e.title })}
+                options={[...propertyData, ...propertyObj].map((e) => { return e.title })}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />

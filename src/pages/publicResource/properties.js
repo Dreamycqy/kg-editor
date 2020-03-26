@@ -80,7 +80,6 @@ class PublicResource extends React.Component {
     const links = []
     newList = []
     this.getNewList(selectNode)
-    console.log(newList)
     newList.forEach((e) => {
       const item = {
         name: e.title,
