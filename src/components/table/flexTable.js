@@ -133,7 +133,7 @@ export default class FlexTable extends React.Component {
               }}
               showSearch
             >
-              {makeOptionNormal(this.props.options)}
+              {makeOptionNormal(this.props.options || [])}
             </Select>
           )
       ),

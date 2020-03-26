@@ -2,17 +2,15 @@ import React from 'react'
 import { Empty } from 'antd'
 import _ from 'lodash'
 import Tree from '@/components/tree/simpleTree'
-import taskData from '@/utils/mock/task2'
-import treeData from '@/utils/mock/publicIndis'
 import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 import FlexTableDb from '@/components/table/flexTableDb'
+import classD from '@/utils/mock/new/class'
+import property from '@/utils/mock/new/props'
+import individual from '@/utils/mock/new/indis'
 
-const dataList = []
-const dataListo = []
-const dataListd = []
 let newList = []
 
 class PublicResource extends React.Component {
@@ -20,71 +18,13 @@ class PublicResource extends React.Component {
     super(props)
     this.state = {
       selectNode: '',
+      treeData: individual,
     }
   }
 
   componentWillMount = () => {
-    this.generateList(taskData.class)
-    this.generateListo(taskData.objProperty)
-    this.generateListd(taskData.dataProperty)
-  }
-
-  generateListo = (data, parent) => {
-    for (let i = 0; i < data.length; i++) {
-      const node = data[i]
-      const { key, title } = node
-      dataListo.push({
-        key,
-        title,
-        source: title,
-        target: parent,
-      })
-      if (node.children) {
-        this.generateListo(node.children, title)
-      }
-    }
-  }
-
-  generateListd = (data, parent) => {
-    for (let i = 0; i < data.length; i++) {
-      const node = data[i]
-      const { key, title } = node
-      dataListd.push({
-        key,
-        title,
-        source: title,
-        target: parent,
-      })
-      if (node.children) {
-        this.generateListd(node.children, title)
-      }
-    }
-  }
-
-  generateList = (data, parent) => {
-    for (let i = 0; i < data.length; i++) {
-      const node = data[i]
-      const { key, title } = node
-      dataList.push({
-        key,
-        title,
-        source: title,
-        target: parent,
-      })
-      if (node.children) {
-        this.generateList(node.children, title)
-      }
-    }
-  }
-
-  getNewList = (title) => {
-    if (title !== undefined) {
-      dataList.forEach((e) => {
-        if (e.title === title) {
-          newList.push(e)
-          this.getNewList(e.target)
-        }
-      })
+    if (this.state.selectNode === '') {
+      this.setState({ selectNode: individual[0].key })
     }
   }
 
@@ -92,19 +32,24 @@ class PublicResource extends React.Component {
     this.setState({ selectNode })
   }
 
-  rebuildChartData = (selectNode) => {
-    const data = [{
-      name: selectNode,
-      draggable: true,
-    }]
-    const target = selectNode.split('')[2] < 6 ? '医用防护标准' : '症状'
-    const links = [{
-      source: selectNode,
-      target,
-    }]
+  getNewList = (key) => {
+    if (key !== undefined) {
+      classD.forEach((e) => {
+        if (e.key === key) {
+          newList.push(e)
+          e.target.forEach((i) => {
+            this.getNewList(i)
+          })
+        }
+      })
+    }
+  }
+
+  handleClassChartBuild = (selectNode) => {
+    const data = []
+    const links = []
     newList = []
-    this.getNewList(target)
-    console.log(newList)
+    this.getNewList(selectNode)
     newList.forEach((e) => {
       const item = {
         name: e.title,
@@ -112,21 +57,55 @@ class PublicResource extends React.Component {
         category: 0,
       }
       data.push(item)
-      links.push({
-        source: e.source,
-        target: e.target,
+      e.target.forEach((i) => {
+        links.push({
+          source: e.title,
+          target: _.find(newList, { key: i }).title,
+        })
       })
+      if (e.target.length === 0) {
+        links.push({
+          source: e.title,
+          target: '',
+        })
+      }
     })
+    console.log(selectNode, data, links)
     return {
-      data: _.uniqBy(data, 'name'),
+      data: _.uniqBy(data, 'key'),
       links,
+    }
+  }
+
+  rebuildChartData = (selectNode) => {
+    let data = []
+    let links = []
+    const addition = []
+    const target = _.find(individual, { key: selectNode })
+    if (target) {
+      target.types.forEach((e) => {
+        const temp = this.handleClassChartBuild(e)
+        data = [...data, ...temp.data]
+        links = [...links, ...temp.links]
+        addition.push({
+          source: target.title, target: _.find(classD, { key: e }).title,
+        })
+      })
+    }
+    console.log(data, links)
+    return {
+      data: [..._.uniqBy(data, 'name'), {
+        name: target.title,
+      }],
+      links: [..._.uniqBy(data, 'name'), ...addition],
     }
   }
 
   render() {
     const {
-      selectNode,
+      selectNode, treeData,
     } = this.state
+    const currentNode = _.find(treeData, { key: selectNode })
     return (
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
@@ -134,29 +113,33 @@ class PublicResource extends React.Component {
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
-            Class: {selectNode}
+            Class: {currentNode ? currentNode.title : ''}
           </div>
           <div style={{ marginBottom: 10 }}>
             <div style={{ marginBottom: 10 }}>
-              <FlexTable title="Annotations" limited data={[selectNode]} />
+              <FlexTable
+                title="Annotations" limited
+                data={[currentNode ? currentNode.title : '']}
+              />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
-                title="Types" data={selectNode.split('')[2] < 6 ? ['医用防护标准'] : ['症状']}
+                title="Types"
+                data={currentNode ? currentNode.types : []}
                 placeholder="请输入类名"
-                options={dataList.map((e) => { return e.title })}
+                options={classD.map((e) => { return e.title })}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTableDb
                 title="Relationships" value="Value"
-                placeholder="请输入属性" data={[]}
-                options={[...dataListd, ...dataListo].map((e) => { return e.title })}
+                placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
+                options={[...property.data, ...property.obj].map((e) => { return e.title })}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
-                title="Same As" data={[]}
+                title="Same As" data={currentNode ? currentNode.sameAs : []}
                 placeholder="请输入实体"
                 options={treeData.map((e) => { return e.title })}
               />

@@ -24,12 +24,12 @@ class SimpleTree extends React.Component {
 
   componentWillMount = () => {
     if (this.state.treeData[0]) {
-      this.props.selectNode(this.state.treeData[0].title)
+      this.props.selectNode(this.state.treeData[0].key)
     }
   }
 
   onSelect = (keys, event) => {
-    this.props.selectNode(event.node.props.title)
+    this.props.selectNode(event.node.props.eventKey)
     this.setState({ selectKey: keys })
   }
 
@@ -175,7 +175,6 @@ class SimpleTree extends React.Component {
         authorization: 'authorization-text',
       },
       // beforeUpload: file => that.onImportExcel(file),
-      multiple: true,
       onChange(info) {
         const list = [...info.fileList].map((file) => {
           if (file.response) {
@@ -231,7 +230,6 @@ class SimpleTree extends React.Component {
         </div>
         <Tree
           onSelect={this.onSelect}
-          multiple
           selectKey={selectKey}
           showIcon
         >

@@ -81,9 +81,10 @@ export default class FlexTable extends React.Component {
     })
   }
 
-  handleDeleteRow = (itemKey) => {
+  handleDeleteRow = async (itemKey) => {
     const dataSource = [...this.state.dataSource]
-    this.setState({ dataSource: dataSource.filter(item => item.itemKey !== itemKey) })
+    await this.setState({ dataSource: dataSource.filter(item => item.itemKey !== itemKey) })
+    this.getMyData()
   }
 
   handleTableChange = (value, itemKey, text) => {

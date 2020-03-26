@@ -144,7 +144,6 @@ class PublicResource extends React.Component {
   listToTree = (list) => {
     const result = {}
     const startKey = []
-    console.log(list)
     list.forEach((item) => {
       if (!result[item.key]) {
         result[item.key] = item
@@ -267,7 +266,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Domain" data={currentNode ? currentNode.domain : []}
                 placeholder="请输入类名"
-                option={classD.map((e) => { return e.title })}
+                options={classD.map((e) => { return e.title })}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
@@ -276,7 +275,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                option={activeKey === 'obj' ? classD.map((e) => { return e.title }) : []}
+                options={activeKey === 'obj' ? classD.map((e) => { return e.title }) : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
