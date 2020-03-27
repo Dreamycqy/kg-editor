@@ -2,7 +2,6 @@ import React from 'react'
 import { Empty } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
-import taskConfig from '@/utils/mock/taskConfig'
 import { getUserList, getProjectList } from '@/services/edukg'
 
 import LeftNav from './leftNav'
@@ -33,19 +32,15 @@ class MainLayout extends React.Component {
     }
   }
 
-  componentWillReceiveProps = (nextProps) => {
+  componentWillReceiveProps = async (nextProps) => {
     const { userInfo } = nextProps
     if (userInfo.email && userInfo.email.length > 0) {
-      const array = []
-      for (const i in taskConfig) { // eslint-disable-line
-        if (taskConfig[i].status !== 'success') {
-          array.push(taskConfig[i])
-        }
-      }
-      this.setState({ selectedTask: array[0] })
       const newTaskList = []
       let taskItem = {}
       let target = {}
+      if (this.state.totalProjectList.length === 0) {
+        await this.getData()
+      }
       if (this.state.totalProjectList.length) {
         userInfo.taskList.forEach((e) => {
           this.state.totalProjectList.forEach((item) => {

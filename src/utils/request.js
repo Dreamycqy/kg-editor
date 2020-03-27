@@ -14,6 +14,8 @@ export default {
     delete params.successTip
     delete params.rSymbol
     const optsUrl = opts.url
+    const { id } = window.localStorage
+    params.id = id
     const { token, cancel } = CancelToken.source()
     if (rSymbol) {
       window.GLOBAL.requestSymbols[rSymbol] = cancel
@@ -22,7 +24,11 @@ export default {
       timeout: 1000 * 120,
       cancelToken: token,
     }).then((res) => {
-      return res.data.data
+      if (optsUrl.indexOf('login') > -1) {
+        return res.data
+      } else {
+        return res.data.data
+      }
     }, (err) => {
       opts.failed ? opts.failed(err) : console.log(err) // eslint-disable-line
       return false

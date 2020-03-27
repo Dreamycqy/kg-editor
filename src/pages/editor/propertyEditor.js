@@ -177,7 +177,6 @@ class PublicResource extends React.Component {
   editNodeData = (newTree) => {
     dataListData = []
     this.generateListData(newTree, '')
-    console.log(dataListData)
     this.props.changeData(dataListData, 'data')
   }
 

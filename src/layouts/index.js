@@ -9,6 +9,7 @@ import en_GB from 'antd/lib/locale-provider/en_GB'
 import menuList from '@/constants/menuList'
 import { getUserList } from '@/services/edukg'
 import { logout, fetchUserInfo } from '@/services/global'
+import moment from 'moment'
 
 const {
   Header, Footer, Content,
@@ -30,6 +31,9 @@ class MainLayout extends React.Component {
   }
 
   componentWillMount = async () => {
+    if (moment(window.localStorage.expire) < moment()) {
+      this.logout()
+    }
     const data = await fetchUserInfo({ email: window.localStorage.email })
     if (data === 200) {
       this.handleUserList(window.localStorage.email)
