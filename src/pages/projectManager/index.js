@@ -29,7 +29,7 @@ class Members extends React.Component {
     this.setState({ loading: true })
     const data = await getProjectList({})
     if (data.data) {
-      this.setState({ dataSource: data.data })
+      this.setState({ dataSource: data.data, originSource: data.data })
     }
     this.setState({ loading: false })
   }
