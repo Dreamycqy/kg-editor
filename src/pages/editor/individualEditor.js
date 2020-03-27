@@ -45,15 +45,15 @@ class PublicResource extends React.Component {
     this.getNewList(selectNode)
     newList.forEach((e) => {
       const item = {
-        name: e.title,
+        name: `${e.title}(概念)`,
         draggable: true,
         category: 0,
       }
       data.push(item)
       e.target.forEach((i) => {
         links.push({
-          source: e.title,
-          target: _.find(newList, { key: i }).title,
+          source: `${e.title}(概念)`,
+          target: `${_.find(newList, { key: i }).title}(概念)`,
         })
       })
       if (e.target.length === 0) {
@@ -80,13 +80,14 @@ class PublicResource extends React.Component {
         data = [...data, ...temp.data]
         links = [...links, ...temp.links]
         addition.push({
-          source: target.title, target: _.find(this.props.classData, { key: e }).title,
+          source: target.title, target: `${_.find(this.props.classData, { key: e }).title}(概念)`,
         })
       })
     }
     return {
       data: [..._.uniqBy(data, 'name'), {
         name: target ? target.title : '',
+        draggable: true,
       }],
       links: [..._.uniqBy(data, 'name'), ...addition],
     }
