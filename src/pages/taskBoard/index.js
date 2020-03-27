@@ -34,9 +34,8 @@ class MainLayout extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    const { userInfo, userList } = nextProps
+    const { userInfo } = nextProps
     if (userInfo.email && userInfo.email.length > 0) {
-      console.log(userInfo, userList)
       const array = []
       for (const i in taskConfig) { // eslint-disable-line
         if (taskConfig[i].status !== 'success') {
