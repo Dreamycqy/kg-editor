@@ -157,7 +157,7 @@ class PublicResource extends React.Component {
           <Tree
             iconType="smile" iconColor="#1296db"
             data={this.listToTree(classData)} selectNode={this.selectNode}
-            editNode={this.editNode}
+            editNode={this.editNode} treeType="class"
           />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>

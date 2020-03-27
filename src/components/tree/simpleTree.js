@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tree, Modal, Input, Icon, message, Upload, Table, Cascader } from 'antd'
 import * as XLSX from 'xlsx'
-import options from '@/utils/mock/publicIndisOption'
+import _ from 'lodash'
 
 const { Search } = Input
 const { TreeNode } = Tree
@@ -28,7 +28,17 @@ class SimpleTree extends React.Component {
     }
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if (!_.isEqual(nextProps.data, this.props.data)) {
+      this.setState({ treeData: nextProps.data })
+      if (nextProps.data[0]) {
+        this.props.selectNode(nextProps.data[0].key)
+      }
+    }
+  }
+
   onSelect = (keys, event) => {
+    console.log(event)
     this.props.selectNode(event.node.props.eventKey)
     this.setState({ selectKey: keys })
   }
@@ -75,12 +85,14 @@ class SimpleTree extends React.Component {
 
   handleFilter = (value) => {
     this.setState({ filterValue: value })
-    if (value[value.length - 1] === '医用防护标准') {
-      this.setState({ showTreeData: this.state.treeData.slice(0, 5) })
-    } else if (value[value.length - 1] === '症状') {
-      this.setState({ showTreeData: this.state.treeData.slice(5, 10) })
+    const { treeData } = this.state
+    if (value.length === 1) {
+      this.setState({ showTreeData: treeData })
     } else {
-      this.setState({ showTreeData: [] })
+      const showTreeData = treeData.filter((e) => {
+        return e.types.indexOf(value[value.length - 1]) > -1
+      })
+      this.setState({ showTreeData })
     }
   }
 
@@ -96,7 +108,7 @@ class SimpleTree extends React.Component {
     const that = this
     Modal.confirm({
       title: '你确定要删除改节点吗',
-      content: '该节点及其子节点将被删除',
+      content: '该实体节点将被删除',
       onOk() {
         that.nodeDelete(key)
       },
@@ -115,12 +127,15 @@ class SimpleTree extends React.Component {
       return
     }
     this.setState({ treeData: [...treeData, { title: createName, key: createName }] })
+    this.props.editNode({
+      title: createName, key: createName, types: [], relationships: [], sameAs: [],
+    }, 'add')
     this.setState({ visible: false })
-    message.success('添加成功')
   }
 
   nodeDelete = (key) => {
     const { treeData } = this.state
+    const target = _.find(treeData, { key })
     const array = treeData.filter((e) => {
       let result = true
       key.forEach((item) => {
@@ -131,7 +146,7 @@ class SimpleTree extends React.Component {
       return result
     })
     this.setState({ treeData: array, showTreeData: array })
-    message.success('删除成功')
+    this.props.editNode(target, 'delete')
   }
 
   renderTreeNodes = data => data.map((item) => {
@@ -197,7 +212,7 @@ class SimpleTree extends React.Component {
       <div>
         <div style={{ display: this.props.showFilter ? 'block' : 'none' }}>
           <Cascader
-            options={options}
+            options={this.props.classData}
             changeOnSelect
             value={filterValue}
             style={{ width: 280, marginBottom: 10 }}

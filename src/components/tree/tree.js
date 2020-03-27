@@ -166,9 +166,11 @@ class NormalTree extends React.Component {
         key = e.getAttribute('dataKey')
       }
     }
-    if (!key || key === '') {
-      message.error('请选择节点')
-      return
+    if (this.props.treeType === 'class') {
+      if (!key || key === '') {
+        message.error('请选择节点')
+        return
+      }
     }
     this.setState({ selectKey: key, visible: true, createName: '' })
   }
@@ -202,7 +204,14 @@ class NormalTree extends React.Component {
   nodeCreate = () => {
     const { treeData, selectKey } = this.state
     const newKey = uuid()
-    this.addNode(selectKey, treeData, newKey)
+    if (selectKey === '') {
+      treeData.push({
+        title: this.state.createName,
+        key: newKey,
+      })
+    } else {
+      this.addNode(selectKey, treeData, newKey)
+    }
     this.setState({
       treeData,
       visible: false,
@@ -210,7 +219,7 @@ class NormalTree extends React.Component {
     this.props.editNode(treeData)
   }
 
-  addNode = (key, data, newKey) => data.map((item) => { // eslint-disable-line
+  addNode = (key, data, newKey) => data.map((item) => {// eslint-disable-line
     if (item.key === key) {
       if (!item.children) {
         item.children = []

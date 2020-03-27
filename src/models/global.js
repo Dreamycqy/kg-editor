@@ -9,6 +9,8 @@ export default {
       email: '',
       userName: '',
       role: '',
+      projectList: [],
+      taskList: [],
     },
     userList: [],
   },

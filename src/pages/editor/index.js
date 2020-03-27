@@ -75,7 +75,7 @@ class MainEditor extends React.Component {
       projectName: this.state.projectName,
     })
     if (data) {
-      this.setState({ treeData: data.data })
+      this.setState({ treeData: data.data.filter((e) => { return !!e.key }) })
     }
     this.setState({ loading: false })
   }
@@ -84,9 +84,9 @@ class MainEditor extends React.Component {
     this.setState({ loading: true })
     const data = await editClasses({
       projectName: this.state.projectName,
-      data: newTree,
+      node: JSON.stringify(newTree),
     })
-    if (data) {
+    if (data === 200) {
       this.getClass()
     }
   }
@@ -95,10 +95,10 @@ class MainEditor extends React.Component {
     this.setState({ loading: true })
     const data = await editProperties({
       projectName: this.state.projectName,
-      data: newTree,
+      node: JSON.stringify(newTree),
       type: 'object',
     })
-    if (data) {
+    if (data === 200) {
       this.getPobj()
     }
   }
@@ -107,10 +107,10 @@ class MainEditor extends React.Component {
     this.setState({ loading: true })
     const data = await editProperties({
       projectName: this.state.projectName,
-      data: newTree,
+      node: JSON.stringify(newTree),
       type: 'data',
     })
-    if (data) {
+    if (data === 200) {
       this.getPdata()
     }
   }
@@ -119,7 +119,8 @@ class MainEditor extends React.Component {
     this.setState({ loading: true })
     const data = await editIndividuals({
       projectName: this.state.projectName,
-      data: newTree,
+      node: JSON.stringify(newTree.node),
+      method: newTree.method,
     })
     if (data) {
       this.getIndis()
@@ -165,8 +166,9 @@ class MainEditor extends React.Component {
         result = (
           <PropertyEditor
             projectName={projectName} taskName={taskName}
-            propertyData={propertyData} propertyObj={propertyObj}
-            changeData={this.changeData}
+            classData={classData} propertyData={propertyData}
+            changeData={this.changeData} propertyObj={propertyObj}
+            treeData={treeData}
           />
         )
         break
@@ -175,7 +177,8 @@ class MainEditor extends React.Component {
           <IndividualEditor
             projectName={projectName} taskName={taskName}
             treeData={treeData}
-            changeData={this.changeData}
+            classData={classData} propertyData={propertyData}
+            changeData={this.changeData} propertyObj={propertyObj}
           />
         )
         break

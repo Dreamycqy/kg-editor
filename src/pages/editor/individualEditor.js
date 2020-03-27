@@ -7,9 +7,6 @@ import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 import FlexTableDb from '@/components/table/flexTableDb'
-import classD from '@/utils/mock/new/class'
-import property from '@/utils/mock/new/props'
-import individual from '@/utils/mock/new/indis'
 
 let newList = []
 
@@ -18,14 +15,10 @@ class PublicResource extends React.Component {
     super(props)
     this.state = {
       selectNode: '',
-      treeData: individual,
     }
   }
 
   componentWillMount = () => {
-    if (this.state.selectNode === '') {
-      this.setState({ selectNode: individual[0].key })
-    }
   }
 
   selectNode = (selectNode) => {
@@ -34,7 +27,7 @@ class PublicResource extends React.Component {
 
   getNewList = (key) => {
     if (key !== undefined) {
-      classD.forEach((e) => {
+      this.props.classData.forEach((e) => {
         if (e.key === key) {
           newList.push(e)
           e.target.forEach((i) => {
@@ -87,60 +80,118 @@ class PublicResource extends React.Component {
         data = [...data, ...temp.data]
         links = [...links, ...temp.links]
         addition.push({
-          source: target.title, target: _.find(classD, { key: e }).title,
+          source: target.title, target: _.find(this.props.classData, { key: e }).title,
         })
       })
     }
     return {
       data: [..._.uniqBy(data, 'name'), {
-        name: target.title,
+        name: target ? target.title : '',
       }],
       links: [..._.uniqBy(data, 'name'), ...addition],
     }
   }
 
+  editNode = (target, method) => {
+    this.props.changeData({
+      node: target,
+      method,
+    }, 'indis')
+  }
+
   editNodeInfo = (value, key, type) => {
-    const { treeData } = this.state
+    const { treeData, classData } = this.props
     const target = treeData.find(item => item.key === key)
     if (type === 'Annotations') {
       target.title = value[0]
     } else if (type === 'Types') {
       const array = []
       value.forEach((e) => {
-        array.push(_.find(classD, { title: e }).key)
+        array.push(_.find(classData, { title: e }).key)
       })
       target.types = array
     } else if (type === 'Relationships') {
       const array = []
       value.forEach((e) => {
-        array.push(_.find(classD, { title: e }).key)
+        array.push(_.find(classData, { title: e }).key)
       })
       target.relationships = value
     } else {
       const array = []
       value.forEach((e) => {
-        array.push(_.find(classD, { title: e }).key)
+        array.push(_.find(classData, { title: e }).key)
       })
       target.sameAs = value
     }
-    this.setState({ treeData })
+    this.props.changeData({
+      node: target,
+      method: 'edit',
+    }, 'indis')
+  }
+
+  listToTree = (list) => {
+    const result = {}
+    const startKey = []
+    list.forEach((item) => {
+      if (!result[item.key]) {
+        result[item.key] = {
+          key: item.key,
+          label: item.title,
+          value: item.key,
+        }
+      }
+    })
+    list.forEach((item) => {
+      delete item.children
+    })
+    list.forEach((item) => {
+      if (item.target.length === 0) {
+        startKey.push({
+          key: item.key,
+          label: item.title,
+          value: item.key,
+        })
+      }
+      item.target.forEach((key) => {
+        if (!result[key].children) {
+          result[key].children = []
+        }
+        if (!_.find(result[key].children, { key: item.key })) {
+          result[key].children.push({
+            key: item.key,
+            label: item.title,
+            value: item.key,
+          })
+        }
+      })
+    })
+    const map = []
+    startKey.forEach((e) => {
+      map.push(result[e.key])
+    })
+    return map
   }
 
   render() {
-    const {
-      selectNode, treeData,
-    } = this.state
-    const currentNode = _.find(treeData, { key: selectNode })
+    const { selectNode } = this.state
+    const { treeData, classData, propertyData, propertyObj } = this.props
+    const currentNode = _.find(treeData || [], { key: selectNode })
     const typesArray = []
     if (currentNode) {
       currentNode.types.forEach((e) => {
-        typesArray.push(_.find(classD, { key: e }).title)
+        typesArray.push(_.find(classData, { key: e }).title)
       })
     }
     return (
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
-          <Tree showFilter iconType="tag" iconColor="#1296db" data={treeData} selectNode={this.selectNode} />
+          <Tree
+            showFilter
+            iconType="tag" iconColor="#1296db"
+            data={treeData} selectNode={this.selectNode}
+            editNode={this.editNode}
+            classData={this.listToTree(classData || [])}
+          />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
@@ -161,7 +212,7 @@ class PublicResource extends React.Component {
                 data={currentNode ? typesArray : []}
                 placeholder="请输入类名"
                 selectKey={currentNode ? currentNode.key : ''}
-                options={classD.map((e) => { return e.title })}
+                options={classData ? classData.map((e) => { return e.title }) : []}
                 editNode={this.editNodeInfo}
               />
             </div>
@@ -169,7 +220,8 @@ class PublicResource extends React.Component {
               <FlexTableDb
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
-                options={[...property.data, ...property.obj].map((e) => { return e.title })}
+                options={propertyData && propertyObj
+                  ? [...propertyData, ...propertyObj].map((e) => { return e.title }) : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
@@ -178,7 +230,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Same As" data={currentNode ? currentNode.sameAs : []}
                 placeholder="请输入实体"
-                options={treeData.map((e) => { return e.title })}
+                options={treeData ? treeData.map((e) => { return e.title }) : []}
               />
             </div>
           </div>
@@ -190,7 +242,7 @@ class PublicResource extends React.Component {
         <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
-            <Chart graph={this.rebuildChartData(treeData, selectNode)} />
+            <Chart graph={this.rebuildChartData(treeData || [], selectNode)} />
           </div>
           <div style={{ minHeight: 350 }}>
             <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>最近更改</div>

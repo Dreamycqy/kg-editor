@@ -6,8 +6,6 @@ import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
-import classD from '@/utils/mock/new/class'
-import property from '@/utils/mock/new/props'
 
 const { TabPane } = Tabs
 let dataListObj = []
@@ -22,8 +20,6 @@ class PublicResource extends React.Component {
       selectNodeObj: '',
       selectNodeData: '',
       activeKey: 'obj',
-      propertyObj: property.obj,
-      propertyData: property.data,
     }
   }
 
@@ -67,7 +63,7 @@ class PublicResource extends React.Component {
   }
 
   getNewList = (key) => {
-    const { propertyData, propertyObj } = this.state
+    const { propertyData, propertyObj } = this.props
     if (this.state.activeKey === 'obj') {
       if (key !== undefined) {
         propertyObj.forEach((e) => {
@@ -175,13 +171,14 @@ class PublicResource extends React.Component {
   editNodeObj = (newTree) => {
     dataListObj = []
     this.generateListObj(newTree, '')
-    this.setState({ propertyObj: dataListObj })
+    this.props.changeData(dataListObj, 'obj')
   }
 
   editNodeData = (newTree) => {
     dataListData = []
     this.generateListData(newTree, '')
-    this.setState({ propertyData: dataListData })
+    console.log(dataListData)
+    this.props.changeData(dataListData, 'data')
   }
 
   editNodeInfo = (value, key, type) => {
@@ -193,7 +190,7 @@ class PublicResource extends React.Component {
   }
 
   editNodeInfoObj = (value, key, type) => {
-    const { propertyObj } = this.state
+    const { propertyObj } = this.props
     const target = propertyObj.find(item => item.key === key)
     if (type === 'Annotations') {
       target.title = value[0]
@@ -202,11 +199,11 @@ class PublicResource extends React.Component {
     } else {
       target.range = value
     }
-    this.setState({ propertyObj })
+    this.props.changeData(propertyObj, 'obj')
   }
 
   editNodeInfoData = (value, key, type) => {
-    const { propertyData } = this.state
+    const { propertyData } = this.props
     const target = propertyData.find(item => item.key === key)
     if (type === 'Annotations') {
       target.title = value[0]
@@ -215,13 +212,14 @@ class PublicResource extends React.Component {
     } else {
       target.range = value
     }
-    this.setState({ propertyData })
+    this.props.changeData(propertyData, 'data')
   }
 
   render() {
     const {
-      selectNodeObj, selectNodeData, activeKey, propertyObj, propertyData,
+      selectNodeObj, selectNodeData, activeKey,
     } = this.state
+    const { propertyData, propertyObj, classData } = this.props
     let result
     const currentNodeObj = _.find(propertyObj, { key: selectNodeObj })
     const currentNodeData = _.find(propertyData, { key: selectNodeData })
@@ -266,7 +264,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Domain" data={currentNode ? currentNode.domain : []}
                 placeholder="请输入类名"
-                options={classD.map((e) => { return e.title })}
+                options={classData.map((e) => { return e.title })}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
@@ -275,7 +273,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                options={activeKey === 'obj' ? classD.map((e) => { return e.title }) : []}
+                options={activeKey === 'obj' ? classData.map((e) => { return e.title }) : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />

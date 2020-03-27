@@ -41,7 +41,7 @@ class MainLayout extends React.Component {
   handleUserList = async (email) => {
     const data = await getUserList({ email })
     if (data.data) {
-      const { userName, role } = _.find(data.data, { email })
+      const { userName, role, projectList, taskList } = _.find(data.data, { email })
       await this.props.dispatch({
         type: 'global/updateState',
         payload: {
@@ -50,6 +50,8 @@ class MainLayout extends React.Component {
             email,
             userName,
             role,
+            projectList,
+            taskList,
           },
         },
       })
@@ -140,9 +142,9 @@ class MainLayout extends React.Component {
               {this.makeMenu()}
             </Menu>
             <div style={{ float: 'right' }}>
-              <Badge count={2}>
+              <Badge count={0}>
                 <a href="#" onClick={() => {}}>
-                  <Icon style={{ fontSize: 20 }} type="mail" />
+                  <Icon style={{ fontSize: 24 }} type="mail" />
                 </a>
               </Badge>
             </div>

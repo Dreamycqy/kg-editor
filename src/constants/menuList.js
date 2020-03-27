@@ -1,12 +1,12 @@
 export default {
-  publicProps: {
-    cn: '公共属性',
-    en: 'Public Resource',
-  },
-  publicIndis: {
-    cn: '公共实体',
-    en: 'Public Resource',
-  },
+  // publicProps: {
+  //   cn: '公共属性',
+  //   en: 'Public Resource',
+  // },
+  // publicIndis: {
+  //   cn: '公共实体',
+  //   en: 'Public Resource',
+  // },
   history: {
     cn: '编辑历史',
     en: 'History',

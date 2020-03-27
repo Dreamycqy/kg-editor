@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table, Input, Divider, Icon } from 'antd'
-// import moment from 'moment'
+import { connect } from 'dva'
+import { routerRedux } from 'dva/router'
 import User from '@/components/items/userName'
 // import ShowProcess from '@/components/items/processTask'
 import { getTaskList } from '@/services/edukg'
@@ -9,6 +10,7 @@ import Config from './config'
 
 const { Search } = Input
 
+@connect()
 class Members extends React.Component {
   constructor(props) {
     super(props)
@@ -74,6 +76,16 @@ class Members extends React.Component {
     })
   }
 
+  jumpTask = (taskName) => {
+    this.props.dispatch(routerRedux.push({
+      pathname: '/kgEditor/editor',
+      query: {
+        projectName: this.state.projectName,
+        taskName,
+      },
+    }))
+  }
+
   render() {
     const { dataSource, loading } = this.state
     const columns = [{
@@ -125,7 +137,7 @@ class Members extends React.Component {
         return (
           <span>
             {/* <ShowProcess data={[]} /> */}
-            <a href="#" onClick={e => e.preventDefault()}>进入任务</a>
+            <a href="#" onClick={() => this.jumpTask(record.taskName)}>进入任务</a>
             <Divider type="vertical" />
             <a href="#" onClick={e => e.preventDefault()}>查看进度</a>
             <Divider type="vertical" />

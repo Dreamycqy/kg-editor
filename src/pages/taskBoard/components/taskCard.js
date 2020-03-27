@@ -29,7 +29,8 @@ class taskCard extends React.Component {
     this.props.dispatch(routerRedux.push({
       pathname: '/kgEditor/editor',
       query: {
-        taskName: e.name,
+        taskName: e.taskName,
+        projectName: e.projectName,
       },
     }))
   }
@@ -44,23 +45,23 @@ class taskCard extends React.Component {
         <div
           style={{ backgroundColor: time.colorTitle, padding: 8, overflow: 'hidden' }}
         >
-          <div style={{ float: 'left' }}>
-            <div style={{ fontSize: 18 }}>{e.name}</div>
-            <div>
-              <span style={{ marginRight: 20 }}>截止于：{e.endTime}</span>
-              {time.dom}
-            </div>
+          <div style={{ height: 40, lineHeight: '36px' }}>
+            <div style={{ float: 'left', fontSize: 18 }}>{e.taskName}</div>
+            <Button style={{ float: 'right', marginTop: 6 }} size="small" onClick={() => this.jumpEditor(e)}>进入任务</Button>
           </div>
-          <Button style={{ float: 'right', marginTop: 6 }} onClick={() => this.jumpEditor(e)}>进入任务</Button>
+          <div>
+            <span style={{ marginRight: 20 }}>截止于：{e.endTime}</span>
+            {time.dom}
+          </div>
         </div>
         <div style={{ padding: 8 }}>
-          <div style={{ marginBottom: 4 }}>
+          {/* <div style={{ marginBottom: 4 }}>
             <span>
               <Icon type="user" style={{ fontSize: '14px', color: 'blue' }} />
               成员
             </span>
             {e.members.map(u => <UserIcon size="small" username={u} />)}
-          </div>
+          </div> */}
           <div style={{ wordBreak: 'break-all' }}>描述：{e.desc}</div>
         </div>
       </div>
