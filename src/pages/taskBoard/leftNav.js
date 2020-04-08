@@ -143,22 +143,22 @@ class LeftPart extends React.Component {
       const value = e.split('=')[1]
       if (key === 'class') {
         process[key] = {
-          rate: classData.length / value,
+          rate: classData.length * 100 / value,
           text: `${classData.length} / ${value}`,
         }
       } else if (key === 'propertyObj') {
         process[key] = {
-          rate: propertyObj.length / value,
+          rate: propertyObj.length * 100 / value,
           text: `${propertyObj.length} / ${value}`,
         }
       } else if (key === 'propertyData') {
         process[key] = {
-          rate: propertyData.length / value,
+          rate: propertyData.length * 100 / value,
           text: `${propertyData.length} / ${value}`,
         }
       } else if (key === 'individual') {
         process[key] = {
-          rate: treeData.length / value,
+          rate: treeData.length * 100 / value,
           text: `${treeData.length} / ${value}`,
         }
       } else {

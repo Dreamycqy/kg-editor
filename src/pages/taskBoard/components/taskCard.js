@@ -12,7 +12,9 @@ class taskCard extends React.Component {
     let color = '#000000a6'
     let colorTitle = '#00ff814d'
     const colorBg = '#fbfbfb'
-    if (remain <= 3) {
+    if (remain < 0) {
+      colorTitle = '#e8e8e8'
+    } else if (remain <= 3) {
       color = 'red'
       colorTitle = '#ff52004d'
     } else if (remain <= 7) {
@@ -21,7 +23,7 @@ class taskCard extends React.Component {
     return {
       colorTitle,
       colorBg,
-      dom: <span style={{ color }}>剩余时间：{remain.toFixed(0)} 天</span>,
+      dom: <span style={{ color }}>剩余时间：{remain > 0 ? Number(remain.toFixed(0)) : 0} 天</span>,
     }
   }
 

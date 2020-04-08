@@ -39,9 +39,9 @@ class NormalLoginForm extends React.Component {
           userName: values.userName,
           password: values.password,
         })
-        if (data.data === 200) {
+        if (data === 200 || data.data === 200) {
           if (this.state.type === 'login') {
-            this.handleUserInfo(data.data, values.email)
+            this.handleUserInfo(200, values.email)
             window.localStorage.setItem('id', data.id)
             window.localStorage.setItem('expire', data.time)
           } else {
@@ -49,9 +49,11 @@ class NormalLoginForm extends React.Component {
               email: values.email,
               password: values.password,
             })
-            this.handleUserInfo(newData, values.email)
+            window.localStorage.setItem('id', newData.id)
+            window.localStorage.setItem('expire', newData.time)
+            this.handleUserInfo(newData.data, values.email)
           }
-        } else if (data.data === 405) {
+        } else if (data === 405) {
           message.error('该邮箱已注册！')
         } else {
           message.error('操作失败，请检查邮箱和密码！')

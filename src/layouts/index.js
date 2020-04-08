@@ -33,6 +33,7 @@ class MainLayout extends React.Component {
   componentWillMount = async () => {
     if (moment(window.localStorage.expire) < moment()) {
       this.logout()
+      console.log('!!!')
     }
     const data = await fetchUserInfo({ email: window.localStorage.email })
     if (data === 200) {
