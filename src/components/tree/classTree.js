@@ -374,7 +374,7 @@ class NormalTree extends React.Component {
         </Tree>
         {this.myAwesomeMenu(dataList)}
         <Modal
-          title="新增属性(可添加多个)"
+          title="新增概念(可添加多个)"
           visible={visible}
           onOk={() => this.nodeCreate()}
           onCancel={() => this.setState({ visible: false })}

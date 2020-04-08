@@ -248,7 +248,7 @@ class PublicResource extends React.Component {
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
-            Class: {currentNode ? currentNode.title : ''}
+            属性: {currentNode ? currentNode.title : ''}
           </div>
           <div style={{ marginBottom: 10 }}>
             <div style={{ marginBottom: 10 }}>
@@ -272,14 +272,14 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                options={activeKey === 'obj' ? classData.map((e) => { return e.title }) : []}
+                options={activeKey === 'obj' ? classData.map((e) => { return e.title }) : ['string', 'int', 'float']}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
           </div>
           <div>
-            <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>直播</div>
+            {/* <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>指标</div> */}
             <div style={{ height: 320 }}>
               {/* <Chart1 /> */}
             </div>

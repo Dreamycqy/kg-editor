@@ -8,7 +8,7 @@ import {
 import HistoryList from '@/components/history'
 import CountDown from '@/components/items/countDown'
 import hisdata from '@/utils/mock/totalHistory'
-import Chart from '@/components/charts/newGrapeChart'
+import Chart from '@/components/charts/foldGrape'
 
 const name = {
   class: '概念',
@@ -109,20 +109,49 @@ class LeftPart extends React.Component {
     return result
   }
 
-  rebuildChartData = (classData) => {
+  rebuildChartData = (classData, treeData) => {
     const data = []
     const links = []
-    classData.forEach((e) => {
+    classData.forEach((e, index) => {
+      const opacity = index === 0 ? 1 : e.target.indexOf(classData[0].key) > -1 ? 1 : 0
       const item = {
-        name: e.title,
+        name: e.title + '(概念)',
         draggable: true,
+        open: index === 0,
         category: 0,
+        itemStyle: {
+          opacity,
+        },
       }
       data.push(item)
       e.target.forEach((i) => {
         links.push({
-          source: e.title,
-          target: _.find(classData, { key: i }).title,
+          source: e.title + '(概念)',
+          target: _.find(classData, { key: i }).title + '(概念)',
+          lineStyle: {
+            opacity,
+          },
+        })
+      })
+    })
+    treeData.forEach((e) => {
+      const opacity = e.types.indexOf(classData[0] ? classData[0].key : '') > -1 ? 1 : 0
+      e.types.forEach((i) => {
+        const item = {
+          name: e.title + '(实体)',
+          draggable: true,
+          category: 1,
+          itemStyle: {
+            opacity,
+          },
+        }
+        data.push(item)
+        links.push({
+          source: e.title + '(实体)',
+          target: _.find(classData, { key: i }) ? _.find(classData, { key: i }).title + '(概念)' : '',
+          lineStyle: {
+            opacity,
+          },
         })
       })
     })
@@ -216,7 +245,7 @@ class LeftPart extends React.Component {
         <div style={{ backgroundColor: '#fbfbfb', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
           <div style={{ fontSize: 20, paddingBottom: 10 }}>图谱展示</div>
           <div style={{ height: 400 }}>
-            <Chart graph={this.rebuildChartData(classData)} />
+            <Chart graph={this.rebuildChartData(classData, treeData)} />
           </div>
         </div>
         <div style={{ backgroundColor: '#fbfbfb', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>

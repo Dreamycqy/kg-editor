@@ -196,7 +196,7 @@ class PublicResource extends React.Component {
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>
-            Class: {currentNode ? currentNode.title : ''}
+            实体: {currentNode ? currentNode.title : ''}
           </div>
           <div style={{ marginBottom: 10 }}>
             <div style={{ marginBottom: 10 }}>
