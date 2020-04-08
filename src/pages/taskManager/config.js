@@ -48,7 +48,7 @@ class Config extends React.Component {
     members.forEach((e) => { memList.push(e.email) })
     this.setState({
       taskName,
-      startNode,
+      startNode: _.find(this.state.classTree, { key: startNode }).title,
       desc,
       endTime: moment(endTime),
       members: memList,
@@ -61,14 +61,14 @@ class Config extends React.Component {
 
   openModal = async () => {
     await this.setState({ visible: true })
-    if (this.props.params) {
-      this.getData()
-    }
     const newData = await getProjectClassesTree({
       projectName: this.props.projectName,
     })
     if (newData) {
-      this.setState({ classTree: newData.data })
+      await this.setState({ classTree: newData.data })
+    }
+    if (this.props.params) {
+      this.getData()
     }
   }
 
@@ -108,7 +108,7 @@ class Config extends React.Component {
         projectName: this.props.projectName,
         taskName,
         desc,
-        startNode,
+        startNode: _.find(classTree, { title: startNode }).key,
         members: JSON.stringify(memList),
         urgency,
         createTime: this.props.params.createTime,
@@ -120,7 +120,7 @@ class Config extends React.Component {
         projectName: this.props.projectName,
         taskName,
         desc,
-        startNode,
+        startNode: _.find(classTree, { title: startNode }).key,
         members: JSON.stringify(memList),
         urgency,
         createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -132,7 +132,7 @@ class Config extends React.Component {
       message.success(this.props.type === 'edit' ? '编辑任务成功' : '新建任务成功')
       this.setState({ visible: false })
       if (this.props.type !== 'edit') {
-        _.find(classTree, { key: startNode }).nodeTask.push(taskName)
+        _.find(classTree, { key: _.find(classTree, { title: startNode }).key }).nodeTask.push(taskName)
         editClasses({
           projectName: this.props.projectName,
           node: JSON.stringify(classTree),
@@ -196,6 +196,7 @@ class Config extends React.Component {
                 >
                   <Select
                     placeholder="请选择起始节点"
+                    showSearch
                     value={startNode}
                     onChange={value => this.setState({ startNode: value })}
                   >

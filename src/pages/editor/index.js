@@ -194,7 +194,11 @@ class MainEditor extends React.Component {
     }
     return (
       <div style={{ height: '100%' }}>
-        <Tabs activeKey={activeKey} onChange={key => this.setState({ activeKey: key })}>
+        <Tabs
+          activeKey={activeKey}
+          tabBarExtraContent={<span>{projectName} -&gt; {taskName}</span>}
+          onChange={key => this.setState({ activeKey: key })}
+        >
           <TabPane style={{ height: 0 }} tab="类" key="classes" />
           <TabPane style={{ height: 0 }} tab="属性" key="properties" />
           <TabPane style={{ height: 0 }} tab="实体" key="individuals" />

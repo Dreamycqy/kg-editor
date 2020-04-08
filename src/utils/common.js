@@ -41,7 +41,7 @@ export const makeOption = (array) => {
 export const makeOptionTree = (array) => {
   const children = []
   for (const i of array) {
-    children.push(<Option key={i.key} value={i.key}>{i.title}</Option>)
+    children.push(<Option key={i.title} value={i.title}>{i.title}</Option>)
   }
   return children
 }
