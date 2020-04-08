@@ -7,6 +7,10 @@ export default {
   //   cn: '公共实体',
   //   en: 'Public Resource',
   // },
+  board: {
+    cn: '我的任务',
+    en: '',
+  },
   history: {
     cn: '编辑历史',
     en: 'History',

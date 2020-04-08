@@ -26,14 +26,13 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      key: window.location.pathname.split('/')[1] || 'home',
+      key: window.location.pathname.split('/')[2] || 'board',
     }
   }
 
   componentWillMount = async () => {
     if (moment(window.localStorage.expire) < moment()) {
       this.logout()
-      console.log('!!!')
     }
     const data = await fetchUserInfo({ email: window.localStorage.email })
     if (data === 200) {
@@ -41,6 +40,16 @@ class MainLayout extends React.Component {
     } else {
       this.logout()
     }
+  }
+
+  componentWillReceiveProps = () => {
+    let key = window.location.pathname.split('/')[2] || 'board'
+    if (key === 'taskManager') {
+      key = 'projectManager'
+    }
+    this.setState({
+      key,
+    })
   }
 
   handleUserList = async (email) => {
