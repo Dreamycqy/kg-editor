@@ -19,4 +19,6 @@ export default {
   EDIT_CLASS: '/kgeditor/api/editClasses',
   EDIT_PROPS: '/kgeditor/api/editProperties',
   EDIT_INDIS: '/kgeditor/api/editIndividuals',
+
+  CLASS_CONNECT: '/kgeditor/api/getSonClass',
 }

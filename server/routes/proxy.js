@@ -9,7 +9,11 @@ router.all('/', function (req, res) {
   let url = req.baseUrl
   const { basePath } = config
   if (url.indexOf('/api') > -1) {
-    url = '/build' + url.split('/api')[1]
+    if (url.indexOf('getSonClass') > -1) {
+      url = url.split('/api')[1]
+    } else {
+      url = '/build' + url.split('/api')[1]
+    }
   }
   console.log(req.body.id)
   url = (typeof basePath === 'string' ? basePath : basePath[hostname]) + url

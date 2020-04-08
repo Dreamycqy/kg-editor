@@ -1,7 +1,7 @@
 import React from 'react'
 import { Empty } from 'antd'
 import _ from 'lodash'
-import Tree from '@/components/tree/tree'
+import Tree from '@/components/tree/classTree'
 import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'

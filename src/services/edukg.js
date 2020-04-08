@@ -104,3 +104,11 @@ export function editIndividuals(body, rSymbol) {
     rSymbol,
   })
 }
+
+export function getSonClass(body, rSymbol) {
+  return request.post({
+    url: URLS.CLASS_CONNECT,
+    data: body,
+    rSymbol,
+  })
+}
