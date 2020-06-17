@@ -1,11 +1,12 @@
 import React from 'react'
-import { Tree, Modal, Input, Icon, message, Upload, Table, Cascader } from 'antd'
-import * as XLSX from 'xlsx'
+import { Tree, Modal, Input, Icon, message, Cascader, Select } from 'antd'
 import _ from 'lodash'
+import UploadExcel from '@/components/upload/uploadExcel'
+import UploadJson from '@/components/upload/uploadJson'
 
 const { Search } = Input
 const { TreeNode } = Tree
-const { Dragger } = Upload
+const { Option } = Select
 
 class SimpleTree extends React.Component {
   constructor(props) {
@@ -16,9 +17,8 @@ class SimpleTree extends React.Component {
       createName: '',
       visible: false,
       selectKey: [],
-      dataSource: [],
-      fileList: [],
       filterValue: [],
+      fileType: 'json',
     }
   }
 
@@ -51,35 +51,6 @@ class SimpleTree extends React.Component {
     })
     this.setState({
       showTreeData,
-    })
-  }
-
-  onImportExcel = (files) => {
-    const fileReader = new FileReader() // eslint-disable-line
-    fileReader.onload = (event) => {
-      try {
-        const { result } = event.target
-        const workbook = XLSX.read(result, { type: 'binary' })
-        let data = []
-        for (const sheet in workbook.Sheets) {
-          if (workbook.Sheets.hasOwnProperty(sheet)) { // eslint-disable-line
-            data = data.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]))
-          }
-        }
-        this.setState({ dataSource: [...this.state.dataSource, ...data] })
-        message.success('上传成功！')
-      } catch (e) {
-        message.error('文件类型不正确！')
-      }
-    }
-    // 以二进制方式打开文件
-    fileReader.readAsBinaryString(files)
-  }
-
-  handleFileList = (list) => {
-    this.setState({ dataSource: [] })
-    list.forEach((a) => {
-      this.onImportExcel(a.originFileObj)
     })
   }
 
@@ -170,44 +141,8 @@ class SimpleTree extends React.Component {
 
   render() {
     const {
-      showTreeData, visible, createName, selectKey, visibleExcel, dataSource, fileList, filterValue,
+      showTreeData, visible, createName, selectKey, visibleExcel, filterValue, fileType,
     } = this.state
-    const columns = []
-    if (dataSource.length > 0) {
-      for (const i in dataSource[0]) { // eslint-disable-line
-        columns.push({
-          title: i,
-          dataIndex: i,
-        })
-      }
-    }
-    const that = this
-    const props = {
-      name: 'file',
-      action: '',
-      fileList,
-      headers: {
-        authorization: 'authorization-text',
-      },
-      // beforeUpload: file => that.onImportExcel(file),
-      onChange(info) {
-        const list = [...info.fileList].map((file) => {
-          if (file.response) {
-            file.url = file.response.url
-          }
-          return file
-        })
-        that.setState({ fileList: list }, () => that.handleFileList(list))
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList)
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`)
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`)
-        }
-      },
-    }
     return (
       <div>
         <div style={{ display: this.props.showFilter ? 'block' : 'none' }}>
@@ -262,30 +197,31 @@ class SimpleTree extends React.Component {
           />
         </Modal>
         <Modal
-          title="新增实体"
+          title="导入实体列表"
           visible={visibleExcel}
           onOk={() => {
-            this.setState({ visibleExcel: false, fileList: [], dataSource: [] })
+            this.setState({ visibleExcel: false })
             message.success('上传成功')
           }}
           width="1000px"
           onCancel={() => this.setState({ visibleExcel: false })}
         >
-          <div>
-            <Dragger {...props}>
-              <p className="ant-upload-drag-icon">
-                <Icon type="inbox" />
-              </p>
-              <p className="ant-upload-text">点击或拖入文件以开始上传</p>
-              <p className="ant-upload-hint">
-                支持大小不超过5MB，后缀名为xls或xlsx的Excel文件，支持多个文件
-              </p>
-            </Dragger>
-            <Table
-              dataSource={dataSource}
-              columns={columns}
-            />
+
+          <div style={{ margin: 10 }}>
+            选择文件类型：&nbsp;
+            <Select
+              style={{ width: 150 }}
+              value={fileType}
+              onChange={value => this.setState({ fileType: value })}
+            >
+              <Option key="excel" value="excel">Excel</Option>
+              <Option key="json" value="json">Json</Option>
+            </Select>
           </div>
+          {
+            fileType === 'excel'
+              ? <UploadExcel /> : <UploadJson />
+          }
         </Modal>
       </div>
     )

@@ -11,10 +11,10 @@ export default {
     cn: '我的任务',
     en: '',
   },
-  history: {
-    cn: '编辑历史',
-    en: 'History',
-  },
+  // history: {
+  //   cn: '编辑历史',
+  //   en: 'History',
+  // },
   // taskManager: {
   //   cn: '任务管理',
   //   en: 'TaskManager',

@@ -132,7 +132,8 @@ class Config extends React.Component {
       message.success(this.props.type === 'edit' ? '编辑任务成功' : '新建任务成功')
       this.setState({ visible: false })
       if (this.props.type !== 'edit') {
-        _.find(classTree, { key: _.find(classTree, { title: startNode }).key }).nodeTask.push(taskName)
+        _.find(classTree,
+          { key: _.find(classTree, { title: startNode }).key }).nodeTask.push(taskName)
         editClasses({
           projectName: this.props.projectName,
           node: JSON.stringify(classTree),
