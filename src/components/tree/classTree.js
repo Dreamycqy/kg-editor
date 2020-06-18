@@ -341,7 +341,7 @@ class NormalTree extends React.Component {
       <div style={{ height: '100%' }}>
         <div>
           <Search style={{ marginBottom: 8, width: 200 }} placeholder="Search" onChange={this.onChange} />
-          <span>
+          <span style={{ display: this.props.onlyShow ? 'none' : 'inline-block' }}>
             <a
               href="javascript:;" style={{ marginLeft: 10, fontSize: 20 }}
               onClick={() => this.showCreateModal(selectKey, selectName)}

@@ -68,7 +68,7 @@ class Members extends React.Component {
     })
   }
 
-  handleProcess = (email) => {
+  handleProcess = () => {
     const result = []
     // _.filter(userList, { email })[0].tasks.forEach((e) => {
     //   if (taskConfig[e].status !== 'success') {

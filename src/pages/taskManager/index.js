@@ -167,6 +167,9 @@ class Members extends React.Component {
           columns={columns}
           loading={loading}
           rowKey={record => record.taskid}
+          locale={{
+            emptyText: '暂无您参与的任务',
+          }}
         />
       </div>
     )

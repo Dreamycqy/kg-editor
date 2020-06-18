@@ -124,6 +124,7 @@ export default class FlexTable extends React.Component {
       render: (text, record) => (
         <Select
           value={record.key}
+          disabled={this.props.onlyShow}
           style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
           onChange={(value) => {
             this.handleTableChange(value, record.itemKey, 'key')
@@ -138,6 +139,7 @@ export default class FlexTable extends React.Component {
       key: 'key',
       render: (text, record) => (
         <TextArea
+          disabled={this.props.onlyShow}
           value={record.value} placeholder="请输入内容"
           autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
           onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'value')}
@@ -149,7 +151,9 @@ export default class FlexTable extends React.Component {
       width: 40,
       render: (text, record) => {
         return (
-          dataSource.length > 1 && dataSource[dataSource.length - 1].itemKey !== record.itemKey
+          dataSource.length > 1
+          && dataSource[dataSource.length - 1].itemKey !== record.itemKey
+          && this.props.onlyShow === false
             ? (
               <Popconfirm
                 title="确定要删除吗？"

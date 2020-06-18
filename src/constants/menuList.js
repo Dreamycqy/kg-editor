@@ -8,7 +8,7 @@ export default {
   //   en: 'Public Resource',
   // },
   board: {
-    cn: '我的任务',
+    cn: '任务看板',
     en: '',
   },
   // history: {
@@ -23,8 +23,8 @@ export default {
     cn: '项目管理',
     en: 'ProjectManager',
   },
-  members: {
-    cn: '成员管理',
-    en: 'Members',
-  },
+  // members: {
+  //   cn: '成员管理',
+  //   en: 'Members',
+  // },
 }

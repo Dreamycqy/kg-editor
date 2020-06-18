@@ -27,7 +27,7 @@ class Config extends React.Component {
       projectName: '',
       startNode: '',
       desc: '',
-      members: [],
+      members: [this.props.userInfo.email],
     }
   }
 
@@ -121,6 +121,14 @@ class Config extends React.Component {
     }
   }
 
+  handleMenbers = (value) => {
+    const members = value
+    if (members.indexOf(this.props.userInfo.email) < 0) {
+      members.unshift(this.props.userInfo.email)
+    }
+    this.setState({ members })
+  }
+
   render() {
     const {
       visible, loading, projectName, startNode, desc, members,
@@ -182,21 +190,11 @@ class Config extends React.Component {
                     mode="multiple"
                     placeholder="请选择参与成员"
                     value={members}
-                    onChange={value => this.setState({ members: value })}
+                    onChange={value => this.handleMenbers(value)}
                   >
                     {makeOptionSimple(this.props.userList)}
                   </Select>
                 </FormItem>
-                {/* <FormItem
-                  label="截止时间"
-                  {...formItemLayout}
-                >
-                  <DatePicker
-                    showTime
-                    value={endTime}
-                    onChange={value => this.setState({ endTime: value })}
-                  />
-                </FormItem> */}
                 <FormItem
                   label="项目描述"
                   {...formItemLayout}

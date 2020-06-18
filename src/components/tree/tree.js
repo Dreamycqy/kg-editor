@@ -316,7 +316,7 @@ class NormalTree extends React.Component {
       <div style={{ height: '100%' }}>
         <div>
           <Search style={{ marginBottom: 8, width: 200 }} placeholder="Search" onChange={this.onChange} />
-          <span>
+          <span style={{ display: this.props.onlyShow ? 'none' : 'inline-block' }}>
             <a
               href="javascript:;" style={{ marginLeft: 10, fontSize: 20 }}
               onClick={() => this.showCreateModal(selectKey)}
@@ -347,7 +347,7 @@ class NormalTree extends React.Component {
         >
           {this.renderTreeNodes(treeData)}
         </Tree>
-        {this.myAwesomeMenu(dataList)}
+        {this.props.onlyShow ? null : this.myAwesomeMenu(dataList)}
         <Modal
           title="新增属性"
           visible={visible}
