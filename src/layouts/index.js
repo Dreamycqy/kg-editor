@@ -123,12 +123,13 @@ class MainLayout extends React.Component {
           <Header
             style={{
               height: 60,
-              backgroundColor: '#fff',
+              backgroundColor: '#001529',
               borderBottom: '1px solid #e8e8e8',
               position: 'fixed',
               top: 0,
               zIndex: 999,
               width: '100%',
+              color: 'white',
             }}
           >
             <div
@@ -142,10 +143,11 @@ class MainLayout extends React.Component {
                 lineHeight: '60px',
               }}
             >
-              <Link to="">KG-EDITOR</Link>
+              <Link to="" style={{ color: 'white' }}>KG-EDITOR</Link>
             </div>
             <Menu
               mode="horizontal"
+              theme="dark"
               selectedKeys={[this.state.key]}
               style={{ lineHeight: '58px', position: 'absolute', right: 200 }}
               onClick={e => this.handleSelect(e.key)}
@@ -154,7 +156,7 @@ class MainLayout extends React.Component {
             </Menu>
             <div style={{ float: 'right' }}>
               <Badge count={0}>
-                <a href="#" onClick={() => {}}>
+                <a href="#" style={{ color: 'white' }} onClick={() => {}}>
                   <Icon style={{ fontSize: 24 }} type="mail" />
                 </a>
               </Badge>
