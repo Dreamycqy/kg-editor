@@ -169,7 +169,7 @@ class MainLayout extends React.Component {
               </div>
             </Dropdown>
           </Header>
-          <Content style={{ backgroundColor: '#fff', minHeight: 800, marginTop: 60, padding: 10 }}>
+          <Content style={{ minHeight: 800, marginTop: 60, padding: 10 }}>
             {/* {
               (pathname !== '/members' && pathname !== '/manager') || email === 'admin@aliyun.com'
                 ? this.props.children : null

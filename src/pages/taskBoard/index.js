@@ -1,10 +1,8 @@
 import React from 'react'
-import { Empty } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
 import { getUserList, getProjectList } from '@/services/edukg'
 import Pic15002 from '@/assets/15002.jpg'
-
 import LeftNav from './leftNav'
 import RightContent from './rightContent'
 
@@ -98,25 +96,20 @@ class MainLayout extends React.Component {
   render() {
     const { selectedTask, newTaskList } = this.state
     return (
-      <div style={{ overflow: 'hidden', height: '100%', backgroundImage: `url(${Pic15002})`  }}>
-        <div style={{ float: 'left', width: 360, borderRight: '1px solid #e8e8e8', height: '100%', overflowY: 'scroll' }}>
-          {
-            newTaskList.length
-              ? <RightContent selectTask={this.selectTask} taskList={newTaskList} /> // eslint-disable-line
-              : <Empty />
-          }
-        </div>
-        <div style={{ height: '100%', paddingLeft: 360 }}>
-          {
-            newTaskList.length
-              ? <LeftNav data={selectedTask} />
-              : (
-                <div style={{ paddingTop: 150 }}>
-                  <Empty />
+      <div style={{ overflow: 'hidden', height: '100%', backgroundImage: `url(${Pic15002})` }}>
+        {
+          newTaskList.length
+            ? (
+              <div>
+                <div style={{ float: 'left', width: 360, borderRight: '1px solid #e8e8e8', height: '100%', overflowY: 'scroll' }}>
+                  <RightContent selectTask={this.selectTask} taskList={newTaskList} />
                 </div>
-              )
-          }
-        </div>
+                <div style={{ height: '100%', paddingLeft: 360 }}>
+                  <LeftNav data={selectedTask} />
+                </div>
+              </div>
+            ) : null
+        }
       </div>
     )
   }
