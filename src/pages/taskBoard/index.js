@@ -1,8 +1,8 @@
 import React from 'react'
+import { Spin, Empty } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
 import { getUserList, getProjectList } from '@/services/edukg'
-import Pic15002 from '@/assets/15002.jpg'
 import LeftNav from './leftNav'
 import RightContent from './rightContent'
 
@@ -20,6 +20,7 @@ class MainLayout extends React.Component {
       selectedTask: {},
       newTaskList: [],
       totalProjectList: [],
+      loading: true,
     }
   }
 
@@ -60,6 +61,7 @@ class MainLayout extends React.Component {
         selectedTask: newTaskList[0],
       })
     }
+    this.setState({ loading: false })
   }
 
   getData = async () => {
@@ -94,13 +96,13 @@ class MainLayout extends React.Component {
   }
 
   render() {
-    const { selectedTask, newTaskList } = this.state
+    const { selectedTask, newTaskList, loading } = this.state
     return (
-      <div style={{ overflow: 'hidden', height: '100%', backgroundImage: `url(${Pic15002})` }}>
+      <div style={{ overflow: 'hidden', height: '100%' }}>
         {
           newTaskList.length
             ? (
-              <div>
+              <div style={{ height: '100%' }}>
                 <div style={{ float: 'left', width: 360, borderRight: '1px solid #e8e8e8', height: '100%', overflowY: 'scroll' }}>
                   <RightContent selectTask={this.selectTask} taskList={newTaskList} />
                 </div>
@@ -108,7 +110,13 @@ class MainLayout extends React.Component {
                   <LeftNav data={selectedTask} />
                 </div>
               </div>
-            ) : null
+            ) : (
+              <div style={{ height: 900, backgroundColor: '#ffffff60' }}>
+                <Spin style={{ marginTop: 300 }} size="large" spinning={loading}>
+                  <Empty />
+                </Spin>
+              </div>
+            )
         }
       </div>
     )

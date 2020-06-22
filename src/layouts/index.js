@@ -9,6 +9,7 @@ import en_GB from 'antd/lib/locale-provider/en_GB'
 import menuList from '@/constants/menuList'
 import { getUserList } from '@/services/edukg'
 import { logout, fetchUserInfo } from '@/services/global'
+import Pic15002 from '@/assets/15002.jpg'
 import moment from 'moment'
 
 const {
@@ -169,11 +170,7 @@ class MainLayout extends React.Component {
               </div>
             </Dropdown>
           </Header>
-          <Content style={{ minHeight: 800, marginTop: 60, padding: 10 }}>
-            {/* {
-              (pathname !== '/members' && pathname !== '/manager') || email === 'admin@aliyun.com'
-                ? this.props.children : null
-            } */}
+          <Content style={{ minHeight: 900, marginTop: 60, padding: 10, backgroundImage: this.state.key === 'board' ? `url(${Pic15002})` : null, backgroundColor: '#fff' }}>
             { this.props.children }
           </Content>
           <Footer

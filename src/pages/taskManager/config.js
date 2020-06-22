@@ -46,9 +46,10 @@ class Config extends React.Component {
     } = this.props.params
     const memList = []
     members.forEach((e) => { memList.push(e.email) })
+    const target = _.find(this.state.classTree, { key: startNode })
     this.setState({
       taskName,
-      startNode: _.find(this.state.classTree, { key: startNode }).title,
+      startNode: target ? target.title : '',
       desc,
       endTime: moment(endTime),
       members: memList,
