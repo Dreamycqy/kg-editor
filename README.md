@@ -19,7 +19,7 @@ git clone https://github.com/Dreamycqy/react-kgeditor.git
 
 npm run build
 
-自动拉取master最新commit，安装依赖环境，构建并执行pm2进程，启动服务器，端口号8123
+自动拉取master最新commit，安装依赖环境，构建并执行pm2进程，启动服务器，端口号80
 
 3.本地开发
 
@@ -29,4 +29,4 @@ npm run build
 
 目录下启动前端，端口号8321: npm run start
 
-目录下启动代理服务器（用于跨域），端口号8123: npm run server
+目录下启动代理服务器（用于跨域），端口号80: npm run server
