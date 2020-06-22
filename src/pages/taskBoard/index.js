@@ -2,6 +2,7 @@ import React from 'react'
 import { Spin, Empty } from 'antd'
 import { connect } from 'dva'
 import _ from 'lodash'
+import Link from 'umi/link'
 import { getUserList, getProjectList } from '@/services/edukg'
 import LeftNav from './leftNav'
 import RightContent from './rightContent'
@@ -111,9 +112,13 @@ class MainLayout extends React.Component {
                 </div>
               </div>
             ) : (
-              <div style={{ height: 900, backgroundColor: '#ffffff60' }}>
-                <Spin style={{ marginTop: 300 }} size="large" spinning={loading}>
-                  <Empty />
+              <div style={{ height: 900, backgroundColor: '#ffffffcc', paddingTop: 250 }}>
+                <Spin size="large" spinning={loading}>
+                  <Empty
+                    description={(
+                      <span>当前暂无你的图谱项目任务，<Link to="/projectManager?create=true">快去管理面板创建一个吧！</Link></span>
+                    )}
+                  />
                 </Spin>
               </div>
             )

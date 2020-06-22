@@ -20,7 +20,7 @@ router.all('/', function (req, res) {
     method,
     url,
     headers: {
-      'Content-Type': url.indexOf('editIndividuals') > -1 || url.indexOf('editTaskInfo') > -1 ? 'application/json' : 'application/x-www-form-urlencoded',
+      'Content-Type': (url.indexOf('editIndividuals') > -1 || url.indexOf('editTaskInfo') > -1) ? 'application/json' : 'application/x-www-form-urlencoded',
       'cookie' : 'WEBRSID=' + req.body.id,
     },
     timeout: 40e3,
@@ -36,8 +36,9 @@ router.all('/', function (req, res) {
     opt.query = qs.stringify(str)
   } else {
     opt.json = true
-    opt.body = url.indexOf('editIndividuals') > -1 || url.indexOf('editTaskInfo') > -1 ? req.body : qs.stringify(req.body)
+    opt.body = (url.indexOf('editIndividuals') > -1 || url.indexOf('editTaskInfo') > -1) ? req.body : qs.stringify(req.body)
   }
+  console.log(opt)
   request(opt, (error, response, body) => {
     try {
       if (!error) {

@@ -46,7 +46,7 @@ class taskCard extends React.Component {
     const time = this.checkTime(e.endTime)
     return (
       <Card
-        style={{ borderRadius: '4px', backgroundColor: time.colorBg, cursor: 'pointer', marginRight: 4 }}
+        style={{ borderRadius: '4px', backgroundColor: time.colorBg, cursor: 'pointer', margin: '0 4px 10px 0' }}
         cover={(
           <img
             alt="example"

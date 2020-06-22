@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Input, Popconfirm, Icon, Select } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
-import { makeOptionNormal } from '@/utils/common'
+import { makeOptionTable } from '@/utils/common'
 
 const { TextArea } = Input
 
@@ -42,9 +42,9 @@ export default class FlexTable extends React.Component {
     this.props.editNode(result, this.props.selectKey, this.props.title)
   }
 
-  pushConfig = (option) => {
+  pushConfig = (data) => {
     const dataSource = []
-    option.forEach((e) => {
+    data.forEach((e) => {
       const item = {
         key: e.key,
         value: e.value,
@@ -131,7 +131,7 @@ export default class FlexTable extends React.Component {
           }}
           showSearch
         >
-          {makeOptionNormal(this.props.options)}
+          {makeOptionTable(this.props.options)}
         </Select>
       ),
     }, {

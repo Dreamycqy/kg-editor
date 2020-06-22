@@ -40,9 +40,9 @@ export default class FlexTable extends React.Component {
     this.props.editNode(result, this.props.selectKey, this.props.title)
   }
 
-  pushConfig = (option) => {
+  pushConfig = (data) => {
     const dataSource = []
-    option.forEach((e) => {
+    data.forEach((e) => {
       const item = {
         key: e,
         itemKey: uuid(),

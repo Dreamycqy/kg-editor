@@ -99,6 +99,7 @@ class PublicResource extends React.Component {
                 title="Annotations" limited
                 data={currentNode ? [currentNode.title] : []}
                 selectKey={currentNode ? currentNode.key : ''}
+                onlyShow
               />
             </div>
             <div style={{ marginBottom: 10 }}>
@@ -107,6 +108,7 @@ class PublicResource extends React.Component {
                 placeholder="请输入类名"
                 options={[]}
                 selectKey={currentNode ? currentNode.key : ''}
+                onlyShow
               />
             </div>
             <div style={{ marginBottom: 10 }}>

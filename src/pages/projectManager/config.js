@@ -22,7 +22,7 @@ class Config extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: false,
+      visible: this.props.create === 'true',
       loading: false,
       projectName: '',
       startNode: '',

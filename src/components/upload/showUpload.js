@@ -1,14 +1,16 @@
 import React from 'react'
-import { Tabs, Button, message } from 'antd'
+import { Tabs, Button, message, Modal } from 'antd'
 import _ from 'lodash'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
+import uuid from 'uuid'
 import { getProjectClassesTree, getProjectPropertiesTree, getProjectIndividualsTree, editClasses, editProperties, editIndividuals } from '@/services/edukg'
 import ClassContent from './classContent'
 import PropertiesContent from './propertiesContent'
 import IndividualsContent from './individualsContent'
 
 const { TabPane } = Tabs
+const { confirm } = Modal
 let classData = []
 let propertyData = []
 let individualData = []
@@ -29,14 +31,16 @@ class ShowUploadJson extends React.Component {
   }
 
   componentWillMount = () => {
-    this.getClass()
-    this.getPdata()
-    this.getIndis()
+    if (!this.props.createProject) {
+      this.getClass()
+      this.getPdata()
+      this.getIndis()
+    }
   }
 
   getClass = async () => {
     const data = await getProjectClassesTree({
-      projectName: this.state.projectName,
+      projectName: this.props.projectName,
     })
     if (data) {
       this.setState({ classD: data.data })
@@ -45,7 +49,7 @@ class ShowUploadJson extends React.Component {
 
   getPdata = async () => {
     const data = await getProjectPropertiesTree({
-      projectName: this.state.projectName,
+      projectName: this.props.projectName,
       type: 'data',
     })
     if (data) {
@@ -55,7 +59,7 @@ class ShowUploadJson extends React.Component {
 
   getIndis = async () => {
     const data = await getProjectIndividualsTree({
-      projectName: this.state.projectName,
+      projectName: this.props.projectName,
     })
     if (data) {
       this.setState({ indis: data.data.filter((e) => { return !!e.key }) })
@@ -70,20 +74,54 @@ class ShowUploadJson extends React.Component {
 
   uploadData = async () => {
     const { classD, property, indis } = this.state
+    const newClass = this.state.classData
+    newClass.forEach((e) => {
+      e.target = [classD[0].key]
+    })
+    const nodeClass = this.handleDiff(this.state.classData, classD)
+    const nodeProp = this.handleDiff(this.state.propertyData, property)
+    const nodeIndis = this.handleDiff(this.state.individualData, indis)
+    if ((nodeClass.repeat.length + nodeProp.repeat.length + nodeIndis.repeat.length) > 0) {
+      const that = this
+      confirm({
+        title: '存在部分',
+        content: 'Some descriptions',
+        onOk() {
+          that.upload(nodeClass.node, nodeProp.node, nodeIndis.node)
+        },
+        onCancel() {
+          console.log('Cancel')
+        },
+      })
+    } else {
+      this.upload(nodeClass.node, nodeProp.node, nodeIndis.node)
+    }
+  }
+
+  handleDiff = (data, origin) => {
+    return {
+      node: _.uniqBy([...data, ...origin], 'title'),
+      repeat: _.filter([...data, ...origin], (value, index, iteratee) => {
+        return _.includes(iteratee, value, index + 1)
+      }),
+    }
+  }
+
+  upload = async (nodeClass, nodeProp, nodeIndis) => {
     const { projectName, taskName } = this.props
     const data1 = await editClasses({
-      projectName: this.props.projectName,
-      node: JSON.stringify(_.uniqBy([...this.state.classData, ...classD], 'key')),
+      projectName,
+      node: JSON.stringify(nodeClass),
     })
     const data2 = await editProperties({
-      projectName: this.props.projectName,
-      node: JSON.stringify(_.uniqBy([...this.state.propertyData, ...property], 'key')),
+      projectName,
+      node: JSON.stringify(nodeProp),
       type: 'data',
     })
     const data3 = await editIndividuals({
-      projectName: this.props.projectName,
-      node: JSON.stringify(_.uniqBy([...this.state.individualData, ...indis], 'key')),
-      method: 'indis',
+      projectName,
+      node: JSON.stringify(nodeIndis),
+      method: 'add',
     })
     if (data1 === 200 && data3 === 200 && data2 === 200) {
       message.success('实体列表上传成功')
@@ -103,9 +141,10 @@ class ShowUploadJson extends React.Component {
     individualData = []
     const { dataSource, mainName, isClass, nodeTask } = props
     for (const listName in dataSource) { // eslint-disable-line
-      if (isClass === true) {
+      const key = uuid()
+      if (isClass === true && !_.find(classData, { title: listName })) {
         classData.push({
-          key: listName,
+          key,
           nodeTask,
           relationships: [],
           source: listName,
@@ -116,10 +155,10 @@ class ShowUploadJson extends React.Component {
       dataSource[listName].forEach((item) => { // eslint-disable-line
         this.checkProperty(item, '', mainName)
         const params = {
-          key: item[mainName],
+          key: uuid(),
           sameAs: [],
           title: item[mainName],
-          types: isClass ? [listName] : [],
+          types: isClass ? [key] : [],
         }
         temp = []
         for (const i in item) { // eslint-disable-line
@@ -137,10 +176,11 @@ class ShowUploadJson extends React.Component {
   checkProperty = (item, target, mainName) => {
     for (const i in item) { // eslint-disable-line
       if (i !== mainName) {
-        if (!_.find(propertyData, { key: i, target })) {
+        const key = uuid()
+        if (!_.find(propertyData, { title: i, target })) {
           propertyData.push({
             domain: [],
-            key: i,
+            key,
             range: [],
             source: i,
             target,
@@ -148,7 +188,7 @@ class ShowUploadJson extends React.Component {
           })
         }
         if (typeof item[i] === 'object' && !item[i].length) {
-          this.checkProperty(item[i], i, mainName)
+          this.checkProperty(item[i], key, mainName)
         }
       }
     }
@@ -160,19 +200,23 @@ class ShowUploadJson extends React.Component {
         this.pushRelationShip(item, value[item])
       }
     } else {
-      if (_.find(temp, { key: name })) {
+      if (_.find(temp, { title: name })) {
+        return
+      }
+      const target = _.find(propertyData, { title: name })
+      if (!target) {
         return
       }
       if (typeof value === 'object' && value.length) {
         value.forEach((e) => {
           temp.push({
-            key: name,
+            key: target.key,
             value: e,
           })
         })
       } else {
         temp.push({
-          key: name,
+          key: target.key,
           value,
         })
       }

@@ -4,8 +4,7 @@ import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import User from '@/components/items/userName'
 import _ from 'lodash'
-// import taskConfig from '@/utils/mock/taskConfig'
-// import ShowProcess from '@/components/items/processTask'
+import { getUrlParams } from '@/utils/common'
 import { getProjectList } from '@/services/edukg'
 import Config from './config'
 
@@ -143,7 +142,7 @@ class Members extends React.Component {
           />
           <span style={{ marginLeft: 8 }}>仅显示我参与的项目</span>
           <div style={{ float: 'right', marginRight: 20 }}>
-            <Config type="new" dataSource={dataSource} update={this.getData} />
+            <Config type="new" dataSource={dataSource} update={this.getData} create={getUrlParams().create} />
           </div>
         </div>
         <Table

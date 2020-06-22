@@ -112,7 +112,7 @@ class PublicResource extends React.Component {
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={propertyData && propertyObj
-                  ? [...propertyData, ...propertyObj].map((e) => { return e.title }) : []}
+                  ? [...propertyData, ...propertyObj].map((e) => { return e }) : []}
                 selectKey={currentNode ? currentNode.key : ''}
                 onlyShow
               />

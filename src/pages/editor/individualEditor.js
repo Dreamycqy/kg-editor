@@ -101,7 +101,7 @@ class PublicResource extends React.Component {
   }
 
   editNodeInfo = (value, key, type) => {
-    const { treeData, classData, propertyData, propertyObj } = this.props
+    const { treeData, classData } = this.props
     const target = treeData.find(item => item.key === key)
     if (type === 'Annotations') {
       target.title = value[0]
@@ -112,10 +112,6 @@ class PublicResource extends React.Component {
       })
       target.types = array
     } else if (type === 'Relationships') {
-      const array = []
-      value.forEach((e) => {
-        array.push(_.find([...propertyData, ...propertyObj], { title: e.key }).key)
-      })
       target.relationships = value
     } else {
       const array = []
@@ -225,7 +221,7 @@ class PublicResource extends React.Component {
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={propertyData && propertyObj
-                  ? [...propertyData, ...propertyObj].map((e) => { return e.title }) : []}
+                  ? [...propertyData, ...propertyObj].map((e) => { return e }) : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />

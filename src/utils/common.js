@@ -26,6 +26,14 @@ export const makeOptionNormal = (array) => {
   return children
 }
 
+export const makeOptionTable = (array) => {
+  const children = []
+  for (const i of array) {
+    children.push(<Option key={i.key} value={i.key}>{i.title}</Option>)
+  }
+  return children
+}
+
 export const makeOption = (array) => {
   const children = []
   for (const i of array) {
