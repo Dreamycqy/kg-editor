@@ -15,13 +15,12 @@ router.all('/', function (req, res) {
       url = '/build' + url.split('/api')[1]
     }
   }
-  console.log(req.body.id)
   url = (typeof basePath === 'string' ? basePath : basePath[hostname]) + url
   const opt = {
     method,
     url,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': url.indexOf('editIndividuals') > -1 ? 'application/json' : 'application/x-www-form-urlencoded',
       'cookie' : 'WEBRSID=' + req.body.id,
     },
     timeout: 40e3,
@@ -37,7 +36,7 @@ router.all('/', function (req, res) {
     opt.query = qs.stringify(str)
   } else {
     opt.json = true
-    opt.body = qs.stringify(req.body)
+    opt.body = url.indexOf('editIndividuals') > -1 ? req.body : qs.stringify(req.body)
   }
   request(opt, (error, response, body) => {
     try {

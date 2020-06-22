@@ -176,7 +176,6 @@ class NormalTree extends React.Component {
   nodeMove = () => {}
 
   showCreateModal = (e, name) => {
-    console.log(e, name)
     let key = e
     if (typeof e !== 'string') {
       if (e.tagName === 'DIV') {

@@ -101,7 +101,7 @@ class MainLayout extends React.Component {
         <div style={{ float: 'left', width: 360, borderRight: '1px solid #e8e8e8', height: '100%', overflowY: 'scroll' }}>
           {
             newTaskList.length
-              ? <RightContent selectTask={this.selectTask} taskList={newTaskList} />
+              ? <RightContent selectTask={this.selectTask} taskList={newTaskList} /> // eslint-disable-line
               : <Empty />
           }
         </div>

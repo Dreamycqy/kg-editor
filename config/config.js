@@ -32,7 +32,7 @@ export default {
   outputPath: './public/kgeditor/',
   publicPath: '/kgeditor/',
   proxy: {
-    '/kgeditor/api/': { target: 'http://127.0.0.1:8123/', changeOrigin: true },
+    '/api/': { target: 'http://127.0.0.1:8123/', changeOrigin: true },
   },
   define: defineProperty(),
   routes: pageRoutes,

@@ -74,7 +74,7 @@ class UploadJson extends React.Component {
           that.handleFileList(list)
         }
         if (info.file.status === 'done') {
-          message.success(`${info.file.name} 上传成功`)
+          message.success(`${info.file.name} 已上传`)
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} 上传失败`)
         }
@@ -115,6 +115,8 @@ class UploadJson extends React.Component {
           nodeTask={this.props.nodeTask}
           projectName={this.props.projectName}
           taskName={this.props.taskName}
+          goUpload={this.goUpload}
+          close={this.props.close}
         />
       </div>
     )

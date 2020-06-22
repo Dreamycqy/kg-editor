@@ -2,8 +2,10 @@ import React from 'react'
 import moment from 'moment'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Icon, Button } from 'antd'
+import { Icon, Button, Card, Avatar } from 'antd'
 import UserIcon from '@/components/items/usericon'
+
+const { Meta } = Card
 
 @connect()
 class taskCard extends React.Component {
@@ -11,14 +13,16 @@ class taskCard extends React.Component {
     const remain = moment(time).diff(moment()) / 86400000
     let color = '#000000a6'
     let colorTitle = '#00ff814d'
-    const colorBg = '#fbfbfb'
+    let colorBg = '#fbfbfb'
     if (remain < 0) {
       colorTitle = '#e8e8e8'
     } else if (remain <= 3) {
       color = 'red'
       colorTitle = '#ff52004d'
+      colorBg = '#fff4f4'
     } else if (remain <= 7) {
       colorTitle = '#FAFAD2'
+      colorBg = '#eeffed'
     }
     return {
       colorTitle,
@@ -29,7 +33,7 @@ class taskCard extends React.Component {
 
   jumpEditor = (e) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/kgEditor/editor',
+      pathname: '/editor',
       query: {
         taskName: e.taskName,
         projectName: e.projectName,
@@ -41,32 +45,42 @@ class taskCard extends React.Component {
     const e = this.props.info
     const time = this.checkTime(e.endTime)
     return (
-      <div
-        style={{ margin: '10px 6px', border: '1px solid #e8e8e8', borderRadius: '4px', backgroundColor: time.colorBg, cursor: 'pointer' }}
+      <Card
+        style={{ borderRadius: '4px', backgroundColor: time.colorBg, cursor: 'pointer', marginRight: 4 }}
+        cover={(
+          <img
+            alt="example"
+            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          />
+        )}
+        actions={[
+          <Button>编辑信息</Button>,
+          <Button onClick={() => this.jumpEditor(e)}>进入任务</Button>,
+        ]}
       >
-        <div
-          style={{ backgroundColor: time.colorTitle, padding: 8, overflow: 'hidden' }}
-        >
-          <div style={{ height: 40, lineHeight: '36px' }}>
-            <div style={{ float: 'left', fontSize: 18 }}>{e.taskName}</div>
-            <Button style={{ float: 'right', marginTop: 6 }} size="small" onClick={() => this.jumpEditor(e)}>进入任务</Button>
-          </div>
-          <div>
-            <span style={{ marginRight: 20 }}>截止于：{e.endTime}</span>
-            {time.dom}
+        <Meta
+          avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+          title={e.taskName}
+          description={e.desc}
+        />
+        <div style={{ marginTop: 20, paddingLeft: 8 }}>
+          <p>预期时间：{e.endTime}</p>
+          <p>{time.dom}</p>
+          <p>优先级别：{e.urgency === 'high' ? '高' : e.urgency === 'low' ? '低' : '中'}</p>
+          <p>覆盖范围：{e.type.map(u => (u === 'class' ? '概念 ' : u === 'property' ? '属性 ' : '实体 '))}</p>
+        </div>
+        <div style={{ padding: 8, marginTop: 10 }}>
+          <div style={{ marginBottom: 4 }}>
+            <div style={{ marginRight: 4, float: 'left', marginTop: 2 }}>
+              <Icon type="team" style={{ fontSize: '14px', color: '#24b0e6' }} />
+              成员：
+            </div>
+            <div style={{ float: 'left', overflow: 'hidden' }}>
+              {e.members.map(u => <UserIcon size="small" username={u} />)}
+            </div>
           </div>
         </div>
-        <div style={{ padding: 8 }}>
-          {/* <div style={{ marginBottom: 4 }}>
-            <span>
-              <Icon type="user" style={{ fontSize: '14px', color: 'blue' }} />
-              成员
-            </span>
-            {e.members.map(u => <UserIcon size="small" username={u} />)}
-          </div> */}
-          <div style={{ wordBreak: 'break-all' }}>描述：{e.desc}</div>
-        </div>
-      </div>
+      </Card>
     )
   }
 }

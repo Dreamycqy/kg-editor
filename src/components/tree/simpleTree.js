@@ -38,7 +38,6 @@ class SimpleTree extends React.Component {
   }
 
   onSelect = (keys, event) => {
-    console.log(event)
     this.props.selectNode(event.node.props.eventKey)
     this.setState({ selectKey: keys })
   }
@@ -139,6 +138,10 @@ class SimpleTree extends React.Component {
     )
   })
 
+  close = () => {
+    this.setState({ visibleExcel: false })
+  }
+
   render() {
     const {
       showTreeData, visible, createName, selectKey, visibleExcel, filterValue, fileType,
@@ -199,12 +202,9 @@ class SimpleTree extends React.Component {
         <Modal
           title="导入实体列表"
           visible={visibleExcel}
-          onOk={() => {
-            this.setState({ visibleExcel: false })
-            message.success('上传成功')
-          }}
           width="1000px"
-          onCancel={() => this.setState({ visibleExcel: false })}
+          onCancel={() => this.close()}
+          footer={null}
         >
 
           <div style={{ margin: 10 }}>
@@ -225,6 +225,7 @@ class SimpleTree extends React.Component {
                   nodeTask={this.props.nodeTask}
                   projectName={this.props.projectName}
                   taskName={this.props.taskName}
+                  close={this.close}
                 />
               )
               : (
@@ -232,6 +233,7 @@ class SimpleTree extends React.Component {
                   nodeTask={this.props.nodeTask}
                   projectName={this.props.projectName}
                   taskName={this.props.taskName}
+                  close={this.close}
                 />
               )
           }

@@ -1,18 +1,14 @@
 export default [
   {
     path: '/',
-    redirect: '/kgEditor/board',
+    redirect: '/board',
   },
   {
-    path: '/kgEditor',
-    redirect: '/kgEditor/board',
-  },
-  {
-    path: '/kgEditor/login',
+    path: '/login',
     component: './login',
   },
   {
-    path: '/kgEditor',
+    path: '/',
     component: '../layouts',
     routes: [
       {

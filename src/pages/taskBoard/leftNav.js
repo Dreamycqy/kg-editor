@@ -115,7 +115,7 @@ class LeftPart extends React.Component {
     classData.forEach((e, index) => {
       const opacity = index === 0 ? 1 : e.target.indexOf(classData[0].key) > -1 ? 1 : 0
       const item = {
-        name: e.title + '(概念)',
+        name: `${e.title}(概念)`,
         draggable: true,
         open: index === 0,
         category: 0,
@@ -124,10 +124,13 @@ class LeftPart extends React.Component {
         },
       }
       data.push(item)
+      if (!e.target) {
+        return
+      }
       e.target.forEach((i) => {
         links.push({
-          source: e.title + '(概念)',
-          target: _.find(classData, { key: i }).title + '(概念)',
+          source: `${e.title}(概念)`,
+          target: `${_.find(classData, { key: i }).title}(概念)`,
           lineStyle: {
             opacity,
           },
@@ -138,7 +141,7 @@ class LeftPart extends React.Component {
       const opacity = e.types.indexOf(classData[0] ? classData[0].key : '') > -1 ? 1 : 0
       e.types.forEach((i) => {
         const item = {
-          name: e.title + '(实体)',
+          name: `${e.title}(实体)`,
           draggable: true,
           category: 1,
           itemStyle: {
@@ -147,8 +150,8 @@ class LeftPart extends React.Component {
         }
         data.push(item)
         links.push({
-          source: e.title + '(实体)',
-          target: _.find(classData, { key: i }) ? _.find(classData, { key: i }).title + '(概念)' : '',
+          source: `${e.title}(实体)`,
+          target: _.find(classData, { key: i }) ? `${_.find(classData, { key: i }).title}(概念)` : '',
           lineStyle: {
             opacity,
           },

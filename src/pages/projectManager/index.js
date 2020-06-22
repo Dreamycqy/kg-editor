@@ -66,7 +66,7 @@ class Members extends React.Component {
 
   goTask = (projectName) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/kgEditor/taskManager',
+      pathname: '/taskManager',
       query: {
         projectName,
       },

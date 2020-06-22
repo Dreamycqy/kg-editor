@@ -26,7 +26,7 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      key: window.location.pathname.split('/')[2] || 'board',
+      key: window.location.pathname.split('/')[1],
     }
   }
 
@@ -43,10 +43,7 @@ class MainLayout extends React.Component {
   }
 
   componentWillReceiveProps = () => {
-    let key = window.location.pathname.split('/')[2] || 'board'
-    if (key === 'taskManager') {
-      key = 'projectManager'
-    }
+    const key = window.location.pathname.split('/')[1]
     this.setState({
       key,
     })
@@ -74,7 +71,7 @@ class MainLayout extends React.Component {
 
   handleSelect = (key) => {
     this.setState({ key })
-    router.push(`/kgEditor/${key}`)
+    router.push(`/${key}`)
   }
 
   handleLocaleChange = () => {
@@ -100,11 +97,11 @@ class MainLayout extends React.Component {
   logout = async () => {
     window.localStorage.clear()
     await logout({ email: this.props.userInfo.email })
-    window.location.href = '/kgEditor/login'
+    window.location.href = '/login'
   }
 
   render() {
-    const { email, userName } = this.props.userInfo
+    const { userName } = this.props.userInfo
     const menu = (
       <Menu>
         <Menu.Item>
@@ -164,7 +161,7 @@ class MainLayout extends React.Component {
             </div>
             <Dropdown overlay={menu}>
               <div style={{ float: 'right', lineHeight: '56px' }}>
-                <Avatar>{email ? email.substr(0, 1).toUpperCase() : ''}</Avatar>
+                <Avatar>{userName ? userName.substr(0, 1).toUpperCase() : ''}</Avatar>
                 <span style={{ marginLeft: 8 }}>{userName || ''}</span>
                 <Icon type="down" style={{ marginRight: 10 }} />
               </div>

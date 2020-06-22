@@ -78,7 +78,7 @@ class Members extends React.Component {
 
   jumpTask = (taskName) => {
     this.props.dispatch(routerRedux.push({
-      pathname: '/kgEditor/editor',
+      pathname: '/editor',
       query: {
         projectName: this.state.projectName,
         taskName,
