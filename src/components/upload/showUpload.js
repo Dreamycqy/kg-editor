@@ -75,8 +75,9 @@ class ShowUploadJson extends React.Component {
   uploadData = async () => {
     const { classD, property, indis } = this.state
     const newClass = this.state.classData
+    const firstClass = classD.filter((e) => { return e.target.length === 0 })
     newClass.forEach((e) => {
-      e.target = [classD[0].key]
+      e.target = [firstClass[0].key]
     })
     const nodeClass = this.handleDiff(this.state.classData, classD)
     const nodeProp = this.handleDiff(this.state.propertyData, property)
@@ -123,7 +124,7 @@ class ShowUploadJson extends React.Component {
       node: JSON.stringify(nodeIndis),
       method: 'add',
     })
-    if (data1 === 200 && data3 === 200 && data2 === 200) {
+    if (data1 === 200 && data3.data && data2 === 200) {
       message.success('实体列表上传成功')
       this.props.dispatch(routerRedux.push({
         pathname: '/editor',

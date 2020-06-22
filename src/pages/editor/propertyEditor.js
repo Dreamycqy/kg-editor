@@ -242,7 +242,7 @@ class PublicResource extends React.Component {
             <TabPane style={{ height: 0 }} tab="Object Properties" key="obj" />
             <TabPane style={{ height: 0 }} tab="Data Properties" key="data" />
           </Tabs>
-          <div style={{ height: '100%' }}>
+          <div style={{ overflowY: 'scroll', height: 800 }}>
             {result}
           </div>
         </div>

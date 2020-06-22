@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Input, Divider, Icon } from 'antd'
+import { Table, Input, Divider, Icon, message } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import User from '@/components/items/userName'
@@ -139,7 +139,7 @@ class Members extends React.Component {
             {/* <ShowProcess data={[]} /> */}
             <a href="#" onClick={() => this.jumpTask(record.taskName)}>进入任务</a>
             <Divider type="vertical" />
-            <a href="#" onClick={e => e.preventDefault()}>查看进度</a>
+            <a href="#" onClick={() => message.info('功能将在下版本补充！')}>查看进度</a>
             <Divider type="vertical" />
             <Config
               type="edit" params={record}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Input, Divider, Switch } from 'antd'
+import { Table, Input, Divider, Switch, message } from 'antd'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import User from '@/components/items/userName'
@@ -104,7 +104,7 @@ class Members extends React.Component {
       render: (text, record) => {
         return (
           <span>
-            <a href="#" onClick={e => e.preventDefault()}>查看</a>
+            <a href="#" onClick={() => message.info('功能将在下版本补充！')}>查看</a>
             {_.find(record.members, { email: this.props.userInfo.email })
               ? (
                 <span>

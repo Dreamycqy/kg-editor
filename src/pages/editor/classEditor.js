@@ -177,7 +177,7 @@ class PublicResource extends React.Component {
     const currentNodeKey = currentNode ? currentNode.key : ''
     return (
       <div style={{ display: 'flex', height: '100%' }}>
-        <div style={{ height: '100%', minWidth: 300, borderRight: '1px solid #e8e8e8' }}>
+        <div style={{ minWidth: 300, borderRight: '1px solid #e8e8e8', overflowY: 'scroll', height: 800 }}>
           <Tree
             iconType="smile" iconColor="#1296db"
             data={this.listToTree(classData)} selectNode={this.selectNode}

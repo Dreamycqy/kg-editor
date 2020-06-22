@@ -150,7 +150,7 @@ class MainLayout extends React.Component {
               mode="horizontal"
               theme="dark"
               selectedKeys={[this.state.key]}
-              style={{ lineHeight: '58px', position: 'absolute', right: 200 }}
+              style={{ lineHeight: '58px', position: 'absolute', right: 250 }}
               onClick={e => this.handleSelect(e.key)}
             >
               {this.makeMenu()}

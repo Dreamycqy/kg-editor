@@ -181,7 +181,7 @@ class PublicResource extends React.Component {
     }
     return (
       <div style={{ display: 'flex', height: '100%' }}>
-        <div style={{ height: '100%', width: 300, borderRight: '1px solid #e8e8e8' }}>
+        <div style={{ width: 300, borderRight: '1px solid #e8e8e8', overflowY: 'scroll', height: 800 }}>
           <Tree
             showFilter
             iconType="tag" iconColor="#1296db"
