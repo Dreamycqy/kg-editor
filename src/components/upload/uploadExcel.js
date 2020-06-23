@@ -125,6 +125,7 @@ class UploadExcel extends React.Component {
           projectName={this.props.projectName}
           taskName={this.props.taskName}
           ref={ele => this.showUp = ele}
+          createProject={this.props.createProject}
         />
       </div>
     )

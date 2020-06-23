@@ -19,6 +19,7 @@ class SimpleTree extends React.Component {
       selectKey: [],
       filterValue: [],
       fileType: 'json',
+      visibleExcel: false,
     }
   }
 

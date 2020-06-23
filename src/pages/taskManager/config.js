@@ -61,7 +61,7 @@ class Config extends React.Component {
   }
 
   openModal = async () => {
-    await this.setState({ visible: true })
+    await this.setState({ visible: true, members: [this.props.userInfo.email] })
     const newData = await getProjectClassesTree({
       projectName: this.props.projectName,
     })

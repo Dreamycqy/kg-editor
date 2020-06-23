@@ -30,8 +30,8 @@ class ShowUploadJson extends React.Component {
   }
 
   componentWillMount = () => {
-    if (!this.props.createProject) {
-      this.getClass()
+    this.getClass()
+    if (this.props.createProject !== true) {
       this.getPdata()
       this.getIndis()
     }
@@ -75,6 +75,7 @@ class ShowUploadJson extends React.Component {
     const { classD, indis } = this.state
     const newClass = this.state.classData
     const firstClass = classD.filter((e) => { return e.target.length === 0 })
+    console.log(firstClass)
     newClass.forEach((e) => {
       e.target = [firstClass[0].key]
     })
@@ -125,7 +126,11 @@ class ShowUploadJson extends React.Component {
     })
     if (data3.data) {
       message.success('实体列表上传成功')
-      window.location.href = `/editor?projectName=${projectName}&taskName=${taskName}`
+      if (this.props.createProject === true) {
+        this.props.close()
+      } else {
+        window.location.href = `/editor?projectName=${projectName}&taskName=${taskName}`
+      }
     }
   }
 
@@ -139,7 +144,7 @@ class ShowUploadJson extends React.Component {
       if (isClass === true && !_.find(classData, { title: listName })) {
         classData.push({
           key,
-          nodeTask,
+          nodeTask: nodeTask || [],
           relationships: [],
           source: listName,
           target: [],

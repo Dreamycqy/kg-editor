@@ -4,9 +4,12 @@ import { Modal, Spin, Button, Form, Input, Select, message } from 'antd'
 import { connect } from 'dva'
 import { makeOptionSimple } from '@/utils/common'
 import { createProject, editProjectInfo, editClasses } from '@/services/edukg'
+import UploadExcel from '@/components/upload/uploadExcel'
+import UploadJson from '@/components/upload/uploadJson'
 
 const FormItem = Form.Item
 const { TextArea } = Input
+const { Option } = Select
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 16 },
@@ -28,6 +31,8 @@ class Config extends React.Component {
       startNode: '',
       desc: '',
       members: [this.props.userInfo.email],
+      fileType: 'json',
+      visibleExcel: false,
     }
   }
 
@@ -48,7 +53,7 @@ class Config extends React.Component {
   }
 
   openModal = async () => {
-    await this.setState({ visible: true })
+    await this.setState({ visible: true, members: [this.props.userInfo.email] })
     if (this.props.params) {
       this.getData()
     }
@@ -68,6 +73,30 @@ class Config extends React.Component {
       }
     }
     return result
+  }
+
+  handleCreate = async () => {
+    const { projectName, desc, startNode, members } = this.state
+    const memList = []
+    members.forEach((i) => {
+      this.props.userList.forEach((e) => {
+        if (e.email === i && !_.find(memList, { email: i })) {
+          memList.push({
+            email: e.email,
+            userName: e.userName,
+          })
+        }
+      })
+    })
+    const data = await createProject({
+      projectName,
+      desc,
+      startNode,
+      members: JSON.stringify(memList),
+    })
+    if (data === 200) {
+      this.setState({ visible: false, visibleExcel: true })
+    }
   }
 
   handleSave = async () => {
@@ -129,10 +158,15 @@ class Config extends React.Component {
     this.setState({ members })
   }
 
+  close = () => {
+    this.setState({ visibleExcel: false })
+  }
+
   render() {
     const {
-      visible, loading, projectName, startNode, desc, members,
+      visible, loading, projectName, startNode, desc, members, visibleExcel, fileType,
     } = this.state
+    console.log(members)
     return (
       <div style={{ display: 'inline-block' }}>
         {
@@ -153,7 +187,8 @@ class Config extends React.Component {
           onCancel={() => this.setState({ visible: false })}
           footer={[
             <Button key="cancel" type="" onClick={() => this.setState({ visible: false })}>取消</Button>,
-            <Button key="save" type="primary" onClick={() => this.handleSave()}>保存</Button>,
+            <Button key="save" type="primary" onClick={() => this.handleSave()}>直接保存</Button>,
+            // <Button key="save" type="primary" onClick={() => this.handleCreate()}>上传实体文件创建</Button>,
           ]}
           width="820px"
         >
@@ -208,6 +243,45 @@ class Config extends React.Component {
               </Form>
             </div>
           </Spin>
+        </Modal>
+        <Modal
+          title="导入实体列表"
+          visible={visibleExcel}
+          width="1000px"
+          onCancel={() => this.close()}
+          footer={null}
+        >
+
+          <div style={{ margin: 10 }}>
+            选择文件类型：&nbsp;
+            <Select
+              style={{ width: 150 }}
+              value={fileType}
+              onChange={value => this.setState({ fileType: value })}
+            >
+              <Option key="excel" value="excel">Excel</Option>
+              <Option key="json" value="json">Json</Option>
+            </Select>
+          </div>
+          {
+            fileType === 'excel'
+              ? (
+                <UploadExcel
+                  projectName={projectName}
+                  taskName=""
+                  close={this.close}
+                  createProject
+                />
+              )
+              : (
+                <UploadJson
+                  projectName={projectName}
+                  taskName=""
+                  close={this.close}
+                  createProject
+                />
+              )
+          }
         </Modal>
       </div>
     )

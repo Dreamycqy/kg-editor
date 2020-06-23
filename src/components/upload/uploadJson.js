@@ -117,6 +117,7 @@ class UploadJson extends React.Component {
           taskName={this.props.taskName}
           goUpload={this.goUpload}
           close={this.props.close}
+          createProject={this.props.createProject}
         />
       </div>
     )
