@@ -119,7 +119,6 @@ export default class FlexTable extends React.Component {
     const { dataSource, loading } = this.state
     const columns = [{
       title: this.props.title,
-      key: 'key',
       width: 150,
       render: (text, record) => (
         <Select
@@ -136,7 +135,6 @@ export default class FlexTable extends React.Component {
       ),
     }, {
       title: this.props.value,
-      key: 'key',
       render: (text, record) => (
         <TextArea
           disabled={this.props.onlyShow}

@@ -164,7 +164,6 @@ class ShowUploadJson extends React.Component {
         individualData.push(params)
       })
     }
-    console.log(propertyData)
     this.setState({ classData, propertyData, individualData })
   }
 
@@ -197,9 +196,6 @@ class ShowUploadJson extends React.Component {
         this.pushRelationShip(item, value[item])
       }
     } else {
-      if (_.find(temp, { title: name })) {
-        return
-      }
       const target = _.find(propertyData, { title: name })
       if (!target) {
         return

@@ -80,7 +80,7 @@ class SimpleTree extends React.Component {
       title: '你确定要删除改节点吗',
       content: '该实体节点将被删除',
       onOk() {
-        that.nodeDelete(key)
+        that.nodeDelete(key[0])
       },
       onCancel() {
         console.log('Cancel')
@@ -107,13 +107,7 @@ class SimpleTree extends React.Component {
     const { treeData } = this.state
     const target = _.find(treeData, { key })
     const array = treeData.filter((e) => {
-      let result = true
-      key.forEach((item) => {
-        if (item === e.key) {
-          result = false
-        }
-      })
-      return result
+      return e.key !== key
     })
     this.setState({ treeData: array, showTreeData: array })
     this.props.editNode(target, 'delete')
