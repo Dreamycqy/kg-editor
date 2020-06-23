@@ -118,6 +118,7 @@ export default class FlexTable extends React.Component {
           ? (
             <Input
               value={record.key}
+              key="input"
               disabled={this.props.onlyShow}
               onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'key')}
               onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
@@ -127,6 +128,7 @@ export default class FlexTable extends React.Component {
           : (
             <Select
               value={record.key}
+              key="select"
               disabled={this.props.onlyShow}
               style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
               onChange={(value) => {
@@ -170,7 +172,7 @@ export default class FlexTable extends React.Component {
           pagination={false}
           bordered={false}
           size="small"
-          rowKey="itemKey"
+          rowKey={record => record.itemKey}
           loading={loading}
           locale={{
             emptyText: '暂无配置',

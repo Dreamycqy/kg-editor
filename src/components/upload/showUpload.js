@@ -24,7 +24,6 @@ class ShowUploadJson extends React.Component {
       propertyData: [],
       individualData: [],
       classD: [],
-      property: [],
       indis: [],
     }
   }
@@ -52,8 +51,8 @@ class ShowUploadJson extends React.Component {
       type: 'data',
     })
     if (data) {
-      this.setState({ property: data.data })
       propertyData = data.data
+      console.log(propertyData)
     }
   }
 
@@ -73,14 +72,14 @@ class ShowUploadJson extends React.Component {
   }
 
   uploadData = async () => {
-    const { classD, property, indis } = this.state
+    const { classD, indis } = this.state
     const newClass = this.state.classData
     const firstClass = classD.filter((e) => { return e.target.length === 0 })
     newClass.forEach((e) => {
       e.target = [firstClass[0].key]
     })
     const nodeClass = this.handleDiff(this.state.classData, classD)
-    const nodeProp = this.handleDiff(this.state.propertyData, property)
+    const nodeProp = this.handleDiff(this.state.propertyData, [])
     const nodeIndis = this.handleDiff(this.state.individualData, indis)
     if ((nodeClass.repeat.length + nodeProp.repeat.length + nodeIndis.repeat.length) > 0) {
       const that = this
@@ -165,14 +164,15 @@ class ShowUploadJson extends React.Component {
         individualData.push(params)
       })
     }
+    console.log(propertyData)
     this.setState({ classData, propertyData, individualData })
   }
 
   checkProperty = (item, target, mainName) => {
     for (const i in item) { // eslint-disable-line
       if (i !== mainName) {
-        const key = uuid()
-        if (!_.find(propertyData, { title: i, target })) {
+        let key = uuid()
+        if (!_.find(propertyData, { title: i })) {
           propertyData.push({
             domain: [],
             key,
@@ -181,6 +181,8 @@ class ShowUploadJson extends React.Component {
             target,
             title: i,
           })
+        } else {
+          key = _.find(propertyData, { title: i }).key
         }
         if (typeof item[i] === 'object' && !item[i].length) {
           this.checkProperty(item[i], key, mainName)
