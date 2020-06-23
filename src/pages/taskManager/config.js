@@ -31,7 +31,7 @@ class Config extends React.Component {
       startNode: '',
       desc: '',
       endTime: moment().subtract(-3, 'days'),
-      members: [],
+      members: [this.props.userInfo.email],
       urgency: 'high',
       type: [],
       classTree: [],

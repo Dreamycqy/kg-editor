@@ -88,7 +88,7 @@ class UploadJson extends React.Component {
           </p>
           <p className="ant-upload-text">点击或拖入文件以开始上传</p>
           <p className="ant-upload-hint">
-            支持大小不超过2MB的Json文件，支持多个文件
+            支持总大小不超过200KB的Json文件，支持多个文件
           </p>
         </Dragger>
         <div style={{ margin: '20px 0 0 0' }}>

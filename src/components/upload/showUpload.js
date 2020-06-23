@@ -25,6 +25,7 @@ class ShowUploadJson extends React.Component {
       individualData: [],
       classD: [],
       indis: [],
+      property: [],
     }
   }
 
@@ -51,8 +52,7 @@ class ShowUploadJson extends React.Component {
       type: 'data',
     })
     if (data) {
-      propertyData = data.data
-      console.log(propertyData)
+      this.setState({ property: data.data })
     }
   }
 
@@ -120,7 +120,7 @@ class ShowUploadJson extends React.Component {
     })
     const data3 = await editIndividuals({
       projectName,
-      node: JSON.stringify(nodeIndis),
+      node: nodeIndis,
       method: 'add',
     })
     if (data3.data) {
@@ -131,7 +131,7 @@ class ShowUploadJson extends React.Component {
 
   handleData = (props) => {
     classData = []
-    propertyData = []
+    propertyData = this.state.property
     individualData = []
     const { dataSource, mainName, isClass, nodeTask } = props
     for (const listName in dataSource) { // eslint-disable-line

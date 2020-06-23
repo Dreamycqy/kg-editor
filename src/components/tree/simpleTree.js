@@ -30,7 +30,7 @@ class SimpleTree extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     if (!_.isEqual(nextProps.data, this.props.data)) {
-      this.setState({ treeData: nextProps.data })
+      this.setState({ treeData: nextProps.data, showTreeData: nextProps.data })
       if (nextProps.data[0]) {
         this.props.selectNode(nextProps.data[0].key)
       }
