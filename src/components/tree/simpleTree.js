@@ -97,9 +97,9 @@ class SimpleTree extends React.Component {
       return
     }
     this.setState({ treeData: [...treeData, { title: createName, key: createName }] })
-    this.props.editNode({
+    this.props.editNode([{
       title: createName, key: createName, types: [], relationships: [], sameAs: [],
-    }, 'add')
+    }], 'add')
     this.setState({ visible: false })
   }
 

@@ -121,7 +121,7 @@ class Config extends React.Component {
     }
   }
 
-  handleMenbers = (value) => {
+  handleMembers = (value) => {
     const members = value
     if (members.indexOf(this.props.userInfo.email) < 0) {
       members.unshift(this.props.userInfo.email)
@@ -190,7 +190,7 @@ class Config extends React.Component {
                     mode="multiple"
                     placeholder="请选择参与成员"
                     value={members}
-                    onChange={value => this.handleMenbers(value)}
+                    onChange={value => this.handleMembers(value)}
                   >
                     {makeOptionSimple(this.props.userList)}
                   </Select>

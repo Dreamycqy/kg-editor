@@ -2,7 +2,6 @@ import React from 'react'
 import { Tabs, Button, message, Modal } from 'antd'
 import _ from 'lodash'
 import { connect } from 'dva'
-import { routerRedux } from 'dva/router'
 import uuid from 'uuid'
 import { getProjectClassesTree, getProjectPropertiesTree, getProjectIndividualsTree, editClasses, editProperties, editIndividuals } from '@/services/edukg'
 import ClassContent from './classContent'
@@ -54,6 +53,7 @@ class ShowUploadJson extends React.Component {
     })
     if (data) {
       this.setState({ property: data.data })
+      propertyData = data.data
     }
   }
 
@@ -110,11 +110,11 @@ class ShowUploadJson extends React.Component {
 
   upload = async (nodeClass, nodeProp, nodeIndis) => {
     const { projectName, taskName } = this.props
-    const data1 = await editClasses({
+    await editClasses({
       projectName,
       node: JSON.stringify(nodeClass),
     })
-    const data2 = await editProperties({
+    await editProperties({
       projectName,
       node: JSON.stringify(nodeProp),
       type: 'data',
@@ -124,15 +124,9 @@ class ShowUploadJson extends React.Component {
       node: JSON.stringify(nodeIndis),
       method: 'add',
     })
-    if (data1 === 200 && data3.data && data2 === 200) {
+    if (data3.data) {
       message.success('实体列表上传成功')
-      this.props.dispatch(routerRedux.push({
-        pathname: '/editor',
-        query: {
-          taskName,
-          projectName,
-        },
-      }))
+      window.location.href = `/editor?projectName=${projectName}&taskName=${taskName}`
     }
   }
 

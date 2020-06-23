@@ -1,10 +1,11 @@
 import React from 'react'
 import { Table, Input, Divider, Icon, message } from 'antd'
+import _ from 'lodash'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import User from '@/components/items/userName'
 // import ShowProcess from '@/components/items/processTask'
-import { getTaskList } from '@/services/edukg'
+import { getTaskList, getProjectList } from '@/services/edukg'
 import { getUrlParams } from '@/utils/common'
 import Config from './config'
 
@@ -19,12 +20,26 @@ class Members extends React.Component {
       dataSource: [],
       loading: false,
       projectName: getUrlParams().projectName || '',
+      members: [],
     }
   }
 
   componentWillMount = () => {
     this.getData()
+    this.getProject()
   }
+
+  getProject = async () => {
+    this.setState({ loading: true })
+    const data = await getProjectList({})
+    if (data.data) {
+      this.setState({
+        members: _.find(data.data, { projectName: this.state.projectName }).members,
+      })
+    }
+    this.setState({ loading: false })
+  }
+
 
   getData = async () => {
     this.setState({ loading: true })
@@ -87,7 +102,7 @@ class Members extends React.Component {
   }
 
   render() {
-    const { dataSource, loading } = this.state
+    const { dataSource, loading, members } = this.state
     const columns = [{
       title: '任务名称',
       dataIndex: 'taskName',
@@ -159,7 +174,11 @@ class Members extends React.Component {
             style={{ width: 400, float: 'left' }}
           />
           <div style={{ float: 'right', marginRight: 20 }}>
-            <Config type="new" update={this.getData} projectName={this.state.projectName} />
+            <Config
+              type="new" update={this.getData}
+              projectName={this.state.projectName}
+              members={members}
+            />
           </div>
         </div>
         <Table

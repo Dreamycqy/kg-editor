@@ -202,7 +202,13 @@ class NormalTree extends React.Component {
   }
 
   nodeCreate = () => {
-    const { treeData, selectKey } = this.state
+    const { treeData, selectKey, createName } = this.state
+    if (treeData.filter((item) => {
+      return item.title === createName
+    }).length > 0) {
+      message.error('属性名不能重复')
+      return
+    }
     const newKey = uuid()
     if (selectKey === '') {
       treeData.push({

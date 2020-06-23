@@ -146,6 +146,14 @@ class Config extends React.Component {
     }
   }
 
+  handleMembers = (value) => {
+    const members = value
+    if (members.indexOf(this.props.userInfo.email) < 0) {
+      members.unshift(this.props.userInfo.email)
+    }
+    this.setState({ members })
+  }
+
   render() {
     const {
       visible, loading, taskName, startNode, desc, endTime, members,
@@ -213,9 +221,9 @@ class Config extends React.Component {
                     mode="multiple"
                     placeholder="请选择参与成员"
                     value={members}
-                    onChange={value => this.setState({ members: value })}
+                    onChange={value => this.handleMembers(value)}
                   >
-                    {makeOptionSimple(this.props.userList)}
+                    {makeOptionSimple(this.props.members || [])}
                   </Select>
                 </FormItem>
                 <FormItem

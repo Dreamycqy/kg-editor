@@ -54,7 +54,7 @@ class taskCard extends React.Component {
           />
         )}
         actions={[
-          <Button>编辑信息</Button>,
+          <Button disabled>编辑信息</Button>,
           <Button onClick={() => this.jumpEditor(e)}>进入任务</Button>,
         ]}
       >
