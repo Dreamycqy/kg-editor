@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { connect } from 'dva'
 import uuid from 'uuid'
 import { getProjectClassesTree, getProjectPropertiesTree, getProjectIndividualsTree, editClasses, editProperties, editIndividuals } from '@/services/edukg'
-import ClassContent from './classContent'
+import ClassContent from '@/pages/editor/classEditor'
 import PropertiesContent from './propertiesContent'
 import IndividualsContent from './individualsContent'
 
@@ -221,6 +221,33 @@ class ShowUploadJson extends React.Component {
     }
   }
 
+  setClass = async (newTree) => {
+    this.setState({ classData: newTree })
+  }
+
+  setPdata = async (newTree) => {
+    this.setState({ propertyData: newTree })
+  }
+
+  changeData = (newTree, type) => {
+    switch (type) {
+      case 'class':
+        this.setClass(newTree)
+        break
+      case 'obj':
+        this.setPobj(newTree)
+        break
+      case 'data':
+        this.setPdata(newTree)
+        break
+      case 'indis':
+        this.setIndis(newTree)
+        break
+      default:
+        break
+    }
+  }
+
   render() {
     const { projectName, taskName } = this.props
     return (
@@ -229,13 +256,16 @@ class ShowUploadJson extends React.Component {
           <TabPane tab="概念" key="classes">
             <ClassContent
               projectName={projectName} taskName={taskName}
-              classData={this.state.classData}
+              classData={this.state.classData} propertyData={propertyData}
+              changeData={this.changeData} propertyObj={[]}
             />
           </TabPane>
           <TabPane tab="属性" key="properties">
             <PropertiesContent
               projectName={projectName} taskName={taskName}
               propertyObj={[]} propertyData={this.state.propertyData}
+              changeData={this.changeData}
+              classData={this.state.classData}
             />
           </TabPane>
           <TabPane tab="实体" key="individuals">

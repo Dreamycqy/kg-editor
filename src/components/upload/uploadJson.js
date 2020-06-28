@@ -100,13 +100,13 @@ class UploadJson extends React.Component {
           >
             {makeOptionNormal(nameOption)}
           </Select>
-          是否用文件名称生成概念：&nbsp;
+          是否基于文件生成概念：&nbsp;
           <Switch checked={isClass} onChange={checked => this.setState({ isClass: checked })} />
         </div>
         <div style={{ margin: '4px 0 10px 0', fontSize: 10, color: '#888' }}>
           实体名称参数名默认选取实体列表对象中，属性名包含[title]、[name]等字符且属性为字符串的属性
           <br />
-          如果多个文件存在实体名称不一致的情况，请分次上传避免冲突
+          如果多个文件存在实体名称，属性字段冲突的情况，请分次上传避免冲突
         </div>
         <ShowUploadData
           dataSource={dataSource}

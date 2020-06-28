@@ -130,12 +130,10 @@ class PublicResource extends React.Component {
     const result = {}
     const startKey = []
     list.forEach((item) => {
+      item.label = item.title
+      item.value = item.key
       if (!result[item.key]) {
-        result[item.key] = {
-          key: item.key,
-          label: item.title,
-          value: item.key,
-        }
+        result[item.key] = item
       }
     })
     list.forEach((item) => {
@@ -143,28 +141,20 @@ class PublicResource extends React.Component {
     })
     list.forEach((item) => {
       if (item.target.length === 0) {
-        startKey.push({
-          key: item.key,
-          label: item.title,
-          value: item.key,
-        })
+        startKey.push(item.key)
       }
       item.target.forEach((key) => {
         if (!result[key].children) {
           result[key].children = []
         }
         if (!_.find(result[key].children, { key: item.key })) {
-          result[key].children.push({
-            key: item.key,
-            label: item.title,
-            value: item.key,
-          })
+          result[key].children.push(item)
         }
       })
     })
     const map = []
     startKey.forEach((e) => {
-      map.push(result[e.key])
+      map.push(result[e])
     })
     return map
   }
@@ -181,7 +171,7 @@ class PublicResource extends React.Component {
     }
     return (
       <div style={{ display: 'flex', height: '100%' }}>
-        <div style={{ width: 300, borderRight: '1px solid #e8e8e8', overflowY: 'scroll', height: 800 }}>
+        <div style={{ minWidth: 300, borderRight: '1px solid #e8e8e8', overflowY: 'scroll', height: 800 }}>
           <Tree
             showFilter
             iconType="tag" iconColor="#1296db"
@@ -191,6 +181,7 @@ class PublicResource extends React.Component {
             nodeTask={classData[0].nodeTask}
             projectName={this.props.projectName}
             taskName={this.props.taskName}
+            currentNode={selectNode}
           />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>

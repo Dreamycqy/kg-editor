@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tree, Modal, Input, Icon, message } from 'antd'
+import { Tree, Modal, Input, Icon, message, Select } from 'antd'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import uuid from 'uuid'
 import _ from 'lodash'
@@ -14,7 +14,7 @@ class NormalTree extends React.Component {
     super(props)
     this.state = {
       treeData: this.props.data,
-      createName: '',
+      createList: [],
       selectKey: '',
       searchValue: '',
       autoExpandParent: true,
@@ -22,7 +22,7 @@ class NormalTree extends React.Component {
   }
 
   componentWillMount = () => {
-    if (this.state.treeData[0]) {
+    if (this.state.treeData[0] && this.props.selectKey === '') {
       this.props.selectNode(this.state.treeData[0].key)
     }
     this.generateList(this.state.treeData)
@@ -30,9 +30,9 @@ class NormalTree extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (!_.isEqual(nextProps.data, this.props.data)) {
+    if (!_.isEqual(nextProps.data, this.state.treeData)) {
       this.setState({ treeData: nextProps.data })
-      if (nextProps.data[0]) {
+      if (nextProps.data[0] && !_.find(nextProps.oriData, { key: nextProps.selectKey })) {
         this.props.selectNode(nextProps.data[0].key)
       }
       dataList = []
@@ -47,6 +47,21 @@ class NormalTree extends React.Component {
   }
 
   onDrop = (info) => {
+    const dropName = info.node.props
+    const dragName = info.dragNode.props.title.props.text
+    let quit = false
+    if (dropName.children) {
+      for (const i of dropName.children) {
+        if (i.props.title.props.text === dragName) {
+          message.error(`当前节点下已有节点 ${dragName}！`)
+          quit = true
+          return
+        }
+      }
+    }
+    if (quit === true) {
+      return
+    }
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
     const dropPos = info.node.props.pos.split('-')
@@ -101,6 +116,7 @@ class NormalTree extends React.Component {
     this.setState({
       treeData: data,
     })
+    this.props.editNode(data, 'drag', [dragKey, dropKey])
   }
 
   onDragEnter = (info) => {
@@ -172,7 +188,7 @@ class NormalTree extends React.Component {
         return
       }
     }
-    this.setState({ selectKey: key, visible: true, createName: '' })
+    this.setState({ selectKey: key, visible: true, createList: [] })
   }
 
   showDeleteModal = (e) => {
@@ -190,7 +206,7 @@ class NormalTree extends React.Component {
     }
     const that = this
     Modal.confirm({
-      title: '你确定要删除改节点吗',
+      title: '你确定要删除该节点吗',
       content: '该节点及其子节点将被删除',
       onOk() {
         that.nodeDelete(key)
@@ -202,22 +218,18 @@ class NormalTree extends React.Component {
   }
 
   nodeCreate = () => {
-    const { treeData, selectKey, createName } = this.state
-    if (treeData.filter((item) => {
-      return item.title === createName
-    }).length > 0) {
-      message.error('属性名不能重复')
-      return
-    }
-    const newKey = uuid()
-    if (selectKey === '') {
-      treeData.push({
-        title: this.state.createName,
-        key: newKey,
-      })
-    } else {
-      this.addNode(selectKey, treeData, newKey)
-    }
+    const { treeData, selectKey, createList } = this.state
+    createList.forEach((i) => {
+      const newKey = uuid()
+      if (selectKey === '') {
+        treeData.push({
+          title: i,
+          key: newKey,
+        })
+      } else {
+        this.addNode(selectKey, treeData, newKey, i)
+      }
+    })
     this.setState({
       treeData,
       visible: false,
@@ -225,16 +237,18 @@ class NormalTree extends React.Component {
     this.props.editNode(treeData)
   }
 
-  addNode = (key, data, newKey) => data.map((item) => {// eslint-disable-line
+  addNode = (key, data, newKey, createName) => data.map((item) => {// eslint-disable-line
     if (item.key === key) {
       if (!item.children) {
         item.children = []
       }
-      if (!_.find(item.children, { title: this.state.createName })) {
+      if (!_.find(item.children, { title: createName })) {
         item.children.push({
-          title: this.state.createName,
+          title: createName,
           key: newKey,
         })
+      } else {
+        message.error(`已存在属性名"${createName}"`)
       }
       return
     }
@@ -316,7 +330,7 @@ class NormalTree extends React.Component {
 
   render() {
     const {
-      treeData, createName, visible, selectKey, autoExpandParent, expandedKeys,
+      treeData, createList, visible, selectKey, autoExpandParent, expandedKeys,
     } = this.state
     return (
       <div style={{ height: '100%' }}>
@@ -355,14 +369,16 @@ class NormalTree extends React.Component {
         </Tree>
         {this.props.onlyShow ? null : this.myAwesomeMenu(dataList)}
         <Modal
-          title="新增属性"
+          title="新增属性(可添加多个)"
           visible={visible}
           onOk={() => this.nodeCreate()}
           onCancel={() => this.setState({ visible: false })}
         >
-          <Input
-            value={createName}
-            onChange={e => this.setState({ createName: e.target.value })}
+          <Select
+            value={createList}
+            mode="tags"
+            onChange={value => this.setState({ createList: value })}
+            style={{ width: '100%' }}
           />
         </Modal>
       </div>

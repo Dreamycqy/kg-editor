@@ -138,9 +138,16 @@ class PublicResource extends React.Component {
     return this.props.classData.filter((e) => { return !_.find(remove, { key: e.key }) })
   }
 
-  editNode = (newTree) => {
+  editNode = (newTree, isdrag, dragArr) => {
     dataList = []
     this.generateList(newTree, '')
+    if (isdrag) {
+      dataList.forEach((e) => {
+        if (e.key === dragArr[0]) {
+          e.target = [dragArr[1]]
+        }
+      })
+    }
     this.props.changeData(dataList, 'class')
   }
 
@@ -180,8 +187,10 @@ class PublicResource extends React.Component {
         <div style={{ minWidth: 300, borderRight: '1px solid #e8e8e8', overflowY: 'scroll', height: 800 }}>
           <Tree
             iconType="smile" iconColor="#1296db"
+            oriData={classData}
             data={this.listToTree(classData)} selectNode={this.selectNode}
             editNode={this.editNode} treeType="class"
+            selectKey={currentNodeKey}
           />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Tree, Modal, Input, Icon, message, Cascader, Select } from 'antd'
 import _ from 'lodash'
+import uuid from 'uuid'
 import UploadExcel from '@/components/upload/uploadExcel'
 import UploadJson from '@/components/upload/uploadJson'
 
@@ -14,7 +15,7 @@ class SimpleTree extends React.Component {
     this.state = {
       treeData: this.props.data,
       showTreeData: this.props.data,
-      createName: '',
+      createName: [],
       visible: false,
       selectKey: [],
       filterValue: [],
@@ -24,15 +25,16 @@ class SimpleTree extends React.Component {
   }
 
   componentWillMount = () => {
-    if (this.state.treeData[0]) {
+    if (this.state.treeData[0] && this.props.currentNode === '') {
       this.props.selectNode(this.state.treeData[0].key)
     }
   }
 
   componentWillReceiveProps = (nextProps) => {
+    console.log(this.props.classData)
     if (!_.isEqual(nextProps.data, this.props.data)) {
       this.setState({ treeData: nextProps.data, showTreeData: nextProps.data })
-      if (nextProps.data[0]) {
+      if (nextProps.data[0] && nextProps.currentNode === '') {
         this.props.selectNode(nextProps.data[0].key)
       }
     }
@@ -68,7 +70,7 @@ class SimpleTree extends React.Component {
   }
 
   showCreateModal = () => {
-    this.setState({ visible: true, createName: '' })
+    this.setState({ visible: true, createName: [] })
   }
 
   showDeleteModal = (key) => {
@@ -78,7 +80,7 @@ class SimpleTree extends React.Component {
     }
     const that = this
     Modal.confirm({
-      title: '你确定要删除改节点吗',
+      title: '你确定要删除该节点吗',
       content: '该实体节点将被删除',
       onOk() {
         that.nodeDelete(key[0])
@@ -91,16 +93,20 @@ class SimpleTree extends React.Component {
 
   nodeCreate = () => {
     const { treeData, createName } = this.state
-    if (treeData.filter((item) => {
-      return item.title === createName
-    }).length > 0) {
-      message.error('实体名不能重复')
-      return
+    const addData = []
+    for (const name of createName) {
+      if (treeData.filter((item) => {
+        return item.title === name
+      }).length > 0) {
+        message.error('实体名不能重复')
+        return
+      }
+      addData.push({
+        title: name, key: uuid(), types: [], relationships: [], sameAs: [],
+      })
     }
-    this.setState({ treeData: [...treeData, { title: createName, key: createName }] })
-    this.props.editNode([{
-      title: createName, key: createName, types: [], relationships: [], sameAs: [],
-    }], 'add')
+    this.setState({ treeData: [...treeData, ...addData] })
+    this.props.editNode(addData, 'add')
     this.setState({ visible: false })
   }
 
@@ -184,14 +190,16 @@ class SimpleTree extends React.Component {
           {this.renderTreeNodes(showTreeData)}
         </Tree>
         <Modal
-          title="新增实体"
+          title="新增实体(可添加多个)"
           visible={visible}
           onOk={() => this.nodeCreate()}
           onCancel={() => this.setState({ visible: false })}
         >
-          <Input
+          <Select
             value={createName}
-            onChange={e => this.setState({ createName: e.target.value })}
+            mode="tags"
+            onChange={value => this.setState({ createName: value })}
+            style={{ width: '100%' }}
           />
         </Modal>
         <Modal

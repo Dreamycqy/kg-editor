@@ -27,7 +27,7 @@ class NormalTree extends React.Component {
   }
 
   componentWillMount = () => {
-    if (this.state.treeData[0]) {
+    if (this.state.treeData[0] && this.props.selectKey === '') {
       this.props.selectNode(this.state.treeData[0].key)
     }
     this.generateList(this.state.treeData)
@@ -35,9 +35,9 @@ class NormalTree extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (!_.isEqual(nextProps.data, this.props.data)) {
+    if (!_.isEqual(nextProps.data, this.state.treeData)) {
       this.setState({ treeData: nextProps.data })
-      if (nextProps.data[0]) {
+      if (nextProps.data[0] && !_.find(nextProps.oriData, { key: nextProps.selectKey })) {
         this.props.selectNode(nextProps.data[0].key)
       }
       dataList = []
@@ -55,6 +55,21 @@ class NormalTree extends React.Component {
   }
 
   onDrop = (info) => {
+    const dropName = info.node.props
+    const dragName = info.dragNode.props.title.props.text
+    let quit = false
+    if (dropName.children) {
+      for (const i of dropName.children) {
+        if (i.props.title.props.text === dragName) {
+          message.error(`当前节点下已有节点 ${dragName}！`)
+          quit = true
+          return
+        }
+      }
+    }
+    if (quit === true) {
+      return
+    }
     const dropKey = info.node.props.eventKey
     const dragKey = info.dragNode.props.eventKey
     const dropPos = info.node.props.pos.split('-')
@@ -105,14 +120,10 @@ class NormalTree extends React.Component {
         ar.splice(i + 1, 0, dragObj)
       }
     }
-
     this.setState({
       treeData: data,
     })
-  }
-
-  onDragEnter = (info) => {
-    console.log(info)
+    this.props.editNode(data, 'drag', [dragKey, dropKey])
   }
 
   onChange = (e) => {
@@ -209,7 +220,7 @@ class NormalTree extends React.Component {
     }
     const that = this
     Modal.confirm({
-      title: '你确定要删除改节点吗',
+      title: '你确定要删除该节点吗',
       content: '该节点及其子节点将被删除',
       onOk() {
         that.nodeDelete(key)
@@ -359,7 +370,6 @@ class NormalTree extends React.Component {
           draggable
           blockNode
           autoExpandParent
-          onDragEnter={this.onDragEnter}
           defaultExpandedKeys={this.state.expandedKeys}
           onDrop={this.onDrop}
           onSelect={this.onSelect}

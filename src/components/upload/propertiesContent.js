@@ -5,6 +5,7 @@ import Tree from '@/components/tree/tree'
 import FlexTable from '@/components/table/flexTable'
 
 const { TabPane } = Tabs
+let dataListData = []
 
 class PublicResource extends React.Component {
   constructor(props) {
@@ -19,12 +20,56 @@ class PublicResource extends React.Component {
   componentWillMount = () => {
   }
 
+  generateListData = (data, parent) => {
+    for (let i = 0; i < data.length; i++) {
+      const node = data[i]
+      const { key, title, source, target, domain, range } = node
+      dataListData.push({
+        key,
+        title,
+        source: source || key,
+        target: target || parent,
+        domain: domain || [],
+        range: range || [],
+      })
+      if (node.children) {
+        this.generateListData(node.children, key)
+      }
+    }
+  }
+
   selectNodeObj = (selectNodeObj) => {
     this.setState({ selectNodeObj })
   }
 
   selectNodeData = (selectNodeData) => {
     this.setState({ selectNodeData })
+  }
+
+  editNodeData = (newTree, isdrag, dragArr) => {
+    dataListData = []
+    this.generateListData(newTree, '')
+    if (isdrag) {
+      dataListData.forEach((e) => {
+        if (e.key === dragArr[0]) {
+          e.target = [dragArr[1]]
+        }
+      })
+    }
+    this.props.changeData(dataListData, 'data')
+  }
+
+  editNodeInfoData = (value, key, type) => {
+    const { propertyData } = this.props
+    const target = propertyData.find(item => item.key === key)
+    if (type === 'Annotations') {
+      target.title = value[0]
+    } else if (type === 'Domain') {
+      target.domain = value
+    } else {
+      target.range = value
+    }
+    this.props.changeData(propertyData, 'data')
   }
 
   listToTree = (list) => {
@@ -62,16 +107,29 @@ class PublicResource extends React.Component {
     const {
       selectNodeObj, selectNodeData, activeKey,
     } = this.state
-    const { propertyData, propertyObj } = this.props
+    const { propertyData, propertyObj, classData } = this.props
     let result
     const currentNodeObj = _.find(propertyObj, { key: selectNodeObj })
     const currentNodeData = _.find(propertyData, { key: selectNodeData })
     switch (activeKey) {
       case 'obj':
-        result = <Tree iconType="import" iconColor="#1296db" data={this.listToTree(propertyObj)} selectNode={this.selectNodeObj} onlyShow />
+        result = (
+          <Tree
+            iconType="import" iconColor="#1296db"
+            data={this.listToTree(propertyObj)} selectNode={this.selectNodeObj}
+            // onlyShow
+          />
+        )
         break
       case 'data':
-        result = <Tree iconType="import" iconColor="#1afa29" data={this.listToTree(propertyData)} selectNode={this.selectNodeData} onlyShow />
+        result = (
+          <Tree
+            iconType="import" iconColor="#1afa29"
+            data={this.listToTree(propertyData)} selectNode={this.selectNodeData}
+            editNode={this.editNodeData}
+            // onlyShow
+          />
+        )
         break
       default:
         result = null
@@ -99,25 +157,28 @@ class PublicResource extends React.Component {
                 title="Annotations" limited
                 data={currentNode ? [currentNode.title] : []}
                 selectKey={currentNode ? currentNode.key : ''}
-                onlyShow
+                editNode={this.editNodeInfoData}
+                // onlyShow
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
                 title="Domain" data={currentNode ? currentNode.domain : []}
                 placeholder="请输入类名"
-                options={[]}
+                options={classData.map((e) => { return e.title })}
                 selectKey={currentNode ? currentNode.key : ''}
-                onlyShow
+                editNode={this.editNodeInfoData}
+                // onlyShow
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                options={[]}
+                options={activeKey === 'obj' ? classData.map((e) => { return e.title }) : ['string', 'int', 'float']}
                 selectKey={currentNode ? currentNode.key : ''}
-                onlyShow
+                editNode={this.editNodeInfoData}
+                // onlyShow
               />
             </div>
           </div>

@@ -168,15 +168,29 @@ class PublicResource extends React.Component {
     return map
   }
 
-  editNodeObj = (newTree) => {
+  editNodeObj = (newTree, isdrag, dragArr) => {
     dataListObj = []
     this.generateListObj(newTree, '')
+    if (isdrag) {
+      dataListObj.forEach((e) => {
+        if (e.key === dragArr[0]) {
+          e.target = [dragArr[1]]
+        }
+      })
+    }
     this.props.changeData(dataListObj, 'obj')
   }
 
-  editNodeData = (newTree) => {
+  editNodeData = (newTree, isdrag, dragArr) => {
     dataListData = []
     this.generateListData(newTree, '')
+    if (isdrag) {
+      dataListData.forEach((e) => {
+        if (e.key === dragArr[0]) {
+          e.target = [dragArr[1]]
+        }
+      })
+    }
     this.props.changeData(dataListData, 'data')
   }
 

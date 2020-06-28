@@ -148,7 +148,7 @@ export default class FlexTable extends React.Component {
         return (
           dataSource.length > 1
           && dataSource[dataSource.length - 1].itemKey !== record.itemKey
-          && this.props.onlyShow === false
+          && !this.props.onlyShow
             ? (
               <Popconfirm
                 title="确定要删除吗？"

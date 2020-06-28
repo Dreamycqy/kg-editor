@@ -67,7 +67,8 @@ class PublicResource extends React.Component {
           <Tree
             iconType="smile" iconColor="#1296db"
             data={this.listToTree(classData)} selectNode={this.selectNode}
-            onlyShow treeType="class"
+            // onlyShow
+            treeType="class"
           />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
@@ -80,7 +81,7 @@ class PublicResource extends React.Component {
                 title="Annotations" limited
                 data={[currentNode ? currentNode.title : '']}
                 selectKey={currentNodeKey}
-                onlyShow
+                // onlyShow
               />
             </div>
             <div style={{ marginBottom: 10 }}>
@@ -89,7 +90,7 @@ class PublicResource extends React.Component {
                 placeholder="请输入类名"
                 options={[]}
                 selectKey={currentNodeKey}
-                onlyShow
+                // onlyShow
               />
             </div>
             <div style={{ marginBottom: 10 }}>
@@ -98,7 +99,7 @@ class PublicResource extends React.Component {
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={[]}
                 selectKey={currentNodeKey}
-                onlyShow
+                // onlyShow
               />
             </div>
           </div>
