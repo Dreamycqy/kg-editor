@@ -221,7 +221,8 @@ class PublicResource extends React.Component {
               <FlexTableDb
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
-                options={[...propertyData, ...propertyObj].map((e) => { return e.title })}
+                options={propertyData && propertyObj
+                  ? [...propertyData, ...propertyObj].map((e) => { return e }) : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNodeKey}
               />

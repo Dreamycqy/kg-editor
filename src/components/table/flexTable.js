@@ -9,6 +9,7 @@ export default class FlexTable extends React.Component {
     super(props)
     this.state = {
       dataSource: [],
+      oriData: [],
       loading: false,
     }
   }
@@ -55,7 +56,7 @@ export default class FlexTable extends React.Component {
         itemKey: uuid(),
       })
     }
-    this.setState({ dataSource })
+    this.setState({ dataSource, oriData: dataSource })
   }
 
   handleNewData = (dataSource) => {
@@ -85,6 +86,10 @@ export default class FlexTable extends React.Component {
 
   handleTableChange = async (value, itemKey, text) => {
     const { dataSource } = this.state
+    if (_.find(dataSource, { key: value })) {
+      message.error('内容不能重复！')
+      return
+    }
     const target = dataSource.find(item => item.itemKey === itemKey)
     if (target) {
       target[text] = value
@@ -93,7 +98,10 @@ export default class FlexTable extends React.Component {
   }
 
   handleBlur = (value, itemKey) => {
-    const { dataSource } = this.state
+    const { dataSource, oriData } = this.state
+    if (_.isEqual(dataSource, oriData)) {
+      return
+    }
     if (value.length > 0) {
       if (dataSource[dataSource.length - 1].key !== '' && !this.props.limited) {
         message.success(`添加了${this.props.title}`)
