@@ -203,7 +203,7 @@ class PublicResource extends React.Component {
                 data={currentNode ? typesArray : []}
                 placeholder="请输入类名"
                 selectKey={currentNode ? currentNode.key : ''}
-                options={classData ? classData.map((e) => { return e.title }) : []}
+                options={classData ? classData.map((e) => { return e }) : []}
                 editNode={this.editNodeInfo}
               />
             </div>
@@ -221,7 +221,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Same As" data={currentNode ? currentNode.sameAs : []}
                 placeholder="请输入实体"
-                options={treeData ? treeData.map((e) => { return e.title }) : []}
+                options={treeData ? treeData.map((e) => { return e }) : []}
               />
             </div>
           </div>

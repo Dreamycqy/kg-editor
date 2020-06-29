@@ -50,10 +50,20 @@ class NormalTree extends React.Component {
     const dropName = info.node.props
     const dragName = info.dragNode.props.title.props.text
     let quit = false
-    if (dropName.children) {
-      for (const i of dropName.children) {
-        if (i.props.title.props.text === dragName) {
-          message.error(`当前节点下已有节点 ${dragName}！`)
+    if (info.dropToGap === false) {
+      if (dropName.children) {
+        for (const i of dropName.children) {
+          if (i.props.title.props.text === dragName) {
+            message.error(`当前节点下已有节点 ${dragName}！`)
+            quit = true
+            return
+          }
+        }
+      }
+    } else {
+      for (const i of this.state.treeData) {
+        if (i.title === dragName) {
+          message.error(`最外层已有节点 ${dragName}！`)
           quit = true
           return
         }
@@ -77,15 +87,14 @@ class NormalTree extends React.Component {
         }
       })
     }
-    const data = [...this.state.treeData]
-
     let dragObj
+    const data = [...this.state.treeData]
     loop(data, dragKey, (item, index, arr) => {
       arr.splice(index, 1)
       dragObj = item
     })
 
-    if (!info.dropToGap) {
+    if (info.dropToGap === false) {
       loop(data, dropKey, (item) => {
         item.children = item.children || []
         item.children.push(dragObj)
@@ -116,11 +125,15 @@ class NormalTree extends React.Component {
     this.setState({
       treeData: data,
     })
-    this.props.editNode(data, 'drag', [dragKey, dropKey])
+    if (info.dropToGap === false) {
+      this.props.editNode(data, 'drag', [dragKey, dropKey])
+    } else {
+      this.props.editNode(data)
+    }
   }
 
-  onDragEnter = (info) => {
-    console.log(info)
+  onDragEnter = () => {
+    // console.log(info)
   }
 
   onChange = (e) => {
@@ -252,8 +265,8 @@ class NormalTree extends React.Component {
       }
       return
     }
-    if (item.children) {
-      this.addNode(key, item.children, newKey)
+    if (item.children && item.children.length > 0) {
+      this.addNode(key, item.children, newKey, createName)
     }
   })
 
@@ -290,39 +303,41 @@ class NormalTree extends React.Component {
     const { searchValue } = this.state
     const result = []
     data.forEach((item) => {
-      const index = item.title.indexOf(searchValue)
-      const beforeStr = item.title.substr(0, index)
-      const afterStr = item.title.substr(index + searchValue.length)
-      const titleText = index > -1
-        ? (
-          <span>
-            {beforeStr}
-            <span style={{ color: '#f50' }}>{searchValue}</span>
-            {afterStr}
-          </span>
-        ) : (
-          <span>{item.title}</span>
+      if (item.title) {
+        const index = item.title.indexOf(searchValue)
+        const beforeStr = item.title.substr(0, index)
+        const afterStr = item.title.substr(index + searchValue.length)
+        const titleText = index > -1
+          ? (
+            <span>
+              {beforeStr}
+              <span style={{ color: '#f50' }}>{searchValue}</span>
+              {afterStr}
+            </span>
+          ) : (
+            <span>{item.title}</span>
+          )
+        const title = (
+          <MenuProvider id="menu_id" text={item.title} datakey={item.key}>
+            <Icon
+              style={{ color: this.props.iconColor, marginRight: 6 }} type={this.props.iconType}
+            />
+            {titleText}
+          </MenuProvider>
         )
-      const title = (
-        <MenuProvider id="menu_id" text={item.title} datakey={item.key}>
-          <Icon
-            style={{ color: this.props.iconColor, marginRight: 6 }} type={this.props.iconType}
-          />
-          {titleText}
-        </MenuProvider>
-      )
-      if (item.children) {
-        result.push(
-          <TreeNode
+        if (item.children) {
+          result.push(
+            <TreeNode
+              title={title} key={item.key}
+            >
+              {this.renderTreeNodes(item.children)}
+            </TreeNode>,
+          )
+        } else {
+          result.push(<TreeNode
             title={title} key={item.key}
-          >
-            {this.renderTreeNodes(item.children)}
-          </TreeNode>,
-        )
-      } else {
-        result.push(<TreeNode
-          title={title} key={item.key}
-        />)
+          />)
+        }
       }
     })
     return result

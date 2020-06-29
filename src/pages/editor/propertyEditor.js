@@ -7,6 +7,9 @@ import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 
+const typeArray = [
+  { title: 'string', key: 'string' }, { title: 'int', key: 'int' }, { title: 'float', key: 'float' },
+]
 const { TabPane } = Tabs
 let dataListObj = []
 let dataListData = []
@@ -47,12 +50,12 @@ class PublicResource extends React.Component {
   generateListData = (data, parent) => {
     for (let i = 0; i < data.length; i++) {
       const node = data[i]
-      const { key, title, source, target, domain, range } = node
+      const { key, title, source, domain, range } = node
       dataListData.push({
         key,
         title,
         source: source || key,
-        target: target || parent,
+        target: parent,
         domain: domain || [],
         range: range || [],
       })
@@ -187,7 +190,7 @@ class PublicResource extends React.Component {
     if (isdrag) {
       dataListData.forEach((e) => {
         if (e.key === dragArr[0]) {
-          e.target = [dragArr[1]]
+          e.target = dragArr[1]
         }
       })
     }
@@ -277,7 +280,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Domain" data={currentNode ? currentNode.domain : []}
                 placeholder="请输入类名"
-                options={classData.map((e) => { return e.title })}
+                options={classData.map((e) => { return e })}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
@@ -286,7 +289,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                options={activeKey === 'obj' ? classData.map((e) => { return e.title }) : ['string', 'int', 'float']}
+                options={activeKey === 'obj' ? classData.map((e) => { return e }) : typeArray}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />

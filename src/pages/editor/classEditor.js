@@ -211,7 +211,7 @@ class PublicResource extends React.Component {
                 title="Parents" data={currentParent}
                 placeholder="请输入类名"
                 options={this.removeCurrentChildrens(selectNode).map((e) => {
-                  return e.title
+                  return e
                 })}
                 editNode={this.editNodeInfo}
                 selectKey={currentNodeKey}

@@ -29,7 +29,12 @@ export const makeOptionNormal = (array) => {
 export const makeOptionTable = (array) => {
   const children = []
   for (const i of array) {
-    children.push(<Option key={i.key} value={i.key}>{i.title}</Option>)
+    children.push(
+      <Option key={i.key} value={i.key}>
+        {i.title}
+        <span style={{ color: '#888' }}>{i.target && i.target.length > 0 ? i.target[0] ? ` (${i.target[0]})` : ` (${i.target})` : ''}</span>
+      </Option>,
+    )
   }
   return children
 }

@@ -2,14 +2,13 @@ import React from 'react'
 import { Table, Input, Popconfirm, Icon, message, Select } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
-import { makeOptionNormal } from '@/utils/common'
+import { makeOptionTable } from '@/utils/common'
 
 export default class FlexTable extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       dataSource: [],
-      oriData: [],
       loading: false,
     }
   }
@@ -56,7 +55,7 @@ export default class FlexTable extends React.Component {
         itemKey: uuid(),
       })
     }
-    this.setState({ dataSource, oriData: dataSource })
+    this.setState({ dataSource })
   }
 
   handleNewData = (dataSource) => {
@@ -98,16 +97,13 @@ export default class FlexTable extends React.Component {
   }
 
   handleBlur = (value, itemKey) => {
-    const { dataSource, oriData } = this.state
-    if (_.isEqual(dataSource, oriData)) {
-      return
-    }
+    const { dataSource } = this.state
     if (value.length > 0) {
       if (dataSource[dataSource.length - 1].key !== '' && !this.props.limited) {
         message.success(`添加了${this.props.title}`)
         this.handleAddRow()
       } else {
-        message.success(`编辑了${this.props.title}`)
+        // message.success(`编辑了${this.props.title}`)
       }
     } else if (dataSource.length > 1) {
       message.success(`删除了${this.props.title}`)
@@ -145,7 +141,7 @@ export default class FlexTable extends React.Component {
               }}
               showSearch
             >
-              {makeOptionNormal(this.props.options || [])}
+              {makeOptionTable(this.props.options || [])}
             </Select>
           )
       ),

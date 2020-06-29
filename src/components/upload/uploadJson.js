@@ -41,7 +41,7 @@ class UploadJson extends React.Component {
             }
           }
         }
-        dataSource[name] = data
+        dataSource[name.split('.')[0]] = data
         this.setState({ dataSource, nameOption, mainName: nameOption[0] })
       } catch (e) {
         message.error('文件类型不正确！')
@@ -76,7 +76,7 @@ class UploadJson extends React.Component {
         if (info.file.status === 'done') {
           message.success(`${info.file.name} 已上传`)
         } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败`)
+          // message.error(`${info.file.name} 上传失败`)
         }
       },
     }
