@@ -241,10 +241,10 @@ class PublicResource extends React.Component {
     const currentNodeData = _.find(propertyData, { key: selectNodeData })
     switch (activeKey) {
       case 'obj':
-        result = <Tree iconType="import" iconColor="#1296db" data={this.listToTree(propertyObj)} selectNode={this.selectNodeObj} editNode={this.editNodeObj} />
+        result = <Tree iconType="import" iconColor="#1296db" data={this.listToTree(propertyObj)} oriData={propertyObj} selectNode={this.selectNodeObj} editNode={this.editNodeObj} />
         break
       case 'data':
-        result = <Tree iconType="import" iconColor="#1afa29" data={this.listToTree(propertyData)} selectNode={this.selectNodeData} editNode={this.editNodeData} />
+        result = <Tree iconType="import" iconColor="#1afa29" data={this.listToTree(propertyData)} oriData={propertyData} selectNode={this.selectNodeData} editNode={this.editNodeData} />
         break
       default:
         result = null
@@ -280,7 +280,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Domain" data={currentNode ? currentNode.domain : []}
                 placeholder="请输入类名"
-                options={classData.map((e) => { return e })}
+                options={classData}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
@@ -289,7 +289,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                options={activeKey === 'obj' ? classData.map((e) => { return e }) : typeArray}
+                options={activeKey === 'obj' ? classData : typeArray}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />

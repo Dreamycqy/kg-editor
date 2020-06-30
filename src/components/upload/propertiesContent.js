@@ -120,6 +120,7 @@ class PublicResource extends React.Component {
           <Tree
             iconType="import" iconColor="#1296db"
             data={this.listToTree(propertyObj)} selectNode={this.selectNodeObj}
+            oriData={propertyObj}
             // onlyShow
           />
         )
@@ -130,6 +131,7 @@ class PublicResource extends React.Component {
             iconType="import" iconColor="#1afa29"
             data={this.listToTree(propertyData)} selectNode={this.selectNodeData}
             editNode={this.editNodeData}
+            oriData={propertyObj}
             // onlyShow
           />
         )
@@ -168,7 +170,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Domain" data={currentNode ? currentNode.domain : []}
                 placeholder="请输入类名"
-                options={classData.map((e) => { return e })}
+                options={classData}
                 selectKey={currentNode ? currentNode.key : ''}
                 editNode={this.editNodeInfoData}
                 // onlyShow
@@ -178,7 +180,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Range" data={currentNode ? currentNode.range : []}
                 placeholder={activeKey === 'obj' ? '请输入类名' : '请输入数据'}
-                options={activeKey === 'obj' ? classData.map((e) => { return e }) : typeArray}
+                options={activeKey === 'obj' ? classData : typeArray}
                 selectKey={currentNode ? currentNode.key : ''}
                 editNode={this.editNodeInfoData}
                 // onlyShow

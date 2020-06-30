@@ -95,6 +95,9 @@ class LeftPart extends React.Component {
   makeProcess = (obj) => {
     const result = []
     for (const i in obj) { // eslint-disable-line
+      if (i === '') {
+        return
+      }
       result.push(
         <div style={{ padding: '0 0 20px 10px' }}>
           <div style={{ width: 80, display: 'inline-block' }}>{name[i]}</div>

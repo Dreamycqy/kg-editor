@@ -90,7 +90,7 @@ class PublicResource extends React.Component {
       e.target.forEach((i) => {
         links.push({
           source: e.title,
-          target: _.find(newList, { key: i }).title,
+          target: _.find(newList, { key: i }) ? _.find(newList, { key: i }).title : '',
         })
       })
     })
@@ -116,10 +116,10 @@ class PublicResource extends React.Component {
         startKey.push(item.key)
       }
       item.target.forEach((key) => {
-        if (!result[key].children) {
+        if (result[key] && !result[key].children) {
           result[key].children = []
         }
-        if (!_.find(result[key].children, { key: item.key })) {
+        if (result[key] && !_.find(result[key].children, { key: item.key })) {
           result[key].children.push(item)
         }
       })
@@ -157,11 +157,7 @@ class PublicResource extends React.Component {
     if (type === 'Annotations') {
       target.title = value[0]
     } else if (type === 'Parents') {
-      const array = []
-      value.forEach((e) => {
-        array.push(_.find(classData, { title: e }).key)
-      })
-      target.target = array
+      target.target = value
     } else {
       target.relationships = value
     }
@@ -177,7 +173,7 @@ class PublicResource extends React.Component {
       currentNode.target.forEach((e) => {
         const parent = _.find(classData, { key: e })
         if (parent) {
-          currentParent.push(parent.title)
+          currentParent.push(parent.key)
         }
       })
     }
@@ -222,7 +218,7 @@ class PublicResource extends React.Component {
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={propertyData && propertyObj
-                  ? [...propertyData, ...propertyObj].map((e) => { return e }) : []}
+                  ? [...propertyData, ...propertyObj] : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNodeKey}
               />

@@ -114,6 +114,7 @@ export default class FlexTable extends React.Component {
 
   render() {
     const { dataSource, loading } = this.state
+    const min = this.props.title === 'Parents' ? 2 : 1
     const columns = [{
       title: this.props.title,
       key: 'key',
@@ -151,7 +152,7 @@ export default class FlexTable extends React.Component {
       width: 40,
       render: (text, record) => {
         return (
-          dataSource.length > 1
+          dataSource.length > min
           && dataSource[dataSource.length - 1].itemKey !== record.itemKey
           && !this.props.onlyShow
             ? (

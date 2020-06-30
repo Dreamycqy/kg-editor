@@ -41,7 +41,7 @@ class UploadExcel extends React.Component {
             }
           }
         }
-        dataSource[name] = data
+        dataSource[name.split('.')[0]] = data
         this.setState({ dataSource, nameOption, mainName: nameOption[0] })
         message.success('上传成功！')
       } catch (e) {
@@ -54,9 +54,11 @@ class UploadExcel extends React.Component {
 
   handleFileList = async (list) => {
     await this.setState({ nameOption: [], dataSource: {} })
-    list.forEach((a) => {
-      this.onImportExcel(a.originFileObj, a.name)
-    })
+    if (list.length > 0) {
+      list.forEach((a) => {
+        this.onImportExcel(a.originFileObj, a.name)
+      })
+    }
   }
 
   render() {
@@ -124,7 +126,7 @@ class UploadExcel extends React.Component {
           nodeTask={this.props.nodeTask}
           projectName={this.props.projectName}
           taskName={this.props.taskName}
-          ref={ele => this.showUp = ele}
+          close={this.props.close}
           createProject={this.props.createProject}
         />
       </div>

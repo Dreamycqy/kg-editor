@@ -106,11 +106,7 @@ class PublicResource extends React.Component {
     if (type === 'Annotations') {
       target.title = value[0]
     } else if (type === 'Types') {
-      const array = []
-      value.forEach((e) => {
-        array.push(_.find(classData, { title: e }).key)
-      })
-      target.types = array
+      target.types = value
     } else if (type === 'Relationships') {
       target.relationships = value
     } else {
@@ -166,7 +162,7 @@ class PublicResource extends React.Component {
     const typesArray = []
     if (currentNode) {
       currentNode.types.forEach((e) => {
-        typesArray.push(_.find(classData, { key: e }).title)
+        typesArray.push(_.find(classData, { key: e }) ? e : '')
       })
     }
     return (
@@ -203,7 +199,7 @@ class PublicResource extends React.Component {
                 data={currentNode ? typesArray : []}
                 placeholder="请输入类名"
                 selectKey={currentNode ? currentNode.key : ''}
-                options={classData ? classData.map((e) => { return e }) : []}
+                options={classData || []}
                 editNode={this.editNodeInfo}
               />
             </div>
@@ -212,7 +208,7 @@ class PublicResource extends React.Component {
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={propertyData && propertyObj
-                  ? [...propertyData, ...propertyObj].map((e) => { return e }) : []}
+                  ? [...propertyData, ...propertyObj] : []}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
@@ -221,7 +217,8 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Same As" data={currentNode ? currentNode.sameAs : []}
                 placeholder="请输入实体"
-                options={treeData ? treeData.map((e) => { return e }) : []}
+                editNode={this.editNodeInfo}
+                options={treeData || []}
               />
             </div>
           </div>

@@ -28,7 +28,6 @@ export const makeOptionNormal = (array) => {
 }
 
 export const makeOptionTable = (array) => {
-  console.log(array)
   const children = []
   const handleTitle = (key, list) => {
     if (_.find(list, { key })) {

@@ -69,7 +69,7 @@ class PublicResource extends React.Component {
     const typesArray = []
     if (currentNode) {
       currentNode.types.forEach((e) => {
-        typesArray.push(_.find(classData, { key: e }).title)
+        typesArray.push(_.find(classData, { key: e }) ? e : '')
       })
     }
     return (
@@ -103,7 +103,7 @@ class PublicResource extends React.Component {
                 data={currentNode ? typesArray : []}
                 placeholder="请输入类名"
                 selectKey={currentNode ? currentNode.key : ''}
-                options={classData ? classData.map((e) => { return e }) : []}
+                options={classData || []}
                 onlyShow
               />
             </div>
@@ -112,7 +112,7 @@ class PublicResource extends React.Component {
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
                 options={propertyData && propertyObj
-                  ? [...propertyData, ...propertyObj].map((e) => { return e }) : []}
+                  ? [...propertyData, ...propertyObj] : []}
                 selectKey={currentNode ? currentNode.key : ''}
                 onlyShow
               />
@@ -121,7 +121,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Same As" data={currentNode ? currentNode.sameAs : []}
                 placeholder="请输入实体"
-                options={treeData ? treeData.map((e) => { return e }) : []}
+                options={treeData || []}
                 onlyShow
               />
             </div>

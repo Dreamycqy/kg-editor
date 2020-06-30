@@ -130,6 +130,7 @@ export default class FlexTable extends React.Component {
           }}
           showSearch
           optionFilterProp="children"
+          dropdownMatchSelectWidth={false}
         >
           {makeOptionTable(this.props.options)}
         </Select>

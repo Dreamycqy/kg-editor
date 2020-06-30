@@ -21,9 +21,11 @@ class UploadJson extends React.Component {
 
   handleFileList = async (list) => {
     await this.setState({ nameOption: [], dataSource: {} })
-    list.forEach((a) => {
-      this.handleJsonObj(a.originFileObj, a.name)
-    })
+    if (list.length > 0) {
+      list.forEach((a) => {
+        this.handleJsonObj(a.originFileObj, a.name)
+      })
+    }
   }
 
   handleJsonObj = (obj, name) => {
@@ -115,7 +117,6 @@ class UploadJson extends React.Component {
           nodeTask={this.props.nodeTask}
           projectName={this.props.projectName}
           taskName={this.props.taskName}
-          goUpload={this.goUpload}
           close={this.props.close}
           createProject={this.props.createProject}
         />

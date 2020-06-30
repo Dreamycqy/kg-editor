@@ -37,6 +37,10 @@ class ShowUploadJson extends React.Component {
     }
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    this.handleData(nextProps)
+  }
+
   getClass = async () => {
     const data = await getProjectClassesTree({
       projectName: this.props.projectName,
@@ -62,12 +66,6 @@ class ShowUploadJson extends React.Component {
     })
     if (data) {
       this.setState({ indis: data.data.filter((e) => { return !!e.key }) })
-    }
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    if (!_.isEqual(nextProps.dataSource, {})) {
-      this.handleData(nextProps)
     }
   }
 
