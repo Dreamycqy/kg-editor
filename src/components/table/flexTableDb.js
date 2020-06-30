@@ -129,6 +129,7 @@ export default class FlexTable extends React.Component {
             this.handleTableChange(value, record.itemKey, 'key')
           }}
           showSearch
+          optionFilterProp="children"
         >
           {makeOptionTable(this.props.options)}
         </Select>

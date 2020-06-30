@@ -213,7 +213,7 @@ class MainEditor extends React.Component {
           <TabPane style={{ height: 0 }} tab="类" key="classes" />
           <TabPane style={{ height: 0 }} tab="属性" key="properties" />
           <TabPane style={{ height: 0 }} tab="实体" key="individuals" />
-          <TabPane style={{ height: 0 }} tab="综合编辑" key="total" />
+          {/* <TabPane style={{ height: 0 }} tab="综合编辑" key="total" /> */}
           <TabPane style={{ height: 0 }} tab="讨论" key="comment" />
           <TabPane style={{ height: 0 }} tab="历史" key="history" />
         </Tabs>

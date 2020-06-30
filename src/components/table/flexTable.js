@@ -140,8 +140,9 @@ export default class FlexTable extends React.Component {
                 this.handleBlur(value, record.itemKey)
               }}
               showSearch
+              optionFilterProp="children"
             >
-              {makeOptionTable(this.props.options || [])}
+              {makeOptionTable(this.props.options)}
             </Select>
           )
       ),

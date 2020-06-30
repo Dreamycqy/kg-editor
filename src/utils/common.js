@@ -1,6 +1,7 @@
 import React from 'react'
 import queryString from 'query-string'
 import { Select } from 'antd'
+import _ from 'lodash'
 
 const { Option } = Select
 
@@ -27,12 +28,22 @@ export const makeOptionNormal = (array) => {
 }
 
 export const makeOptionTable = (array) => {
+  console.log(array)
   const children = []
+  const handleTitle = (key, list) => {
+    if (_.find(list, { key })) {
+      return _.find(list, { key }).title
+    } else {
+      return key
+    }
+  }
   for (const i of array) {
     children.push(
       <Option key={i.key} value={i.key}>
         {i.title}
-        <span style={{ color: '#888' }}>{i.target && i.target.length > 0 ? i.target[0] ? ` (${i.target[0]})` : ` (${i.target})` : ''}</span>
+        {i.target && i.target.length > 0
+          ? typeof i.target !== 'string'
+            ? ` (${handleTitle(i.target[0], array)})` : ` (${handleTitle(i.target, array)})` : ''}
       </Option>,
     )
   }
