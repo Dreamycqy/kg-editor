@@ -59,13 +59,11 @@ class UploadJson extends React.Component {
     const that = this
     const props = {
       name: 'file',
-      action: '',
       fileList,
       headers: {
         authorization: 'authorization-text',
       },
       onChange(info) {
-        console.log(info)
         const list = [...info.fileList].map((file) => {
           if (file.response) {
             file.url = file.response.url

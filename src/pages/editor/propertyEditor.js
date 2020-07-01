@@ -32,12 +32,12 @@ class PublicResource extends React.Component {
   generateListObj = (data, parent) => {
     for (let i = 0; i < data.length; i++) {
       const node = data[i]
-      const { key, title, source, target, domain, range } = node
+      const { key, title, source, domain, range } = node
       dataListObj.push({
         key,
         title,
         source: source || key,
-        target: target || parent,
+        target: parent,
         domain: domain || [],
         range: range || [],
       })
