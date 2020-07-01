@@ -21,6 +21,7 @@ class SimpleTree extends React.Component {
       filterValue: [],
       fileType: 'json',
       visibleExcel: false,
+      selectClass: '',
     }
   }
 
@@ -30,10 +31,10 @@ class SimpleTree extends React.Component {
     }
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    console.log(this.props.classData)
+  componentWillReceiveProps = async (nextProps) => {
     if (!_.isEqual(nextProps.data, this.props.data)) {
-      this.setState({ treeData: nextProps.data, showTreeData: nextProps.data })
+      await this.setState({ treeData: nextProps.data })
+      this.handleFilter(this.state.filterValue)
       if (nextProps.data[0] && nextProps.currentNode === '') {
         this.props.selectNode(nextProps.data[0].key)
       }
@@ -57,9 +58,9 @@ class SimpleTree extends React.Component {
   }
 
   handleFilter = (value) => {
-    this.setState({ filterValue: value })
+    this.setState({ filterValue: value, selectClass: value[value.length - 1] || '' })
     const { treeData } = this.state
-    if (value.length === 1) {
+    if (value.length <= 1) {
       this.setState({ showTreeData: treeData })
     } else {
       const showTreeData = treeData.filter((e) => {
@@ -92,7 +93,7 @@ class SimpleTree extends React.Component {
   }
 
   nodeCreate = () => {
-    const { treeData, createName } = this.state
+    const { treeData, createName, selectClass } = this.state
     const addData = []
     for (const name of createName) {
       if (treeData.filter((item) => {
@@ -101,9 +102,17 @@ class SimpleTree extends React.Component {
         message.error('实体名不能重复')
         return
       }
-      addData.push({
-        title: name, key: uuid(), types: [], relationships: [], sameAs: [],
-      })
+      const params = {
+        title: name,
+        key: uuid(),
+        types: [],
+        relationships: [],
+        sameAs: [],
+      }
+      if (selectClass.length > 0) {
+        params.types.push(selectClass)
+      }
+      addData.push(params)
     }
     this.setState({ treeData: [...treeData, ...addData] })
     this.props.editNode(addData, 'add')
@@ -145,7 +154,8 @@ class SimpleTree extends React.Component {
 
   render() {
     const {
-      showTreeData, visible, createName, selectKey, visibleExcel, filterValue, fileType,
+      showTreeData, visible, createName, selectKey,
+      visibleExcel, filterValue, fileType, selectClass,
     } = this.state
     return (
       <div>
@@ -195,6 +205,9 @@ class SimpleTree extends React.Component {
           onOk={() => this.nodeCreate()}
           onCancel={() => this.setState({ visible: false })}
         >
+          <div style={{ margin: 10, display: selectClass.length > 0 ? 'block' : 'none' }}>
+            当前已选中概念：{selectClass.length > 0 ? _.find(this.props.oriClassData, { key: selectClass }).title : ''}，实体节点将关联到该概念下。
+          </div>
           <Select
             value={createName}
             mode="tags"

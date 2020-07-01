@@ -174,6 +174,7 @@ class PublicResource extends React.Component {
             data={treeData} selectNode={this.selectNode}
             editNode={this.editNode}
             classData={this.listToTree(classData || [])}
+            oriClassData={classData}
             nodeTask={classData[0].nodeTask}
             projectName={this.props.projectName}
             taskName={this.props.taskName}
