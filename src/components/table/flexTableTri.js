@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Input, Popconfirm, Icon, Select } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
-import { makeOptionTable } from '@/utils/common'
+import { makeOptionTable, makeOption, makeOptionNew } from '@/utils/common'
 
 const { TextArea } = Input
 
@@ -36,7 +36,7 @@ export default class FlexTable extends React.Component {
     const result = []
     dataSource.forEach((e) => {
       if (e.key.length > 0) {
-        result.push({ key: e.key, value: e.value })
+        result.push({ key: e.key, value: e.value, type: e.type })
       }
     })
     this.props.editNode(result, this.props.selectKey, this.props.title)
@@ -45,12 +45,16 @@ export default class FlexTable extends React.Component {
   pushConfig = (data) => {
     const dataSource = []
     data.forEach((e) => {
-      if (!_.find(this.props.options, { key: e.key })) {
-        return
+      let type = 'desc'
+      if (_.find(this.props.optionData, { key: e.key })) {
+        type = 'desc'
+      } else if (_.find(this.props.optionObj, { key: e.key })) {
+        type = 'relation'
       }
       const item = {
         key: e.key,
         value: e.value,
+        type: e.type || type,
         itemKey: uuid(),
       }
       dataSource.push(item)
@@ -59,6 +63,7 @@ export default class FlexTable extends React.Component {
       dataSource.push({
         key: '',
         value: '',
+        type: 'desc',
         itemKey: uuid(),
       })
     }
@@ -100,6 +105,9 @@ export default class FlexTable extends React.Component {
   }
 
   handleBlur = async (value, itemKey) => {
+    if (!value) {
+      return
+    }
     const { dataSource } = this.state
     if (value.length > 0) {
       if (dataSource[dataSource.length - 1].key !== '' && !this.props.limited) {
@@ -121,34 +129,67 @@ export default class FlexTable extends React.Component {
   render() {
     const { dataSource, loading } = this.state
     const columns = [{
-      title: this.props.title,
-      width: 150,
+      title: '数据类型',
+      width: 80,
       render: (text, record) => (
         <Select
-          value={record.key}
+          value={record.type}
           disabled={this.props.onlyShow}
           style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
           onChange={(value) => {
-            this.handleTableChange(value, record.itemKey, 'key')
+            this.handleTableChange(value, record.itemKey, 'type')
+            this.handleTableChange('', record.itemKey, 'value')
           }}
-          showSearch
-          optionFilterProp="children"
-          dropdownMatchSelectWidth={false}
         >
-          {makeOptionTable(this.props.options)}
+          {makeOption([{ name: '描述', value: 'desc' },
+            { name: '关系', value: 'relation' }])}
         </Select>
       ),
     }, {
+      title: this.props.title,
+      width: 120,
+      render: (text, record) => {
+        const optionList = record.type === 'desc' ? this.props.optionData : this.props.optionObj
+        return (
+          <Select
+            value={record.key}
+            disabled={this.props.onlyShow}
+            style={{ width: 120, fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+            onChange={(value) => {
+              this.handleTableChange(value, record.itemKey, 'key')
+            }}
+            showSearch
+            optionFilterProp="children"
+            dropdownMatchSelectWidth={false}
+          >
+            {makeOptionTable(optionList)}
+          </Select>
+        )
+      },
+    }, {
       title: this.props.value,
-      render: (text, record) => (
-        <TextArea
-          disabled={this.props.onlyShow}
-          value={record.value} placeholder="请输入内容"
-          autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
-          onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'value')}
-          onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
-        />
-      ),
+      render: (text, record) => (record.type === 'desc'
+        ? (
+          <TextArea
+            disabled={this.props.onlyShow}
+            value={record.value} placeholder="请输入内容"
+            autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+            onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'value', this.checkType())}
+            onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
+          />
+        )
+        : (
+          <Select
+            value={record.value}
+            disabled={this.props.onlyShow} placeholder="请输入内容"
+            style={{ width: '100%', fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
+            onChange={value => this.handleTableChange(value, record.itemKey, 'value')}
+            onBlur={value => this.handleBlur(value, record.itemKey)}
+            showSearch
+          >
+            {makeOptionNew(this.props.indisList)}
+          </Select>
+        )),
     }, {
       title: '操作',
       width: 40,

@@ -10,6 +10,7 @@ import menuList from '@/constants/menuList'
 import { getUserList } from '@/services/edukg'
 import { logout, fetchUserInfo } from '@/services/global'
 import Pic15002 from '@/assets/15002.jpg'
+import cit from '@/assets/logo_cit.png'
 import moment from 'moment'
 
 const {
@@ -135,7 +136,6 @@ class MainLayout extends React.Component {
           >
             <div
               style={{
-                width: 220,
                 height: 31,
                 marginLeft: 30,
                 float: 'left',
@@ -144,7 +144,7 @@ class MainLayout extends React.Component {
                 lineHeight: '60px',
               }}
             >
-              <Link to="" style={{ color: 'white' }}>KG-EDITOR</Link>
+              <Link to="" style={{ color: 'white' }}>OKES&nbsp;&nbsp;本体知识编辑系统</Link>
             </div>
             <Menu
               mode="horizontal"
@@ -176,8 +176,8 @@ class MainLayout extends React.Component {
           <Footer
             style={{ textAlign: 'center', height: 80 }}
           >
-            <div>Copyright© 2018 KEG，Tsinghua University</div>
-            <div>地址：清华大学东主楼</div>
+            <img alt="" src={cit} height="40px" />
+            <p style={{ color: 'white' }}>知识建模与分析实验室</p>
           </Footer>
         </ConfigProvider>
       </Layout>

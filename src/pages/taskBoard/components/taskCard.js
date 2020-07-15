@@ -35,7 +35,7 @@ class taskCard extends React.Component {
     this.props.dispatch(routerRedux.push({
       pathname: '/editor',
       query: {
-        taskName: e.taskName,
+        taskName: e.taskName.split('______')[1] || '',
         projectName: e.projectName,
       },
     }))
@@ -60,7 +60,7 @@ class taskCard extends React.Component {
       >
         <Meta
           avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-          title={e.taskName}
+          title={e.taskName.split('______')[1]}
           description={e.desc}
         />
         <div style={{ marginTop: 20, paddingLeft: 8 }}>

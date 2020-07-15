@@ -6,7 +6,7 @@ import HistoryList from '@/components/history'
 import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
-import FlexTableDb from '@/components/table/flexTableDb'
+import FlexTableDb from '@/components/table/flexTableTri'
 
 let newList = []
 
@@ -101,7 +101,7 @@ class PublicResource extends React.Component {
   }
 
   editNodeInfo = (value, key, type) => {
-    const { treeData, classData } = this.props
+    const { treeData } = this.props
     const target = treeData.find(item => item.key === key)
     if (type === 'Annotations') {
       target.title = value[0]
@@ -112,7 +112,7 @@ class PublicResource extends React.Component {
     } else {
       const array = []
       value.forEach((e) => {
-        array.push(_.find(classData, { title: e }).key)
+        array.push(e)
       })
       target.sameAs = value
     }
@@ -198,7 +198,7 @@ class PublicResource extends React.Component {
               <FlexTable
                 title="Types"
                 data={currentNode ? typesArray : []}
-                placeholder="请输入类名"
+                placeholder="请输入概念类名"
                 selectKey={currentNode ? currentNode.key : ''}
                 options={classData || []}
                 editNode={this.editNodeInfo}
@@ -208,18 +208,20 @@ class PublicResource extends React.Component {
               <FlexTableDb
                 title="Relationships" value="Value"
                 placeholder="请输入属性" data={currentNode ? currentNode.relationships : []}
-                options={propertyData && propertyObj
-                  ? [...propertyData, ...propertyObj] : []}
+                optionData={propertyData || []}
+                optionObj={propertyObj || []}
+                indisList={treeData}
                 editNode={this.editNodeInfo}
                 selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
             <div style={{ marginBottom: 10 }}>
               <FlexTable
-                title="Same As" data={currentNode ? currentNode.sameAs : []}
+                title="Same as" data={currentNode ? currentNode.sameAs : []}
                 placeholder="请输入实体"
                 editNode={this.editNodeInfo}
                 options={treeData || []}
+                selectKey={currentNode ? currentNode.key : ''}
               />
             </div>
           </div>

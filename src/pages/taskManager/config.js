@@ -54,7 +54,7 @@ class Config extends React.Component {
       endTime: moment(endTime),
       members: memList,
       urgency,
-      type,
+      type: type[0] === '' ? [] : type,
       expectation,
     })
     this.setState({ loading: false })
@@ -107,7 +107,7 @@ class Config extends React.Component {
     const data = this.props.type === 'edit'
       ? await editTaskInfo({
         projectName: this.props.projectName,
-        taskName,
+        taskName: `${this.props.projectName}______${taskName}`,
         desc,
         startNode: _.find(classTree, { title: startNode }).key,
         members: JSON.stringify(memList),
@@ -119,7 +119,7 @@ class Config extends React.Component {
       })
       : await createTaskInfo({
         projectName: this.props.projectName,
-        taskName,
+        taskName: `${this.props.projectName}______${taskName}`,
         desc,
         startNode: _.find(classTree, { title: startNode }).key,
         members: JSON.stringify(memList),

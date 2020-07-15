@@ -96,7 +96,7 @@ class Members extends React.Component {
       pathname: '/editor',
       query: {
         projectName: this.state.projectName,
-        taskName,
+        taskName: taskName.split('______')[1],
       },
     }))
   }
@@ -106,6 +106,11 @@ class Members extends React.Component {
     const columns = [{
       title: '任务名称',
       dataIndex: 'taskName',
+      render: (text) => {
+        return (
+          <span>{text.split('______')[1]}</span>
+        )
+      },
     }, {
       title: '创建时间',
       dataIndex: 'createTime',
@@ -160,6 +165,7 @@ class Members extends React.Component {
               type="edit" params={record}
               update={this.getData}
               projectName={this.state.projectName}
+              members={members}
             />
           </span>
         )

@@ -41,6 +41,9 @@ export default class FlexTable extends React.Component {
   pushConfig = (option) => {
     const dataSource = []
     option.forEach((e) => {
+      if (e === '') {
+        return
+      }
       const arr = e.split('=')
       const item = {
         key: arr[0],

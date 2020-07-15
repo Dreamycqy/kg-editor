@@ -73,7 +73,6 @@ class ShowUploadJson extends React.Component {
     const { classD, indis } = this.state
     const newClass = this.state.classData
     const firstClass = classD.filter((e) => { return e.target.length === 0 })
-    console.log(firstClass)
     newClass.forEach((e) => {
       e.target = [firstClass[0].key]
     })
@@ -248,6 +247,9 @@ class ShowUploadJson extends React.Component {
 
   render() {
     const { projectName, taskName } = this.props
+    if (_.isEqual(this.props.dataSource, {})) {
+      return null
+    }
     return (
       <div>
         <Tabs>

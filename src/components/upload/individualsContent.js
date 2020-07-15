@@ -80,7 +80,7 @@ class PublicResource extends React.Component {
             iconType="tag" iconColor="#1296db"
             data={treeData} selectNode={this.selectNode}
             classData={this.listToTree(classData || [])}
-            nodeTask={classData[0].nodeTask}
+            nodeTask={classData[0] ? classData[0].nodeTask : ''}
             onlyShow
           />
         </div>

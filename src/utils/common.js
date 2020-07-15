@@ -28,6 +28,9 @@ export const makeOptionNormal = (array) => {
 }
 
 export const makeOptionTable = (array) => {
+  if (!array) {
+    return
+  }
   const children = []
   const handleTitle = (key, list) => {
     if (_.find(list, { key })) {
@@ -55,6 +58,18 @@ export const makeOption = (array) => {
     children.push(
       <Option disabled={i.disabled || false} key={i.value} value={i.value}>
         {i.name}
+      </Option>,
+    )
+  }
+  return children
+}
+
+export const makeOptionNew = (array) => {
+  const children = []
+  for (const i of array) {
+    children.push(
+      <Option disabled={i.disabled || false} key={i.key} value={i.key}>
+        {i.title}
       </Option>,
     )
   }

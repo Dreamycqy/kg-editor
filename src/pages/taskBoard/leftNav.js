@@ -213,7 +213,7 @@ class LeftPart extends React.Component {
       <div style={{ height: '100%', overflowY: 'scroll' }}>
         <div style={{ borderBottom: '1px solid #e8e8e8', padding: 10, backgroundColor: '#fbfbfb', marginBottom: 10 }}>
           <div>
-            <span style={{ fontSize: 20 }}>{data.taskName}</span>
+            <span style={{ fontSize: 20 }}>{data.taskName.split('______')[1]}</span>
             <span style={{ marginLeft: 20 }}>截止于：{data.endTime}</span>
           </div>
           <span style={{ marginRight: 20 }}>
