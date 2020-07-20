@@ -126,7 +126,7 @@ class MainLayout extends React.Component {
             style={{
               height: 60,
               backgroundColor: '#001529',
-              borderBottom: '1px solid #e8e8e8',
+              // borderBottom: '1px solid #e8e8e8',
               position: 'fixed',
               top: 0,
               zIndex: 999,
@@ -170,14 +170,14 @@ class MainLayout extends React.Component {
               </div>
             </Dropdown>
           </Header>
-          <Content style={{ minHeight: 900, marginTop: 60, padding: 10, backgroundImage: this.state.key === 'board' ? `url(${Pic15002})` : null, backgroundColor: '#fff' }}>
+          <Content style={{ minHeight: 900, overflow: 'scroll', marginTop: 60, padding: this.state.key === 'home' ? 0 : 10, backgroundImage: this.state.key === 'board' ? `url(${Pic15002})` : null, backgroundColor: '#fff' }}>
             { this.props.children }
           </Content>
           <Footer
-            style={{ textAlign: 'center', height: 80 }}
+            style={{ textAlign: 'center', height: 120, backgroundColor: '#001529' }}
           >
-            <img alt="" src={cit} height="40px" />
-            <p style={{ color: 'white' }}>知识建模与分析实验室</p>
+            <img alt="" src={cit} height="40px" style={{ marginTop: 10 }} />
+            <p style={{ color: 'white', marginTop: 8 }}>知 识 建 模 与 分 析 实 验 室</p>
           </Footer>
         </ConfigProvider>
       </Layout>

@@ -1,7 +1,7 @@
 export default [
   {
     path: '/',
-    redirect: '/board',
+    redirect: '/home',
   },
   {
     path: '/login',
@@ -12,12 +12,24 @@ export default [
     component: '../layouts',
     routes: [
       {
+        path: './home',
+        component: './home',
+      },
+      {
+        path: './searchPage',
+        component: './home/searchPage',
+      },
+      {
         path: './board',
         component: './taskBoard',
       },
       {
         path: './editor',
         component: './editor',
+      },
+      {
+        path: './explorer',
+        component: './explorer',
       },
       {
         path: './members',

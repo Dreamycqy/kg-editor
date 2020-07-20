@@ -45,7 +45,7 @@ export default class GraphChart extends React.Component {
       options = {
         ...options,
         title: {
-          text: '暂无数据',
+          text: '',
           x: '46%',
           y: 'center',
         },

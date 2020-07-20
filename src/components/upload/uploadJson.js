@@ -111,11 +111,11 @@ class UploadJson extends React.Component {
         </Dragger>
         <Steps style={{ marginTop: 20 }} current={current}>
           <Step title="选择首要配置" key="1" />
-          <Step title="自定义字段类型" key="2" />
+          <Step title="配置属性类型" key="2" />
           <Step title="检查上传内容" key="3" />
         </Steps>
         <div style={{ margin: 20 }}>
-          <div title="选择首要配置" key="1" style={{ display: current === 0 ? 'block' : 'none' }}>
+          <div title="选择首要配置" style={{ display: current === 0 ? 'block' : 'none' }}>
             <div style={{ margin: '20px 0 0 0' }}>
               选择实体名称参数名：&nbsp;
               <Select
@@ -134,8 +134,10 @@ class UploadJson extends React.Component {
               如果多个文件存在实体名称，属性字段冲突的情况，请分次上传避免冲突
             </div>
           </div>
-          <div title="自定义字段类型" key="2" style={{ display: current === 1 ? 'block' : 'none' }}>xxx</div>
-          <div title="检查上传内容" key="3" style={{ display: current === 2 ? 'block' : 'none' }}>
+          <div title="配置属性类型" style={{ display: current === 1 ? 'block' : 'none' }}>
+            xxx
+          </div>
+          <div title="检查上传内容" style={{ display: current === 2 ? 'block' : 'none' }}>
             <ShowUploadData
               dataSource={dataSource}
               mainName={mainName}

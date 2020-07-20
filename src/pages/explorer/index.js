@@ -8,8 +8,6 @@ import {
 import ClassEditor from './classEditor'
 import IndividualEditor from './individualEditor'
 import PropertyEditor from './propertyEditor'
-import History from './history'
-import TotalEditor from './totalEditor'
 
 const { TabPane } = Tabs
 
@@ -183,21 +181,8 @@ class MainEditor extends React.Component {
           />
         )
         break
-      case 'total':
-        result = (
-          <TotalEditor
-            projectName={projectName} taskName={taskName}
-            treeData={treeData}
-            classData={classData} propertyData={propertyData}
-            changeData={this.changeData} propertyObj={propertyObj}
-          />
-        )
-        break
       case 'comment':
         result = <Empty style={{ marginTop: 100 }} />
-        break
-      case 'history':
-        result = <History />
         break
       default:
         result = null
@@ -207,15 +192,13 @@ class MainEditor extends React.Component {
       <div style={{ height: '100%' }}>
         <Tabs
           activeKey={activeKey}
-          tabBarExtraContent={<span>{projectName} -&gt; {taskName}</span>}
+          tabBarExtraContent={<span>图谱项目：{projectName}</span>}
           onChange={key => this.setState({ activeKey: key })}
         >
           <TabPane style={{ height: 0 }} tab="类" key="classes" />
           <TabPane style={{ height: 0 }} tab="属性" key="properties" />
           <TabPane style={{ height: 0 }} tab="实体" key="individuals" />
-          <TabPane style={{ height: 0 }} tab="综合编辑" key="total" />
-          <TabPane style={{ height: 0 }} tab="讨论" key="comment" />
-          <TabPane style={{ height: 0 }} tab="历史" key="history" />
+          <TabPane style={{ height: 0 }} tab="留言" key="comment" />
         </Tabs>
         <Spin spinning={loading}>
           {result}
