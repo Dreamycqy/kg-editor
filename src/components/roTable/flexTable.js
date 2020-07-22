@@ -2,6 +2,7 @@ import React from 'react'
 import { Table, message } from 'antd'
 import uuid from 'uuid'
 import _ from 'lodash'
+import './index.css'
 
 export default class FlexTable extends React.Component {
   constructor(props) {

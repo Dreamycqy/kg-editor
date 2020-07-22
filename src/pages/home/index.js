@@ -114,7 +114,7 @@ class ClusterBroker extends React.Component {
             onChange={value => this.handleInputChange(value)}
             onSelect={value => this.setState({ filter: value })}
             backfill
-            placeholder="请输入要搜索的图谱，概念或实体名"
+            placeholder="请输入要搜索的内容"
             optionLabelProp="value"
             defaultActiveFirstOption={false}
           >
