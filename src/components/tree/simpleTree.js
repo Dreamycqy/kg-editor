@@ -2,12 +2,13 @@ import React from 'react'
 import { Tree, Modal, Input, Icon, message, Cascader, Select } from 'antd'
 import _ from 'lodash'
 import uuid from 'uuid'
-import UploadExcel from '@/components/upload/uploadExcel'
-import UploadJson from '@/components/upload/uploadJson'
+import UploadIndis from '@/components/upload/uploadIndis'
+// import UploadExcel from '@/components/upload/uploadExcel'
+// import UploadJson from '@/components/upload/uploadJson'
 
 const { Search } = Input
 const { TreeNode } = Tree
-const { Option } = Select
+// const { Option } = Select
 
 class SimpleTree extends React.Component {
   constructor(props) {
@@ -19,8 +20,6 @@ class SimpleTree extends React.Component {
       visible: false,
       selectKey: [],
       filterValue: [],
-      fileType: 'json',
-      visibleExcel: false,
       selectClass: '',
     }
   }
@@ -148,14 +147,10 @@ class SimpleTree extends React.Component {
     )
   })
 
-  close = () => {
-    this.setState({ visibleExcel: false })
-  }
-
   render() {
     const {
       showTreeData, visible, createName, selectKey,
-      visibleExcel, filterValue, fileType, selectClass,
+      filterValue, selectClass,
     } = this.state
     return (
       <div>
@@ -184,12 +179,11 @@ class SimpleTree extends React.Component {
             >
               <Icon type="close-circle" />
             </a>
-            <a
-              href="javascript:;" style={{ marginLeft: 10, fontSize: 20 }}
-              onClick={() => this.setState({ visibleExcel: true })}
-            >
-              <Icon type="upload" />
-            </a>
+            <UploadIndis
+              nodeTask={this.props.nodeTask}
+              projectName={this.props.projectName}
+              taskName={this.props.taskName}
+            />
           </span>
         </div>
         <Tree
@@ -215,7 +209,7 @@ class SimpleTree extends React.Component {
             style={{ width: '100%' }}
           />
         </Modal>
-        <Modal
+        {/* <Modal
           title="导入实体列表"
           visible={visibleExcel}
           width="1000px"
@@ -253,7 +247,7 @@ class SimpleTree extends React.Component {
                 />
               )
           }
-        </Modal>
+        </Modal> */}
       </div>
     )
   }

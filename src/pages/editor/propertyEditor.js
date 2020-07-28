@@ -250,7 +250,6 @@ class PublicResource extends React.Component {
         result = null
         break
     }
-  
     const selectNode = activeKey === 'obj' ? selectNodeObj : selectNodeData
     const currentNode = activeKey === 'obj' ? currentNodeObj : currentNodeData
     return (

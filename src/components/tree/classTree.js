@@ -23,6 +23,7 @@ class NormalTree extends React.Component {
       createList: [],
       connectList: [],
       loadingSearch: false,
+      expandedKeys: [],
     }
   }
 

@@ -174,7 +174,7 @@ export default class FlexTable extends React.Component {
             disabled={this.props.onlyShow}
             value={record.value} placeholder="请输入内容"
             autosize style={{ fontSize: 12, lineHeight: '24px', border: 'none', resize: 'none' }}
-            onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'value', this.checkType())}
+            onChange={e => this.handleTableChange(e.target.value, record.itemKey, 'value')}
             onBlur={e => this.handleBlur(e.target.value, record.itemKey)}
           />
         )

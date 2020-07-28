@@ -1,19 +1,13 @@
 import React from 'react'
-import { Tabs, Button, message, Modal } from 'antd'
+import { Tabs, message } from 'antd'
 import _ from 'lodash'
 import { connect } from 'dva'
-import uuid from 'uuid'
-import { getProjectClassesTree, getProjectPropertiesTree, getProjectIndividualsTree, editClasses, editProperties, editIndividuals } from '@/services/edukg'
+import { editClasses, editProperties, editIndividuals } from '@/services/edukg'
 import ClassContent from '@/pages/editor/classEditor'
-import PropertiesContent from './propertiesContent'
-import IndividualsContent from './individualsContent'
+import PropertiesContent from '@/pages/editor/propertyEditor'
+import IndividualsContent from '@/pages/editor/individualEditor'
 
 const { TabPane } = Tabs
-const { confirm } = Modal
-let classData = []
-let propertyData = []
-let individualData = []
-let temp = []
 
 @connect()
 class ShowUploadJson extends React.Component {
@@ -22,90 +16,26 @@ class ShowUploadJson extends React.Component {
     this.state = {
       classData: [],
       propertyData: [],
+      propertyObj: [],
       individualData: [],
-      classD: [],
-      indis: [],
-      property: [],
-    }
-  }
-
-  componentWillMount = () => {
-    this.getClass()
-    if (this.props.createProject !== true) {
-      this.getPdata()
-      this.getIndis()
     }
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.handleData(nextProps)
-  }
-
-  getClass = async () => {
-    const data = await getProjectClassesTree({
-      projectName: this.props.projectName,
+    this.setState({
+      classData: nextProps.classList,
+      propertyData: nextProps.objPropList,
+      propertyObj: nextProps.dataPropList,
+      individualData: nextProps.indisList,
     })
-    if (data) {
-      this.setState({ classD: data.data })
-    }
-  }
-
-  getPdata = async () => {
-    const data = await getProjectPropertiesTree({
-      projectName: this.props.projectName,
-      type: 'data',
-    })
-    if (data) {
-      this.setState({ property: data.data })
-    }
-  }
-
-  getIndis = async () => {
-    const data = await getProjectIndividualsTree({
-      projectName: this.props.projectName,
-    })
-    if (data) {
-      this.setState({ indis: data.data.filter((e) => { return !!e.key }) })
-    }
   }
 
   uploadData = async () => {
-    const { classD, indis } = this.state
-    const newClass = this.state.classData
-    const firstClass = classD.filter((e) => { return e.target.length === 0 })
-    newClass.forEach((e) => {
-      e.target = [firstClass[0].key]
-    })
-    const nodeClass = this.handleDiff(this.state.classData, classD)
-    const nodeProp = this.handleDiff(this.state.propertyData, [])
-    const nodeIndis = this.handleDiff(this.state.individualData, indis)
-    if ((nodeClass.repeat.length + nodeProp.repeat.length + nodeIndis.repeat.length) > 0) {
-      const that = this
-      confirm({
-        title: '存在部分',
-        content: 'Some descriptions',
-        onOk() {
-          that.upload(nodeClass.node, nodeProp.node, nodeIndis.node)
-        },
-        onCancel() {
-          console.log('Cancel')
-        },
-      })
-    } else {
-      this.upload(nodeClass.node, nodeProp.node, nodeIndis.node)
-    }
+    const { classData, propertyObj, propertyData, individualData } = this.state
+    this.upload(classData, propertyObj, propertyData, individualData)
   }
 
-  handleDiff = (data, origin) => {
-    return {
-      node: _.uniqBy([...data, ...origin], 'title'),
-      repeat: _.filter([...data, ...origin], (value, index, iteratee) => {
-        return _.includes(iteratee, value, index + 1)
-      }),
-    }
-  }
-
-  upload = async (nodeClass, nodeProp, nodeIndis) => {
+  upload = async (nodeClass, nodePropObj, nodePropData, nodeIndis) => {
     const { projectName, taskName } = this.props
     await editClasses({
       projectName,
@@ -113,12 +43,17 @@ class ShowUploadJson extends React.Component {
     })
     await editProperties({
       projectName,
-      node: JSON.stringify(nodeProp),
+      node: JSON.stringify(nodePropData),
       type: 'data',
+    })
+    await editProperties({
+      projectName,
+      node: JSON.stringify(nodePropObj),
+      type: 'object',
     })
     const data3 = await editIndividuals({
       projectName,
-      node: nodeIndis,
+      node: JSON.stringify(nodeIndis),
       method: 'add',
     })
     if (data3.data) {
@@ -131,99 +66,20 @@ class ShowUploadJson extends React.Component {
     }
   }
 
-  handleData = (props) => {
-    classData = []
-    propertyData = this.state.property
-    individualData = []
-    const { dataSource, mainName, isClass, nodeTask } = props
-    for (const listName in dataSource) { // eslint-disable-line
-      const key = uuid()
-      if (isClass === true && !_.find(classData, { title: listName })) {
-        classData.push({
-          key,
-          nodeTask: nodeTask || [],
-          relationships: [],
-          source: listName,
-          target: [],
-          title: listName,
-        })
-      }
-      dataSource[listName].forEach((item) => { // eslint-disable-line
-        this.checkProperty(item, '', mainName)
-        const params = {
-          key: uuid(),
-          sameAs: [],
-          title: item[mainName],
-          types: isClass ? [key] : [],
-        }
-        temp = []
-        for (const i in item) { // eslint-disable-line
-          if (i !== mainName) {
-            this.pushRelationShip(i, item[i])
-          }
-        }
-        params.relationships = temp
-        individualData.push(params)
-      })
-    }
-    this.setState({ classData, propertyData, individualData })
-  }
-
-  checkProperty = (item, target, mainName) => {
-    for (const i in item) { // eslint-disable-line
-      if (i !== mainName) {
-        let key = uuid()
-        if (!_.find(propertyData, { title: i })) {
-          propertyData.push({
-            domain: [],
-            key,
-            range: [],
-            source: i,
-            target,
-            title: i,
-          })
-        } else {
-          key = _.find(propertyData, { title: i }).key
-        }
-        if (typeof item[i] === 'object' && !item[i].length) {
-          this.checkProperty(item[i], key, mainName)
-        }
-      }
-    }
-  }
-
-  pushRelationShip = (name, value) => {
-    if (typeof value === 'object' && !value.length) {
-      for (const item in value) { // eslint-disable-line
-        this.pushRelationShip(item, value[item])
-      }
-    } else {
-      const target = _.find(propertyData, { title: name })
-      if (!target) {
-        return
-      }
-      if (typeof value === 'object' && value.length) {
-        value.forEach((e) => {
-          temp.push({
-            key: target.key,
-            value: e,
-          })
-        })
-      } else {
-        temp.push({
-          key: target.key,
-          value,
-        })
-      }
-    }
-  }
-
   setClass = async (newTree) => {
     this.setState({ classData: newTree })
   }
 
+  setPobj = async (newTree) => {
+    this.setState({ propertyObj: newTree })
+  }
+
   setPdata = async (newTree) => {
     this.setState({ propertyData: newTree })
+  }
+
+  setIndis = async (newTree) => {
+    this.setState({ individualData: newTree })
   }
 
   changeData = (newTree, type) => {
@@ -247,6 +103,7 @@ class ShowUploadJson extends React.Component {
 
   render() {
     const { projectName, taskName } = this.props
+    const { classData, propertyData, propertyObj, individualData } = this.state
     if (_.isEqual(this.props.dataSource, {})) {
       return null
     }
@@ -256,31 +113,30 @@ class ShowUploadJson extends React.Component {
           <TabPane tab="概念" key="classes">
             <ClassContent
               projectName={projectName} taskName={taskName}
-              classData={this.state.classData} propertyData={propertyData}
-              changeData={this.changeData} propertyObj={[]}
+              classData={classData} propertyData={propertyData}
+              changeData={this.changeData} propertyObj={propertyObj}
+              onlyShow
             />
           </TabPane>
           <TabPane tab="属性" key="properties">
             <PropertiesContent
               projectName={projectName} taskName={taskName}
-              propertyObj={[]} propertyData={this.state.propertyData}
+              propertyObj={propertyObj} propertyData={propertyData}
               changeData={this.changeData}
-              classData={this.state.classData}
+              classData={classData}
+              onlyShow
             />
           </TabPane>
           <TabPane tab="实体" key="individuals">
             <IndividualsContent
               projectName={projectName} taskName={taskName}
-              treeData={this.state.individualData}
-              classData={this.state.classData} propertyData={this.state.propertyData}
-              propertyObj={[]}
+              treeData={individualData}
+              classData={classData} propertyData={propertyData}
+              propertyObj={propertyObj}
+              onlyShow
             />
           </TabPane>
         </Tabs>
-        <div style={{ margin: 20, textAlign: 'center' }}>
-          <Button type="primary" onClick={() => this.uploadData()}>上传</Button>
-          <Button style={{ marginLeft: 20 }} onClick={() => this.props.close()}>取消</Button>
-        </div>
       </div>
     )
   }
