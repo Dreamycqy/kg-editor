@@ -1,13 +1,11 @@
 import React from 'react'
-import { Progress, Empty, Skeleton } from 'antd'
+import { Progress, Skeleton } from 'antd'
 import moment from 'moment'
 import _ from 'lodash'
 import {
   getProjectClassesTree, getProjectPropertiesTree, getProjectIndividualsTree,
 } from '@/services/edukg'
-import HistoryList from '@/components/history'
 import CountDown from '@/components/items/countDown'
-import hisdata from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/foldGrape'
 
 const name = {
@@ -253,16 +251,6 @@ class LeftPart extends React.Component {
           <div style={{ height: 400 }}>
             <Chart graph={this.rebuildChartData(classData, treeData)} />
           </div>
-        </div>
-        <div style={{ backgroundColor: '#fbfbfb', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
-          <div style={{ fontSize: 20, paddingBottom: 10 }}>最近编辑</div>
-          <div>
-            <HistoryList data={hisdata} type="lastone" />
-          </div>
-        </div>
-        <div style={{ backgroundColor: '#fbfbfb', padding: 10, borderBottom: '1px solid #e8e8e8', marginBottom: 10 }}>
-          <div style={{ fontSize: 20, paddingBottom: 10 }}>相关评论</div>
-          <Empty />
         </div>
       </div>
     )

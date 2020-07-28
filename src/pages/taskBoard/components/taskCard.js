@@ -47,12 +47,6 @@ class taskCard extends React.Component {
     return (
       <Card
         style={{ borderRadius: '4px', backgroundColor: time.colorBg, cursor: 'pointer', margin: '0 4px 10px 0' }}
-        cover={(
-          <img
-            alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-          />
-        )}
         actions={[
           <Button disabled>编辑信息</Button>,
           <Button onClick={() => this.jumpEditor(e)}>进入任务</Button>,

@@ -198,7 +198,7 @@ class MainEditor extends React.Component {
           <TabPane style={{ height: 0 }} tab="类" key="classes" />
           <TabPane style={{ height: 0 }} tab="属性" key="properties" />
           <TabPane style={{ height: 0 }} tab="实体" key="individuals" />
-          <TabPane style={{ height: 0 }} tab="留言" key="comment" />
+          {/* <TabPane style={{ height: 0 }} tab="留言" key="comment" /> */}
         </Tabs>
         <Spin spinning={loading}>
           {result}

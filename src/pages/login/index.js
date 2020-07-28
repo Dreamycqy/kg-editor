@@ -67,7 +67,7 @@ class NormalLoginForm extends React.Component {
       await this.handleUserList(email)
       window.localStorage.setItem('email', email)
       this.props.dispatch(routerRedux.push({
-        pathname: '/home',
+        pathname: '/projectManager',
         query: {
         },
       }))

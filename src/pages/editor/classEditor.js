@@ -1,9 +1,6 @@
 import React from 'react'
-import { Empty } from 'antd'
 import _ from 'lodash'
 import Tree from '@/components/tree/classTree'
-import HistoryList from '@/components/history'
-import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 import FlexTable from '@/components/table/flexTable'
 import FlexTableDb from '@/components/table/flexTableDb'
@@ -234,13 +231,6 @@ class PublicResource extends React.Component {
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
             <Chart graph={this.rebuildChartData(selectNode)} />
-          </div>
-          <div style={{ minHeight: 350 }}>
-            <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>最近更改</div>
-            {historyData[0]
-              ? <HistoryList data={[historyData[0]]} type="lastone" />
-              : <Empty />
-            }
           </div>
         </div>
       </div>

@@ -1,9 +1,6 @@
 import React from 'react'
-import { Empty } from 'antd'
 import Tree from '@/components/tree/simpleTree'
 import treeData from '@/utils/mock/publicIndis'
-import HistoryList from '@/components/history'
-import historyData from '@/utils/mock/totalHistory'
 import Chart from '@/components/charts/newGrapeChart'
 
 class PublicResource extends React.Component {
@@ -43,19 +40,6 @@ class PublicResource extends React.Component {
           </div>
           <div style={{ border: '1px solid #e8e8e8', height: 600 }}>
             <Chart graph={this.rebuildChartData(selectNode)} />
-          </div>
-        </div>
-        <div style={{ height: '100%', width: 300, borderLeft: '1px solid #e8e8e8' }}>
-          <div style={{ minHeight: 350, borderBottom: '1px solid #e8e8e8' }}>
-            <div style={{ fontSize: 20, paddingLeft: 10 }}>讨论</div>
-            <Empty style={{ marginTop: 20 }} />
-          </div>
-          <div style={{ minHeight: 350, padding: 10 }}>
-            <div style={{ fontSize: 20 }}>最近更改</div>
-            {historyData[0]
-              ? <HistoryList data={[historyData[0]]} type="lastone" />
-              : <Empty />
-            }
           </div>
         </div>
       </div>
