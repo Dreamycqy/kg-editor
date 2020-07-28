@@ -80,6 +80,7 @@ class RemakeClass extends React.Component {
           item.relationships = relationships
         }
       }
+      delete item.others
       result.push(item)
     })
     return result
@@ -111,6 +112,7 @@ class RemakeClass extends React.Component {
           sameAs: [],
           title: e[mainName],
           types: isClass ? [classKey] : [],
+          others: e,
         }
         newTree.push(item)
       } else {
@@ -119,19 +121,20 @@ class RemakeClass extends React.Component {
           sameAs: [],
           title: e[mainName],
           types: isClass ? [classKey] : [],
+          others: e,
         })
       }
     })
-    newTree.forEach((e) => {
+    for (const e of newTree) {
       temp = []
-      this.handleRelationships(e, setNewTree, mainName, objPropList, dataPropList)
+      this.handleRelationships(e.others, setNewTree, mainName, objPropList, dataPropList)
       e.relationships = temp
-    })
-    setNewTree.forEach((e) => {
+    }
+    for (const e of setNewTree) {
       temp = []
-      this.handleRelationships(e, setNewTree, mainName, objPropList, dataPropList)
+      this.handleRelationships(e.others, setNewTree, mainName, objPropList, dataPropList)
       e.relationships = temp
-    })
+    }
     this.setState({
       newTree,
       selectNode: newTree[0] || {},
@@ -149,7 +152,7 @@ class RemakeClass extends React.Component {
       const targetObj = _.find(objPropList, { title: prop })
       const targetData = _.find(dataPropList, { title: prop })
       if (!type) { // 是否有type
-        if (targetObj) { // 第一层无type, 关系
+        if (targetObj && targetObj !== undefined) { // 第一层无type, 关系
           if (typeof item[prop] === 'object' && !item[prop].length) { // 判断是否为对象
             this.handleRelationships(item[prop], setNewTree, mainName, objPropList, dataPropList, 'object')
           } else if (typeof item[prop] === 'object' && item[prop].length) { // 判断是否为数组
@@ -157,17 +160,17 @@ class RemakeClass extends React.Component {
               temp.push({
                 key: targetObj.key,
                 type: 'relation',
-                value: _.find(setNewTree, { title: itemItem }),
+                value: _.find(setNewTree, { title: itemItem }).key,
               })
             }
           } else { // 剩余为描述
             temp.push({
               key: targetObj.key,
               type: 'relation',
-              value: _.find(setNewTree, { title: item[prop] }),
+              value: _.find(setNewTree, { title: item[prop] }).key,
             })
           }
-        } else if (targetObj) { // 第一层无type, 描述
+        } else if (targetData) { // 第一层无type, 描述
           if (typeof item[prop] === 'object' && !item[prop].length) { // 判断是否为对象
             this.handleRelationships(item[prop], setNewTree, mainName, objPropList, dataPropList, 'data')
           } else if (typeof item[prop] === 'object' && item[prop].length) { // 判断是否为数组
@@ -194,14 +197,14 @@ class RemakeClass extends React.Component {
             temp.push({
               key: targetObj.key,
               type: 'relation',
-              value: _.find(setNewTree, { title: itemItem }),
+              value: _.find(setNewTree, { title: itemItem }).key,
             })
           }
         } else {
           temp.push({
             key: targetObj.key,
             type: 'relation',
-            value: _.find(setNewTree, { title: item[prop] }),
+            value: _.find(setNewTree, { title: item[prop] }).key,
           })
         }
       } else if (type === 'data') { // 子层有type, 描述

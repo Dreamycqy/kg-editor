@@ -1,6 +1,5 @@
 import React from 'react'
 import { Tabs, message } from 'antd'
-import _ from 'lodash'
 import { connect } from 'dva'
 import { editClasses, editProperties, editIndividuals } from '@/services/edukg'
 import ClassContent from '@/pages/editor/classEditor'
@@ -24,8 +23,8 @@ class ShowUploadJson extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     this.setState({
       classData: nextProps.classList,
-      propertyData: nextProps.objPropList,
-      propertyObj: nextProps.dataPropList,
+      propertyData: nextProps.dataPropList,
+      propertyObj: nextProps.objPropList,
       individualData: nextProps.indisList,
     })
   }
@@ -104,9 +103,10 @@ class ShowUploadJson extends React.Component {
   render() {
     const { projectName, taskName } = this.props
     const { classData, propertyData, propertyObj, individualData } = this.state
-    if (_.isEqual(this.props.dataSource, {})) {
+    if (individualData.length === 0) {
       return null
     }
+    console.log(individualData)
     return (
       <div>
         <Tabs>

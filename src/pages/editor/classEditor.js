@@ -187,6 +187,7 @@ class PublicResource extends React.Component {
             data={this.listToTree(classData)} selectNode={this.selectNode}
             editNode={this.editNode} treeType="class"
             selectKey={currentNodeKey}
+            onlyShow={this.props.onlyShow}
           />
         </div>
         <div style={{ flexGrow: 1, padding: '0 10px', minWidth: 600 }}>
@@ -229,7 +230,7 @@ class PublicResource extends React.Component {
             {/* <Empty style={{ marginTop: 10 }} /> */}
           </div>
         </div>
-        <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
+        <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10, display: this.props.onlyShow ? 'none' : 'block' }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
             <Chart graph={this.rebuildChartData(selectNode)} />

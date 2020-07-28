@@ -35,6 +35,7 @@ class UploadIndis extends React.Component {
       objPropList: [],
       dataPropList: [],
       indisList: [],
+      tabKey: '1',
     }
   }
 
@@ -127,6 +128,10 @@ class UploadIndis extends React.Component {
     } else if (state === 2) {
       this.setState({ classList: this.remakeClass.getMyData() })
     } else if (state === 3) {
+      if (!this.remakePropsData) {
+        this.setState({ tabKey: '2' })
+        return
+      }
       this.setState({
         objPropList: this.remakePropsObj.getMyData(),
         dataPropList: this.remakePropsData.getMyData(),
@@ -149,7 +154,7 @@ class UploadIndis extends React.Component {
     const {
       visible, fileType, dataSource, fileList, current,
       mainClass, mainName, isClass, nameOption, newDataPropList, newObjPropList,
-      classList, objPropList, dataPropList, indisList,
+      classList, objPropList, dataPropList, indisList, tabKey,
     } = this.state
     const that = this
     const props = {
@@ -283,7 +288,7 @@ class UploadIndis extends React.Component {
               />
             </div>
             <div style={{ display: current === 3 ? 'block' : 'none' }}>
-              <Tabs defaultActiveKey="1">
+              <Tabs activeKey={tabKey} onChange={key => this.setState({ tabKey: key })}>
                 <TabPane tab="对象属性ObjectProperty" key="1">
                   <RemakeProps
                     nodeTask={this.props.nodeTask}

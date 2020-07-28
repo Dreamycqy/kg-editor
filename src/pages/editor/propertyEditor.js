@@ -241,10 +241,10 @@ class PublicResource extends React.Component {
     const currentNodeData = _.find(propertyData, { key: selectNodeData })
     switch (activeKey) {
       case 'obj':
-        result = <Tree iconType="import" iconColor="#1296db" data={this.listToTree(propertyObj)} oriData={propertyObj} selectNode={this.selectNodeObj} editNode={this.editNodeObj} />
+        result = <Tree onlyShow={this.props.onlyShow} iconType="import" iconColor="#1296db" data={this.listToTree(propertyObj)} oriData={propertyObj} selectNode={this.selectNodeObj} editNode={this.editNodeObj} />
         break
       case 'data':
-        result = <Tree iconType="import" iconColor="#1afa29" data={this.listToTree(propertyData)} oriData={propertyData} selectNode={this.selectNodeData} editNode={this.editNodeData} />
+        result = <Tree onlyShow={this.props.onlyShow} iconType="import" iconColor="#1afa29" data={this.listToTree(propertyData)} oriData={propertyData} selectNode={this.selectNodeData} editNode={this.editNodeData} />
         break
       default:
         result = null
@@ -302,7 +302,7 @@ class PublicResource extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10 }}>
+        <div style={{ height: '100%', minWidth: 450, borderLeft: '1px solid #e8e8e8', paddingLeft: 10, display: this.props.onlyShow ? 'none' : 'block' }}>
           <div style={{ marginBottom: 10, fontSize: 20, fontWeight: 600 }}>图例</div>
           <div style={{ height: 400, border: '1px solid #e8e8e8', marginBottom: 20 }}>
             <Chart graph={this.rebuildChartData(selectNode, activeKey)} />
