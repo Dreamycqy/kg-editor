@@ -157,7 +157,6 @@ class Config extends React.Component {
     const {
       visible, loading, projectName, startNode, desc, members,
     } = this.state
-    console.log(members)
     return (
       <div style={{ display: 'inline-block' }}>
         {

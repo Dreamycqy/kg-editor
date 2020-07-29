@@ -85,6 +85,9 @@ export const makeOptionTree = (array) => {
 }
 
 export const makeOptionSimple = (array) => {
+  if (!array.length) {
+    return
+  }
   const children = []
   for (const i of array) {
     children.push(
