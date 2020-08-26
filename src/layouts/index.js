@@ -174,10 +174,20 @@ class MainLayout extends React.Component {
             { this.props.children }
           </Content>
           <Footer
-            style={{ textAlign: 'center', height: 120, backgroundColor: '#001529' }}
+            style={{ backgroundColor: '#001529', padding: 30 }}
           >
-            <img alt="" src={cit} height="40px" style={{ marginTop: 10 }} />
-            <p style={{ color: 'white', marginTop: 8 }}>知 识 建 模 与 分 析 实 验 室</p>
+            <div style={{ padding: '0 30px' }}>
+              <div>
+                <div style={{ float: 'left', color: 'white' }}>
+                  <p><img src="https://cit.bnu.edu.cn/img/logo-footer.png" alt="" /></p>
+                  <p>©版权所有：互联网教育智能技术及应用国家工程实验室</p>
+                  <p>地址：北京市昌平区沙河镇满井路甲2号 北京师范大学昌平校园&nbsp;|&nbsp;邮箱：<a href="mailto:CIT@bnu.edu.cn">CIT@bnu.edu.cn</a>&nbsp;|&nbsp;电话：010-58807205</p>
+                </div>
+                <div style={{ float: 'right' }}>
+                  <img src="https://cit.bnu.edu.cn/img/qrcode.png" alt="qrcode" />
+                </div>
+              </div>
+            </div>
           </Footer>
         </ConfigProvider>
       </Layout>
